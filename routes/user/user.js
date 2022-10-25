@@ -98,33 +98,8 @@ route.post("/cart/remove",(req,res)=>{
  
 
 
-//orders
-
-// route.get("/orders",(req,res)=>{
-//     con.get().collection("orders").aggregate([{$match:{user:ObjectId(req.session.user._id)}},{$unwind:"$products"},{$lookup:{
-
-//         from:"Products",
-//         localField:"products.item",
-//         foreignField:"_id",
-//         as:"p"  
-//     }}]).toArray().then((result)=>{
-//         res.render("user/orders",{result})
-//         // console.log(result[0].p[0].images[0]);
-//     })
-//     // res.render("user/orders")
-// })
 
 route.get("/orders",(req,res)=>{
-//   con.get().collection("orders").aggregate([{$match:{user:req.session.user.name}},{$lookup:{
-
-//     from:"Products",
-//     localField:"product",
-//     foreignField:"_id",
-//     as:"p"
-//   }},{$sort:{time:-1}}]).toArray().then((result)=>{
-//         console.log(result);
-//         res.render("user/orders",{result})
-//     })
 helper.myOrders(req).then((result)=>{
    res.render("user/orders",{result})
 })
@@ -132,38 +107,31 @@ helper.myOrders(req).then((result)=>{
 })
 
 route.get("/checkout/:id",(req,res)=>{
-    con.get().collection("Products").findOne({_id:new ObjectId(req.params.id)}).then((result)=>{
-       con.get().collection("user").findOne({_id:new ObjectId(req.session.user._id)}).then((user)=>{
-        res.render("user/buynow",{result,user})
-       })
-
-        
-    })
+  
+   helper.checkout(req).then(result=>{
+    res.render("user/buynow",{result:result.result,user:result.user})
+   })
     
 })
 
 
 route.post("/addaddress/:id",(req,res)=>{
-    console.log(req.body);
-    con.get().collection("user").updateOne({_id:new ObjectId(req.session.user._id)},{$addToSet:{address:req.body}}).then((s)=>{
-        res.send({add:true})
+    helper.addressAdd(req).then((result)=>{
+      res.send(result)
+      console.log("added address");
     })
 })
 route.post("/orderconfirm",(req,res)=>{
     console.log(req.body);
-    con.get().collection("orders").insertOne({product:new ObjectId(req.body.productid),user:(req.session.user.name),method:"COD",status:"placed",address:req.body.address,time:req.body.date,quantity:req.body.quantity}).then((resu)=>{
-        console.log("order placed");
+    helper.confirmCODOrder(req).then(result=>{
+        console.log("placed");
     })
-
         
     })
 
     route.post("/orders/cancelorder",(req,res)=>{
-        
-        // console.log(req.query.id);
-        con.get().collection("orders").updateOne({_id:new ObjectId(req.query.id)},{$set:{status:"canceled"}}).then(()=>{
-            res.send({daleted:true})
-            console.log("order deleted");
+        helper.orderCancel(req).then((result)=>{
+            res.send(result)
         })
     })
 

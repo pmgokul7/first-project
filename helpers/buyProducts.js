@@ -8,7 +8,7 @@ module.exports={
                     db.get().collection("cart").findOne({$and:[{product:new ObjectId(data.query.id)},{user:data.session.user._id}]}).then((ifres)=>{
                         if(ifres)
                         {
-                            resolve({result,text1})
+                            resolve({result})
                         
                         }
                         else{
@@ -33,6 +33,43 @@ module.exports={
                       resolve(result)
                   })
               
+        })
+    },
+    checkout:(data)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection("Products").findOne({_id:new ObjectId(data.params.id)}).then((result)=>{
+                db.get().collection("user").findOne({_id:new ObjectId(data.session.user._id)}).then((user)=>{
+                 resolve({result,user})
+                })
+         
+                 
+             })
+
+        })
+       
+    },
+    addressAdd:(data)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection("user").updateOne({_id:new ObjectId(data.session.user._id)},{$addToSet:{address:data.body}}).then((s)=>{
+                resolve({add:true})
+            })
+        })
+    },
+
+    confirmCODOrder:(data)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection("orders").insertOne({product:new ObjectId(data.body.productid),user:(data.session.user.name),method:"COD",status:"placed",address:data.body.address,time:data.body.date,quantity:data.body.quantity}).then((result)=>{
+                resolve(result)
+            })
+        })
+    },
+
+    orderCancel:(data)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection("orders").updateOne({_id:new ObjectId(data.query.id)},{$set:{status:"canceled"}}).then(()=>{
+                resolve({daleted:true})
+                console.log("order deleted");
+            })
         })
     }
 }
