@@ -95,15 +95,28 @@ route.post("/users/edit",(req,res)=>{
 
 
  route.get("/orders",(req,res)=>{
-    con.get().collection("orders").aggregate([{$match:{}},{$lookup:{
+    const page= req.query.p || 0
+    const dataperpage=10
+    con.get().collection("orders").countDocuments().then((count)=>{
+        
+        con.get().collection("orders").aggregate([{$match:{}},{$lookup:{
   
-      from:"Products",
-      localField:"product",
-      foreignField:"_id",
-      as:"p"
-    }}]).toArray().then((result)=>{
-          console.log(result);
-          res.render("admin/orderManagement",{result})
-      })
+            from:"Products",
+            localField:"product",
+            foreignField:"_id",
+            as:"p"
+          }},{$skip:page*dataperpage},{$limit:dataperpage}]).toArray().then((result)=>{
+                // console.log(result);
+                res.render("admin/orderManagement",{result,count:count})
+            })
+    })
+    
+  })
+
+  route.post("/orders/update",(req,res)=>{
+    console.log(req.body);
+    con.get().collection("orders").updateOne({_id:new ObjectId(req.body.orderid)},{$set:{status:req.body.status}}).then(()=>{
+        res.send({updated:true})
+    })
   })
 module.exports=route

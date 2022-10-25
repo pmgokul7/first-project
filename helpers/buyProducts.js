@@ -67,7 +67,7 @@ module.exports={
     orderCancel:(data)=>{
         return new Promise((resolve,reject)=>{
             db.get().collection("orders").updateOne({_id:new ObjectId(data.query.id)},{$set:{status:"canceled"}}).then(()=>{
-                resolve({daleted:true})
+                resolve({deleted:true})
                 console.log("order deleted");
             })
         })

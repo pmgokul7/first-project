@@ -538,7 +538,7 @@ body {
 
 
 function cancelOrder(orderid,x){
-var results=confirm("are u sure")
+var results=confirm("are u sure.?")
 if(results==true)
 {
 
@@ -547,11 +547,13 @@ if(results==true)
 	
 	},
 	function (data)	{
-		if(data.deleted	){
-			swal("Good job!", "You clicked the button!", "success");
+		if(data.deleted==true){
+			console.log(data);
+			
+			location.reload()
 		}
 	})
-	// location.reload()
+		
 }
 	
 }

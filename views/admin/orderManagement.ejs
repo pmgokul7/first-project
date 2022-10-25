@@ -1,10 +1,11 @@
 <%-include("../partials/top.ejs")%>
 <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+    mdl-layout--fixed-header">
         <header class="mdl-layout__header">
           <div class="mdl-layout__header-row">
             <!-- Title -->
-            <span class="mdl-layout-title">Order Management</span>
+            <span class="mdl-layout-title">Admin Dash</span>
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation. We hide it in small screens. -->
@@ -28,60 +29,104 @@
         </header>
         <div class="mdl-layout__drawer">
           <span class="mdl-layout-title">Title</span>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/admin">Dashboard</a>
-              <a class="mdl-navigation__link" href="/admin/products">Products</a>
-              <a class="mdl-navigation__link" href="/admin/users">Users</a>
-              <a class="mdl-navigation__link" href="/admin/category">Category</a>
+          <nav class="mdl-navigation ">
+            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin">Dashboard</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/products">Products</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/users">Users</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/orders">orders</a>
+
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/category">Category</a>
           </nav>
         </div>
         <main class="mdl-layout__content">
-          <div class="page-content"><!-- Your content goes here -->
-        
-            <table class="table ">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    
-                    <th scope="col">Image</th>
-                    <th scope="col">Model</th>
-                    <th scope="col">User</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Payment method</th>
-                    <th scope="col">Time</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">price</th>
-                    <th scope="col">Status</th>
+          <div class="page-content">
+         <div class="table-responsive container-fluid">
 
-                  </tr>
-                </thead>
-                <tbody>
-                    <%for(i=0;i<=result.length-1;i++){%>
+            
+            <table class="table table-hover table-bordered" style="margin-top:100px ;">
+              <thead>
+                <tr>
+                  
+                  <th scope="col">Image</th>
+                  <th scope="col">Model</th>
+                  <th scope="col">User</th>
+                  <!-- <th scope="col">Address</th> -->
+                  <th scope="col">Payment method</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">price</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%for(i=0;i<=result.length-1;i++){%>
                   <tr>
-                    <td scope="row"><%=i+1%></td>
+                   
                     <td style="width:5% ;"><img src="<%=result[i].p[0].images[0]%>" width="55%"></td>
                     <td><%=result[i].p[0].model%></td>
                     <td><%=result[i].user%></td>
-                    <td style="max-width:350px ;"><%=result[i].address%></td>
+                    <!-- <td style="max-width:300px ;max-height:fit-content;"><%=result[i].address%></td> -->
                     <td><%=result[i].method%></td>
                     <td><%=result[i].time%></td>
                     <td><%=result[i].quantity%></td>
                     <td><%=result[i].total%></td>
-                    <td><select class="form-select" aria-label="Default select example">
-                      <option selected>Placed</option>
-                      <option value="1">Shipped</option>
-                      <option value="2">On the way</option>
-                      <option value="3">Arrived</option>
-                      <option value="4">cancelled</option>
+                    <td><select onchange="statuschange('<%=result[i]._id%>',this)" class="form-select" aria-label="Default select example" id="list">
+                      <option selected><%=result[i].status%></option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="On the way">On the way</option>
+                      <option value="Arrived">Arrived</option>
+                      <option value="canceled">canceled</option>
                     </select></td>
                     
                   </tr>
                   <%}%>
-                </tbody>
-              </table>
-        
-        
-        
-        </div>
+              
+              </tbody>
+              
+            </table>
+            <nav aria-label="Page navigation example ">
+              <ul class="pagination d-flex justify-content-center">
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <%for(i=0;i<=count/9-1;i++){%>
+                <li class="page-item"><a class="page-link" href="/admin/orders?p=<%=i+1%>"><%=i+1%></a></li>
+             
+                <li class="page-item">
+                  <%}%>
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+         </div>
+            
+            
+            
+            
+            
+            
+            <!-- Your content goes here --></div>
         </main>
-</body>
+      <script src="../../assets/js/pagination.js"></script>  
+      <script>
+
+    function statuschange(orderid,x) {
+      $.post("/admin/orders/update",{
+        orderid:orderid,
+        status:x.value
+      },(data)=>{
+         if(data.updated==true)
+         {
+          swal("status updated!");
+         }
+      })
+    }
+ 
+                    
+         
+      </script>
+      </body>

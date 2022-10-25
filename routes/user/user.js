@@ -53,7 +53,7 @@ route.get("/cart",(req,res)=>{
         foreignField:"_id",
         as:"p"  
     }}]).toArray().then(result=>{
-        console.log(result[0].p);
+        // console.log(result[0].p);
         res.render("user/cart",{result})
     })
     
