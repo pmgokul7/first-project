@@ -45,7 +45,7 @@
 /* Apply clearfix in a few places */
 /* Apply dollar signs */
  .product .product-price:before, .product .product-line-price:before, .totals-value:before {
-	 content: '$';
+	 content: '₹';
 }
 /* Body/Header stuff */
  body {
@@ -195,7 +195,7 @@
 		 margin-top: 10px;
 	}
 	 .product .product-line-price:before {
-		 content: 'Item Total: $';
+		 content: 'Item Total: ';
 	}
 	 .totals .totals-item label {
 		 width: 60%;
@@ -471,15 +471,15 @@ body {
 				</div>
 				<div class="product-price"><%=result[i].p[0].price%></div>
 				<div class="product-quantity">
-				   <h4><%=result[i].quantity%></h4>
+				   <h6>X<%=result[i].quantity%></h6>
 				</div>
 				<div class="product-rmoval">
 				  <!-- <button class="remove-product">
 					Remove
 				  </button> -->
-			 <span data-bs-toggle="modal" href="#xampleModalToggle" role="button">
+			 <!-- <span data-bs-toggle="modal" href="#xampleModalToggle" role="button">
 					status
-				 </span>
+				 </span> -->
 				  
 				</div>
 				<!-- <div class="product-line-price">25.98</div> -->

@@ -8,7 +8,7 @@ module.exports={
                     db.get().collection("cart").findOne({$and:[{product:new ObjectId(data.query.id)},{user:data.session.user._id}]}).then((ifres)=>{
                         if(ifres)
                         {
-                            resolve({result})
+                            resolve({result,ifres})
                         
                         }
                         else{
@@ -58,7 +58,7 @@ module.exports={
 
     confirmCODOrder:(data)=>{
         return new Promise((resolve,reject)=>{
-            db.get().collection("orders").insertOne({product:new ObjectId(data.body.productid),user:(data.session.user.name),method:"COD",status:"placed",address:data.body.address,time:data.body.date,quantity:data.body.quantity}).then((result)=>{
+            db.get().collection("orders").insertOne({product:new ObjectId(data.body.productid),user:(data.session.user.name),method:"COD",status:"placed",address:data.body.address,time:data.body.date,quantity:data.body.quantity,total:data.body.price}).then((result)=>{
                 resolve(result)
             })
         })

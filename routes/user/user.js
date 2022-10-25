@@ -10,7 +10,7 @@ route.use(function (req,res,next) {
         next()
     }
     else{
-        // res.redirect("/login")
+        res.redirect("/login")
         next()
     }
 })
@@ -25,24 +25,10 @@ route.get("/products",(req,res)=>{
 
 route.get("/products/info",(req,res)=>{
     helper.info(req).then((result)=>{
-         res.render("user/info",{result:result.result})
+         res.render("user/info",{result:result.result,cart:result.ifres})
     })
 
-        // let text1="add to cart"
-        
-        // con.get().collection("Products").findOne({_id:new ObjectId(req.query.id)}).then((result)=>{
-        //     con.get().collection("cart").findOne({$and:[{product:new ObjectId(req.query.id)},{user:req.session.user._id}]}).then((ifres)=>{
-        //         if(ifres)
-        //         {
-        //         res.render("user/info",{result,text1})  
-        //         }
-        //         else{
-        //             res.render("user/info",{result})   
-        //         }
-        //     })
-        
-        
-        // })
+    
 
     
 })
@@ -67,16 +53,28 @@ route.get("/cart",(req,res)=>{
         foreignField:"_id",
         as:"p"  
     }}]).toArray().then(result=>{
-        console.log(result);
-        res.render("user/cart",{result,itemr})
+        console.log(result[0].p);
+        res.render("user/cart",{result})
     })
     
 })
 route.get("/products/addcart/:id",(req,res)=>{
-    con.get().collection("cart").insertOne({user:req.session.user._id,product:new ObjectId(req.params.id),quantity:1}).then(()=>{
-        console.log("item added to cart");
-        res.redirect("/home/cart")
+    con.get().collection("cart").findOne({$and:[{user:req.session.user._id},{product:new ObjectId(req.params.id)}]}).then((searchresult)=>{
+
+        if(searchresult)
+        {
+            console.log("item already in cart");
+            // res.redirect(`/home/products/info?id=${req.params.id}`)
+            res.send({already:true})
+        }
+        else{
+            con.get().collection("cart").insertOne({user:req.session.user._id,product:new ObjectId(req.params.id),quantity:1}).then(()=>{
+                console.log("item added to cart");
+                res.redirect("/home/cart")
+            })
+        }
     })
+   
 })
 route.post("/cart/remove",(req,res)=>{
     con.get().collection("cart").deleteOne({$and:[{product:new ObjectId(req.query.id)},{user:req.session.user._id}]}).then(()=>{
@@ -133,6 +131,14 @@ route.post("/orderconfirm",(req,res)=>{
         helper.orderCancel(req).then((result)=>{
             res.send(result)
         })
+    })
+
+    route.post("/info/removefromcart",(req,res)=>{
+        con.get().collection("cart").deleteOne({$and:[{user:req.session.user._id},{product:new ObjectId(req.body.id)}]}).then((result)=>{
+             res.send({removedfromcart:true})
+        })
+
+        
     })
 
 module.exports=route
