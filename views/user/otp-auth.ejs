@@ -1,0 +1,109 @@
+<%-include("../partials/top.ejs")%>
+<style>
+
+    #loginform{
+        display: flex;
+        flex-direction: column;
+       
+    }
+    .login_container{
+        
+        display: flex;
+        height: 500px;
+        justify-content: center;
+    }
+    .left{
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        background-color: #2874F0;
+        display: flex;
+        flex-direction: column;
+        max-width: 300px;
+      
+       
+        
+        padding: 20px 10px 0 10px;
+        margin: 0;
+    }
+    .left h5{
+        max-width: 200;
+    }
+    .right{
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        display: flex;
+        justify-content: center;
+        /* background-color: aqua; */
+      width: 500px;
+      
+    }
+    .right form{
+        margin-top: 100px;
+    } 
+    #loginbtn{
+     margin-top: 20px;
+     background-color: #2874F0;
+     color: white;
+    }
+    #loginbody{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    
+    </style>
+    <body class="bg-dang" id="loginbody">
+        <div class="container login_container">
+            <div class="left w-75">
+                <h2 class="text-light mt-4">User Login</h2>
+                <h5 class="text-light mt-3" style="max-width: 250px;">Get access to your Orders, Wishlist and Recommendations</h5>
+           </div>
+            <div class="right d-flex flex-column justify-content-start align-items-center">    
+                <form action="/login/otp-auth" id="loginform" method="post">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="number" id="sample3" name="mobile" maxlength="4">
+                      <label class="mdl-textfield__label" for="sample3">OTP</label>
+                    </div>
+                    
+                      <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" value="submit" id="loginbtn">
+                  </form>
+
+                  <h6 class="mt-2">or</h6> 
+                  <a href="/login">
+                       <button class="btn btn-primary mt-2">Login using password</button>
+                  </a>    
+                  <div id="wrapper" class="mt-4">
+                   <a href="/login/otp-login">
+                    <button type="button" id="myBtn" class="btnDisable btn btn-info" disabled onclick="alert('Finally!')">
+                        <div id="myTimer"></div>
+                    </button>
+                </a>
+                </div>
+            </div>
+
+              
+            </div>
+        </div>
+       <script>
+        var sec = 15;
+var myTimer = document.getElementById('myTimer');
+var myBtn = document.getElementById('myBtn');
+window.onload = countDown;
+
+function countDown() {
+    if (sec < 10) {
+        myTimer.innerHTML = "0" + sec;
+    } else {
+        myTimer.innerHTML = sec;
+    }
+    if (sec <= 0) {
+        $("#myBtn").removeAttr("disabled");
+        $("#myBtn").removeClass().addClass("btnEnable");
+        $("#myTimer").fadeTo(2500, 0);
+        myBtn.innerHTML = "resend otp";
+        return;
+    }
+    sec -= 1;
+    window.setTimeout(countDown, 1000);
+}
+       </script>
+    </body>

@@ -1,0 +1,97 @@
+<%-include("../partials/top.ejs")%>
+
+<style>
+    #loginform{
+        display: flex;
+        flex-direction: column;
+       
+    }
+    .login_container{
+        
+        display: flex;
+        height: 600px;
+        justify-content: center;
+    }
+    .left{
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        background-color: #2874F0;
+        display: flex;
+        flex-direction: column;
+        max-width: 300px;
+      
+       
+        
+        padding: 20px 10px 0 10px;
+        margin: 0;
+    }
+    .left h5{
+        max-width: 200;
+    }
+    .right{
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        display: flex;
+        justify-content: center;
+        /* background-color: aqua; */
+      width: 600px;
+      
+    }
+    .right form{
+        margin-top: 50px;
+    } 
+    #loginbtn{
+     margin-top: 20px;
+     background-color: #2874F0;
+     color: white;
+    }
+    #loginbody{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    
+    </style>
+    <body class="bg-dang" id="loginbody">
+        
+        <div class="container login_container">
+            <div class="left w-75">
+                 <h2 class="text-light mt-4">User Register</h2>
+                 <h5 class="text-light mt-3" style="max-width: 250px;">Get access to your Orders, Wishlist and Recommendations</h5>
+            </div>
+            <div class="right d-flex flex-column justify-content-start  align-items-center">    
+                <form action="/register" id="loginform" method="post">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <input class="mdl-textfield__input" type="text" id="sample3" name="user">
+                      <label class="mdl-textfield__label" for="sample3">Username</label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="sample3" name="mobile">
+                        <label class="mdl-textfield__label" for="sample3">Mobile</label>
+                      </div>
+                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="sample3" name="email">
+                        <label class="mdl-textfield__label" for="sample3">email</label>
+                      </div>
+                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="password" id="pass" name="password">
+                        <label class="mdl-textfield__label" for="sample3">Password</label>
+                      </div><div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="conpass" name="confirm">
+                        <label class="mdl-textfield__label" for="sample3">Conform Password</label>
+                      </div>
+                    
+                      <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" value="Register" id="loginbtn" onc>
+                  </form>
+                  <h6 class="mt-1 mb-1">or</h6> 
+
+                  <a href="/login" class="mt-4">
+                       Existing user?Log in
+                  </a>
+
+                  <h6 class="text-danger mt-4"><%=msg%></h6>
+                  
+</div>
+        </div>
+   
+    </script>
+    </body>

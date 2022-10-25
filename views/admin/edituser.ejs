@@ -1,0 +1,77 @@
+<%-include("../partials/top.ejs")%>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Title</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+             
+              
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title"></span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/admin">Dashboard</a>
+            <a class="mdl-navigation__link" href="/admin/products">Products</a>
+            <a class="mdl-navigation__link" href="/admin/users">Users</a>
+            <a class="mdl-navigation__link" href="/admin/category">Category</a>
+          </nav>
+        </div>
+        <main class="mdl-layout__content">
+          <div class="page-content container d-flex justify-content-center"><!-- Your content goes here -->
+        
+        <form action="/admin/users/edit?id=<%=result._id%>" style="margin-top: 100px;width:50%;" method="post">
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Name</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Name" value="<%=result.name%>" name="name">
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Mobile</label>
+                <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Mobile" value="<%=result.mobile%>" name="mobile">
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">email</label>
+                <input type="email" class="form-control" id="exampleInputPassword1" placeholder="Mobile" value="<%=result.email%>" name="email">
+              </div>
+               <%if(result.status==true){%>
+              <div class="form-check mt-4">
+                
+                <input class="form-check-input" type="radio" name="userstatus" id="flexRadioDefault1"  value=false>
+                <label class="form-check-label" for="flexRadioDefault1">
+                  block user
+                </label>
+              </div>
+              <div class="form-check ">
+                <input class="form-check-input" type="radio" name="userstatus" id="flexRadioDefault2" value=true checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                  user is active
+                </label>
+              </div>
+           <%}else{%>
+            <div class="form-check mt-4">
+                
+                <input class="form-check-input" type="radio" name="status" id="flexRadioDefault1"  value=false checked>
+                <label class="form-check-label" for="flexRadioDefault1">
+                   user is blocked
+                </label>
+              </div>
+              <div class="form-check ">
+                <input class="form-check-input" type="radio" name="status" id="flexRadioDefault2" value=true >
+                <label class="form-check-label" for="flexRadioDefault2">
+                  unblock user
+                </label>
+              </div>
+              <%}%>
+              <button type="submit" class="btn btn-primary mt-4">Submit</button>
+        </form>
+        
+        </div>
+        </main>
+</body>

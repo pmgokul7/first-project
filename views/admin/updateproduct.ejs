@@ -1,0 +1,131 @@
+<%-include("../partials/top.ejs")%>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Add Product</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+          
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Title</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/admin">Dashboard</a>
+            <a class="mdl-navigation__link" href="/admin/products">Products</a>
+            <a class="mdl-navigation__link" href="/admin/users">Users</a>
+            <a class="mdl-navigation__link" href="/admin/category">Category</a>
+          </nav>
+        </div>
+        <main class="mdl-layout__content">
+          <div class="page-content"><!-- Your content goes here -->
+        
+        <div class="container">
+            <form action="/admin/products/edit?id=<%=result._id%>" method="post"  >
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Model</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Model" name="model" value="<%=result.model%>">
+                </div>
+                
+                <div class="sel d-flex mt-3">
+
+                    <select class="form-control" id="exampleFormControlSelect1" name="brand">
+                    <option><%=result.brand%></option>
+                    <%for(i=0;i<=cat[0].Brands.length-1;i++){%>
+                        <option value="<%=cat[0].Brands.name%>"><%=cat[0].Brands[i].name%></option>
+                        <%}%>
+                  </select>
+                  <select class="form-control" id="exampleFormControlSelect1" name="ROM">
+                    <option><%=result.ROM%> GB</option>
+                    <%for(i=0;i<=cat[0].ROM.length-1;i++){%>
+                    <option value="<%=cat[0].ROM[i].storage%>"><%=cat[0].ROM[i].storage%> GB</option>
+                    <%}%>
+                  </select>
+                  <select class="form-control" id="exampleFormControlSelect1" name="RAM">
+                    <option><%=result.RAM%>GB</option>
+                    <%for(i=0;i<=cat[0].RAM.length-1;i++){%>
+                        <option value="<%=cat[0].RAM[i].storage%>"><%=cat[0].RAM[i].storage%> GB</option>
+                        <%}%>
+                    
+                  </select>
+                </div>
+                <div class="d-flex w-100">
+                    <div class="form-group me-3">
+                        <label for="exampleInputEmail1">stock</label>
+                        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="stock" name="stock" value="<%=result.stock%>">
+                      </div>
+                      <div class="form-group me-3">
+                        <label for="exampleInputEmail1 ">Price</label>
+                        <input type="text" class="form-control  " id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="price" name="price" value="<%=result.price%>">
+                      </div>
+                      <div class="form-group me-3">
+                        <label for="exampleInputEmail1 ">Rating</label>
+                        <input type="text" class="form-control  " id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="rating" name="rating" value="<%=result.rating%>">
+                      </div>
+                      <div class="form-group me-3">
+                        <label for="exampleInputEmail1 ">Color</label>
+                        <input type="text" class="form-control  " id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="color" name="color value="<%=result.color%>">
+                      </div>
+                </div>
+                <div class="d-flex flex-column">
+<input type="text" placeholder="highlights" name="highlights" class="form-control mt-3" value="<%=result.highlights[0]%>">
+                <input type="text" placeholder="highlights" name="highlights"  class="form-control mt-3" value="<%=result.highlights[1]%>">
+                <input type="text" placeholder="highlights" name="highlights" class="form-control mt-3" value="<%=result.highlights[2]%>">
+                <input type="text" placeholder="highlights" name="highlights" class="mt-3 form-control" value="<%=result.highlights[3]%>">
+                <input type="text" placeholder="highlights" name="highlights" class="mt-3 form-control" value="<%=result.highlights[4]%>">
+                <label for="w3review">description:</label>
+
+<textarea id="w3review" name="description" rows="4" cols="50">
+<%=result.description %>
+</textarea>
+              
+                </div>
+                <d class="fil d-flex flex-column row">
+
+
+              <div class="C d-flex mt-4">  <div class="v">
+                    <img src="<%=result.images[0]%>" alt="" height="100px">
+                    <input type="file" class="mt-3" name="myImage">
+                    
+                    </div>
+                    
+                    <div class="v">
+                      <img src="<%=result.images[1]%>" alt="" height="100px">
+                      <input type="file" class="mt-3" name="myImage">
+                      
+                      </div>
+                      <div class="v">
+                        <img src="<%=result.images[2]%>" alt="" height="100px">
+                        <input type="file" class="mt-3" name="myImage" >
+                        
+                        </div>
+                        <div class="v">
+                          <img src="<%=result.images[3]%>" alt="" height="100px">
+                          <input type="file" class="mt-3" name="myImage" >
+                          
+                          </div>
+                          <div class="v">
+                            <img src="<%=result.images[4]%>" alt="" height="100px">
+                            <input type="file" class="mt-3" name="myImage" >
+                            
+                            </div>
+                    
+                          </div>  
+C <input type="submit" class="btn btn-primary mt-3">
+                  </div>
+           
+               
+            </form>
+            
+                </div>
+                        
+                
+              
+        </div>
+        
+        </div>
+        </main>
+</body>

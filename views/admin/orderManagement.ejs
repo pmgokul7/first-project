@@ -1,0 +1,87 @@
+<%-include("../partials/top.ejs")%>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Order Management</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+              <button id="demo-menu-lower-right"
+              class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">more_vert</i>
+      </button>
+      
+      <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+          for="demo-menu-lower-right">
+        <li class="mdl-menu__item">Some Action</li>
+        <li class="mdl-menu__item">Another Action</li>
+        <li disabled class="mdl-menu__item">Disabled Action</li>
+       <a href="/logout"><li class="mdl-menu__item">log out</li></a>
+      </ul>
+      
+              
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Title</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/admin">Dashboard</a>
+              <a class="mdl-navigation__link" href="/admin/products">Products</a>
+              <a class="mdl-navigation__link" href="/admin/users">Users</a>
+              <a class="mdl-navigation__link" href="/admin/category">Category</a>
+          </nav>
+        </div>
+        <main class="mdl-layout__content">
+          <div class="page-content"><!-- Your content goes here -->
+        
+            <table class="table ">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    
+                    <th scope="col">Image</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Payment method</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">price</th>
+                    <th scope="col">Status</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                    <%for(i=0;i<=result.length-1;i++){%>
+                  <tr>
+                    <td scope="row"><%=i+1%></td>
+                    <td style="width:5% ;"><img src="<%=result[i].p[0].images[0]%>" width="55%"></td>
+                    <td><%=result[i].p[0].model%></td>
+                    <td><%=result[i].user%></td>
+                    <td style="max-width:350px ;"><%=result[i].address%></td>
+                    <td><%=result[i].method%></td>
+                    <td><%=result[i].time%></td>
+                    <td><%=result[i].quantity%></td>
+                    <td><%=result[i].total%></td>
+                    <td><select class="form-select" aria-label="Default select example">
+                      <option selected>Placed</option>
+                      <option value="1">Shipped</option>
+                      <option value="2">On the way</option>
+                      <option value="3">Arrived</option>
+                      <option value="4">cancelled</option>
+                    </select></td>
+                    
+                  </tr>
+                  <%}%>
+                </tbody>
+              </table>
+        
+        
+        
+        </div>
+        </main>
+</body>

@@ -1,0 +1,629 @@
+<%-include("../partials/top")%>
+    <style type="text/css">
+    html {
+        background-color: #D3CEC0;
+    }
+
+    body{
+        margin: 0 auto;
+    }
+
+    .piclist{
+        margin-top: 30px;
+    }
+    .piclist li{
+        display: inline-block;
+        width: 70px !important;
+        height: 70px !important;
+    }
+    .piclist li img{
+        width: 100%;
+        height: auto;
+    }
+
+    /* custom style */
+    .picZoomer-pic-wp,
+    .picZoomer-zoom-wp{
+        border: 1px solid #fff;
+    }
+
+
+
+    .picZoomer{
+	position: relative;
+}
+.picZoomer-pic-wp{
+	position: relative;
+	overflow: hidden;
+}
+.picZoomer-pic-wp:hover .picZoomer-cursor{
+	display: block;
+}
+.picZoomer-zoom-pic{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.picZoomer-pic{
+	width: 100%;
+	height: 100%;
+}
+.picZoomer-zoom-wp{
+	display: none;
+	position: absolute;
+	z-index: 999;
+	overflow: hidden;
+}
+.picZoomer-cursor{
+	display: none;
+	cursor: crosshair;
+	width: 100px;
+	height: 100px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-radius: 50%;
+	border: 1px solid #eee;
+	background-color: rgba(0,0,0,.1);
+}
+.picZoomCursor-ico{
+	width: 23px;
+	height: 23px;
+	position: absolute;
+	top: 40px;
+	left: 40px;
+	background: url(images/zoom-ico.png) left top no-repeat;
+}
+
+html,body,div,span,object,iframe,p,blockquote,pre,a,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video,button,input,textarea,h1,h2,h3,h4,h5,h6 {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+html {
+    -webkit-font-smoothing: subpixel-antialiased;
+    /*-webkit-text-stroke-width: 0.2px;*/
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    line-height: 1;
+    -webkit-text-size-adjust: none;
+}
+
+button,input,textarea {
+    -webkit-appearance: none;
+    font-family: "Microsoft YaHei",微软雅黑,Helvetica, Arial, sans-serif;
+    /*font-family: tahoma,arial,\5b8b\4f53,sans-serif;*/
+}
+input:required, input:invalid{
+    border:0 none; 
+    outline: 0 none; 
+    -webkit-box-shadow:none; 
+    -moz-box-shadow:none; 
+    -ms-box-shadow:none; 
+    -o-box-shadow:none; 
+    box-shadow: none;
+}
+a{
+	text-decoration: none;
+}
+img {
+    vertical-align: middle;
+}
+
+ul,ol {
+    list-style: none;
+}
+
+address,cite,dfn,em,var {
+    font-style: normal;
+}
+
+sup {
+    vertical-align: text-top;
+}
+
+sub {
+    vertical-align: text-bottom;
+}
+
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
+    display: block;
+}
+
+blockquote,q {
+    quotes: none;
+}
+
+blockquote:before,blockquote:after,q:before,q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+input {
+    vertical-align: top;
+}
+
+.clearfix {
+    zoom: 1;
+}
+
+*html.clearfix {
+    height: 1%;
+}
+
+.clearfix:after {
+    clear: both;
+    content: '/0821';
+    display: block;
+    font-size: 0;
+    line-height: 0;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+}
+
+.clear {
+    clear: both;
+    display: block;
+    overflow: hidden;
+    visibility: hidden;
+    width: 0;
+    height: 0
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+}
+body{
+    line-height: 1.5;
+}
+.card-wrapper{
+    max-width: 1100px;
+    margin: 0 auto;
+}
+img{
+    width: 100%;
+    display: block;
+}
+.img-display{
+    overflow: hidden;
+}
+.img-showcase{
+    display: flex;
+    width: 100%;
+    transition: all 0.5s ease;
+}
+.img-showcase img{
+    min-width: 100%;
+}
+.img-select{
+    display: flex;
+}
+.img-item{
+    margin: 0.3rem;
+}
+.img-item:nth-child(1),
+.img-item:nth-child(2),
+.img-item:nth-child(3){
+    margin-right: 0;
+}
+.img-item:hover{
+    opacity: 0.8;
+}
+.product-content{
+    /* padding: 2rem 1rem; */
+}
+.product-title{
+    font-size: 2rem;
+    text-transform: capitalize;
+    font-weight: 600;
+    position: relative;
+    color: #12263a;
+    margin: 1rem 0;
+}
+.product-title::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    width: 80px;
+    background: #12263a;
+}
+.product-link{
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    background: #256eff;
+    color: #fff;
+    padding: 0 0.3rem;
+    transition: all 0.5s ease;
+}
+.product-link:hover{
+    opacity: 0.9;
+}
+.product-rating{
+    color: #ffc107;
+}
+.product-rating span{
+    font-weight: 600;
+    color: #252525;
+}
+.product-price{
+    margin: 1rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+.product-price span{
+    font-weight: 400;
+}
+.last-price span{
+    color: #f64749;
+    text-decoration: line-through;
+}
+.new-price span{
+    color: #256eff;
+}
+.product-detail h2{
+    text-transform: capitalize;
+    color: #12263a;
+    padding-bottom: 0.6rem;
+}
+.product-detail p{
+    font-size: 0.9rem;
+    padding: 0.3rem;
+    opacity: 0.8;
+}
+.product-detail ul{
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+.product-detail ul li{
+    margin: 0;
+    list-style: none;
+    background: url(https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/checked.png) left center no-repeat;
+    background-size: 18px;
+    padding-left: 1.7rem;
+    margin: 0.4rem 0;
+    font-weight: 600;
+    opacity: 0.9;
+}
+.product-detail ul li span{
+    font-weight: 400;
+}
+.purchase-info{
+    margin: 1.5rem 0;
+}
+.purchase-info input,
+.purchase-info .btn{
+    border: 1.5px solid #ddd;
+    border-radius: 25px;
+    text-align: center;
+    padding: 0.45rem 0.8rem;
+    outline: 0;
+    margin-right: 0.2rem;
+    /* margin-bottom: 1rem; */
+}
+.purchase-info input{
+    width: 60px;
+}
+.purchase-info .btn{
+    cursor: pointer;
+    color: #fff;
+}
+.purchase-info .btn:first-of-type{
+    background: #256eff;
+}
+.purchase-info .btn:last-of-type{
+    background: #f64749;
+}
+.purchase-info .btn:hover{
+    opacity: 0.9;
+}
+.social-links{
+    display: flex;
+    align-items: center;
+}
+.social-links a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #000;
+    border: 1px solid #000;
+    margin: 0 0.2rem;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: all 0.5s ease;
+}
+.social-links a:hover{
+    background: #000;
+    border-color: transparent;
+    color: #fff;
+}
+
+@media screen and (min-width: 992px){
+    .card{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 1.5rem;
+    }
+    .card-wrapper{
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .product-imgs{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .product-content{
+        padding-top: 0;
+    }
+}
+
+embed{ /*for the damn thouder plugin*/
+    display: none;
+}
+
+/*********************************************/
+
+
+    </style>
+    
+   
+    <script type="text/javascript" src="src/jquery.picZoomer.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('.picZoomer').picZoomer();
+
+
+            //切换图片
+            $('.piclist li').on('click',function(event){
+                var $pic = $(this).find('img');
+                $('.picZoomer-pic').attr('src',$pic.attr('src'));
+            });
+        });
+
+        const imgs = document.querySelectorAll('.img-select a');
+const imgBtns = [...imgs];
+let imgId = 1;
+
+imgBtns.forEach((imgItem) => {
+    imgItem.addEventListener('click', (event) => {
+        event.preventDefault();
+        imgId = imgItem.dataset.id;
+        slideImage();
+    });
+});
+
+function slideImage(){
+    const displayWidth = document.querySelector('.img-showcase img:first-child').clientWidth;
+
+    document.querySelector('.img-showcase').style.transform = `translateX(${- (imgId - 1) * displayWidth}px)`;
+}
+
+window.addEventListener('resize', slideImage);
+    </script>
+</head>
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <a href="/home" style="text-decoration: none;color: #fff;"><span class="mdl-layout-title">Home</span></a>  
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+             
+              
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Title</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/admin">Dashboard</a>
+              <a class="mdl-navigation__link" href="/admin/products">Products</a>
+              <a class="mdl-navigation__link" href="/admin/users">Users</a>
+              <a class="mdl-navigation__link" href="/admin/category">Category</a>
+          </nav>
+        </div>
+        <main class="mdl-layout__content">
+          <div class="page-content">
+
+
+
+    <div class = "card-wrapper" >
+      <div class = "card" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;">
+        <!-- card left -->
+        <div class = "product-imgs" style="display: flex;justify-content: center;align-items: center;">
+          <div class="picZoomer" id="mainimg">
+            <img src="<%=result.images[0]%>" height="320px" width="320px"/>
+        </div>
+    
+        <ul class="piclist">
+          <%for(i=0;i<=result.images.length-1;i++){%>
+            <li><img src="<%=result.images[i]%>" alt="" height="100px"></li>
+            <%}%>
+        </ul>
+        </div>
+        <!-- card right -->
+        <div class = "product-content" id="rightid">
+          <h2 class = "product-title"><%=result.model%></h2>
+          <a href = "#" class = "product-link">visit Steller</a>
+          <div class = "product-rating">
+            <i class = "fas fa-star"></i>
+            <i class = "fas fa-star"></i>
+            <i class = "fas fa-star"></i>
+            <i class = "fas fa-star"></i>
+            <i class = "fas fa-star-half-alt"></i>
+            <span><%=result.rating%></span>
+          </div>
+    
+          <div class = "product-price">
+         
+            <p class = "new-price"> Price: <span><%=result.price%><span></p>
+          </div>
+    
+          <div class = "product-detail">
+            <h2>about this item: </h2>
+            <p><%=result.description%></p>
+            <ul>
+              <%for(h of result.highlights){%>
+              <li> <span><%=h%></span></li>
+               <%}%>
+            </ul>
+          </div>
+    
+          <div class = "purchase-info">
+            <button class="btn-secondary p-2 me-2" id="#minus"><i class="fa-solid fa-minus"></i></button>
+            <input type = "number" min = "0" value = "1" id="inp">
+            <button class="btn-secondary p-2 ms-2" id="#plus"><i class="fa-solid fa-plus"></i></button>
+            <a href="/home/checkout/<%=result._id%>">
+            <button type = "button" class = "btn ms-4" style="padding:10px 40px 10px 40px ;">
+              Buy now <i class = "fas fa-shopping-cart"></i>
+            </button>
+        </a>
+            <%if(!locals.text1){%>
+           <a href="/home/products/addcart?id=<%=result._id%>"> <button type = "button" class = "btn">Add to Cart</button></a>
+           <%}%>
+          </div>
+    
+          
+        </div>
+      </div>
+    </div>
+</div>
+</main>
+
+<script type="text/javascript">
+   $("#plus").click(()=>{
+    //  $("#inp").attr(    'value','45')
+    alert("hai")
+   })
+  
+  
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36251023-1']);
+    _gaq.push(['_setDomainName', 'jqueryscript.net']);
+    _gaq.push(['_trackPageview']);
+  
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  
+  
+  /*!     
+          jquery.picZoomer.js
+          v 1.0
+          David
+          http://www.CodingSerf.com
+  */
+  
+  //放大镜控件
+  ;(function($){
+      $.fn.picZoomer = function(options){
+          var opts = $.extend({}, $.fn.picZoomer.defaults, options), 
+              $this = this,
+              $picBD = $('<div class="picZoomer-pic-wp"></div>').css({'width':opts.picWidth+'px', 'height':opts.picHeight+'px'}).appendTo($this),
+              $pic = $this.children('img').addClass('picZoomer-pic').appendTo($picBD),
+              $cursor = $('<div class="picZoomer-cursor"><i class="f-is picZoomCursor-ico"></i></div>').appendTo($picBD),
+              cursorSizeHalf = {w:$cursor.width()/2 ,h:$cursor.height()/2},
+              $zoomWP = $('<div class="picZoomer-zoom-wp"><img src="" alt="" class="picZoomer-zoom-pic"></div>').appendTo($this),
+              $zoomPic = $zoomWP.find('.picZoomer-zoom-pic'),
+              picBDOffset = {x:$picBD.offset().left,y:$picBD.offset().top};
+  
+          
+          opts.zoomWidth = opts.zoomWidth||opts.picWidth;
+          opts.zoomHeight = opts.zoomHeight||opts.picHeight;
+          var zoomWPSizeHalf = {w:opts.zoomWidth/2 ,h:opts.zoomHeight/2};
+  
+          //初始化zoom容器大小
+          $zoomWP.css({'width':opts.zoomWidth+'px', 'height':opts.zoomHeight+'px'});
+          $zoomWP.css(opts.zoomerPosition || {top: 0, left: opts.picWidth+30+'px'});
+          //初始化zoom图片大小
+          $zoomPic.css({'width':opts.picWidth*opts.scale+'px', 'height':opts.picHeight*opts.scale+'px'});
+  
+          //初始化事件
+          $picBD.on('mouseenter',function(event){
+              $cursor.show();
+              $zoomWP.show();
+              $zoomPic.attr('src',$pic.attr('src'))
+          }).on('mouseleave',function(event){
+              $cursor.hide();
+              $zoomWP.hide();
+          }).on('mousemove', function(event){
+              var x = event.pageX-picBDOffset.x,
+                  y = event.pageY-picBDOffset.y;
+  
+              $cursor.css({'left':x-cursorSizeHalf.w+'px', 'top':y-cursorSizeHalf.h+'px'});
+              $zoomPic.css({'left':-(x*opts.scale-zoomWPSizeHalf.w)+'px', 'top':-(y*opts.scale-zoomWPSizeHalf.h)+'px'});
+  
+          });
+          return $this;
+  
+      };
+      $.fn.picZoomer.defaults = {
+          picWidth: 450,
+          picHeight: 450,
+          scale:2.5,
+          zoomerPosition: {top: '-70px', left: '460px'},
+          
+          zoomWidth: 600,
+          zoomHeight: 600
+      };
+  })(jQuery);
+  $("#mainimg").mouseenter(()=>{
+      $("#rightid").css("visibility", "hidden");
+  })
+  $("#mainimg").mouseleave(()=>{
+      $("#rightid").css("visibility", "visible")
+  })
+  </script>
+  

@@ -1,0 +1,74 @@
+<%-include("../partials/top.ejs")%>
+<style>
+#loginform{
+    display: flex;
+    flex-direction: column;
+   
+}
+.login_container{
+    
+    display: flex;
+    height: 500px;
+    justify-content: center;
+}
+.left{
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    background-color: #2874F0;
+    display: flex;
+    flex-direction: column;
+    max-width: 200px;
+   
+    
+    padding: 20px 10px 0 10px;
+    margin: 0;
+}
+.right{
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    display: flex;
+    justify-content: center;
+    /* background-color: aqua; */
+  width: 500px;
+  
+}
+.right form{
+    margin-top: 100px;
+} 
+#loginbtn{
+ margin-top: 20px;
+ background-color: #2874F0;
+ color: white;
+}
+#loginbody{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+</style>
+<body class="bg-dang" id="loginbody">
+    <div class="container login_container">
+        <div class="left">
+             <h1 class="text-light">Admin Login</h1>
+             <h5 class="text-light mt-3">Get access to your Orders, Wishlist and Recommendations</h5>
+        </div>
+        <div class="right ">
+            <form action="/adminlogin" id="loginform" method="post">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="sample3" name="mobile">
+                  <label class="mdl-textfield__label" for="sample3">Mobile</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="password" id="sample3" name="password">
+                    <label class="mdl-textfield__label" for="sample3">Password</label>
+                  </div>
+                  <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" value="login" id="loginbtn">
+              </form>     
+              
+      
+        </div>
+        
+        
+    </div>
+ 
+</body>
