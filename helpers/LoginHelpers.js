@@ -8,11 +8,11 @@ module.exports={
             if(result)
             {
                bcrypt.compare(data.password,result.password).then((compareRes)=>{
-                  if(compareRes==true && data.mobile==result.mobile &&result.status==true)
+                  if(compareRes==true && data.mobile==result.mobile &&result.status=="active")
                   {
                       resolve({loginstatus:true,blocked:false,result})
                   }
-                  else if(compareRes==true && data.mobile==result.mobile &&result.status==false){
+                  else if(compareRes==true && data.mobile==result.mobile &&result.status=="block"){
                      resolve({loginstatus:false,blocked:true})
                   }
                   else{

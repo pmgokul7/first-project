@@ -49,8 +49,13 @@ route.get("/products/delete",(req,res)=>{
 
 
 route.get("/users",(req,res)=>{
-    con.get().collection("user").find({}).toArray().then((result)=>{
-     res.render("admin/userlist",{result})
+    const page= req.query.p || 0
+    const dataperpage=10
+    con.get().collection("user").aggregate([{$match:{}},{$skip:page*dataperpage},{$limit:dataperpage}]).toArray().then((result)=>{
+        con.get().collection("user").countDocuments((count)=>{
+            res.render("admin/userlist",{result,count})
+        })
+     
     })
  
      
@@ -118,5 +123,13 @@ route.post("/users/edit",(req,res)=>{
     con.get().collection("orders").updateOne({_id:new ObjectId(req.body.orderid)},{$set:{status:req.body.status}}).then(()=>{
         res.send({updated:true})
     })
+  })
+
+  route.post("/user/status",(req,res)=>{
+    con.get().collection("user").updateOne({_id:new ObjectId(req.body.id)},{$set:{status:req.body.value}}).then(()=>{
+        console.log("done");
+        res.send({updated:true})
+    })
+    console.log(req.body);
   })
 module.exports=route

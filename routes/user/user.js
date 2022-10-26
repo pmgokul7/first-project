@@ -1,3 +1,4 @@
+const { Router } = require("express")
 const express=require("express")
 const { ObjectId, ObjectID, Db } = require("mongodb")
 const route=express.Router()
@@ -58,24 +59,24 @@ route.get("/cart",(req,res)=>{
     })
     
 })
-route.get("/products/addcart/:id",(req,res)=>{
-    con.get().collection("cart").findOne({$and:[{user:req.session.user._id},{product:new ObjectId(req.params.id)}]}).then((searchresult)=>{
+// route.get("/products/addcart/:id",(req,res)=>{
+//     con.get().collection("cart").findOne({$and:[{user:req.session.user._id},{product:new ObjectId(req.params.id)}]}).then((searchresult)=>{
 
-        if(searchresult)
-        {
-            console.log("item already in cart");
-            // res.redirect(`/home/products/info?id=${req.params.id}`)
-            res.send({already:true})
-        }
-        else{
-            con.get().collection("cart").insertOne({user:req.session.user._id,product:new ObjectId(req.params.id),quantity:1}).then(()=>{
-                console.log("item added to cart");
-                res.redirect("/home/cart")
-            })
-        }
-    })
+//         if(searchresult)
+//         {
+//             console.log("item already in cart");
+//             // res.redirect(`/home/products/info?id=${req.params.id}`)
+//             res.send({already:true})
+//         }
+//         else{
+//             con.get().collection("cart").insertOne({user:req.session.user._id,product:new ObjectId(req.params.id),quantity:1}).then(()=>{
+//                 console.log("item added to cart");
+//                 res.redirect("/home/cart")
+//             })
+//         }
+//     })
    
-})
+// })
 route.post("/cart/remove",(req,res)=>{
     con.get().collection("cart").deleteOne({$and:[{product:new ObjectId(req.query.id)},{user:req.session.user._id}]}).then(()=>{
         console.log("item deleted from cart");
@@ -140,5 +141,39 @@ route.post("/orderconfirm",(req,res)=>{
 
         
     })
+    route.post("/info/addtocart",(req,res)=>{
+        con.get().collection("cart").findOne({$and:[{user:req.session.user._id},{product:new ObjectId(req.body.id)}]}).then((already)=>{
+            if(already)
+            {
+               res.send({alreadythere:true}) 
+            }
+            else{
+                con.get().collection("cart").insertOne({user:req.session.user._id,product:new ObjectId(req.body.id)}).then((result)=>{
+                    res.send({added:true})
+                })
+            }
+            
+        })
+    })
+
+
+  route.get("/cart/checkout",(req,res)=>{
+    con.get().collection("user").findOne({_id:new ObjectId(req.session.user._id)}).then((user)=>{
+        con.get().collection("cart").aggregate([{$match:{$and:[{user:req.session.user._id}]}},{$lookup:{
+        from:"Products",
+        localField:"product",
+        foreignField:"_id",
+        as:"p"  
+        
+    }}]).toArray().then((result)=>{
+        // console.log(req.session.user._id);
+    res.render("user/buynow2",{result,user}) 
+    // console.log(user);
+    console.log(result[0]);
+    })
+    })
+    
+   
+  })
 
 module.exports=route

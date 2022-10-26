@@ -353,7 +353,7 @@
               <%for (item of result){%>
                 <div class="product  ">
                   <div class="product-image">
-                    <img src="<%=item.p[0].images[0]%>">
+                    <img src="<%=item.p[0].mainImage%>">
                   </div>
                   <div class="product-details">
                     <div class="product-title " style="font-size:20px ;">
@@ -421,8 +421,10 @@
                       <div class="totals-value" id="cart-total">90.57</div>
                     </div>
                   </div>
-
-                  <button class="checkout">Checkout</button>
+<!-- <a href="/home/cart/checkout"> -->
+   <button onclick="checkout()"  class="checkout">Checkout</button>
+<!-- </a> -->
+                 
 
             </div>
 
@@ -433,6 +435,12 @@
         </div>
       </main>
       <script>
+function checkout() {
+  $.get("/home/cart/checkout",()=>{
+    
+  })
+}
+
         /* Set rates + misc */
         var taxRate = 0.05;
         var shippingRate = 15.00;

@@ -65,15 +65,13 @@
                         <div class="   flex flex-col sm:flex-row xl:flex-col justify-center items-center bg-white border-1 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full">
                             <div class="flex flex-col justify-start items-start w-full space-y-4">
                                 <p class="text-xl md:text-2xl leading-normal text-gray-800 dark:text-gray-50"><%=result.model%></p>
-                                <h1 class="text-4xl"><%=result.price%></h1>
+                                <h1 class="text-4xl"> ₹ <%=result.price%></h1>
                             </div>
                             <div class="mt-6 sm:mt-0 xl:my-10 xl:px-20 w-52 sm:w-96 xl:w-auto">
-                                <img id="mainimg" src="<%=result.images[0]%>" alt="headphones" />
+                                <img id="mainimg" src="<%=result.mainImage%>" alt="headphones" />
                             </div>
                             <div class="d-flex">
-                               <%for (image of result.images){%>
-                            <img src="<%= image%>" width="65px" class="border-1 me-3 " alt="" onclick="imgchange('<%=image%>',this)">
-                            <%}%>
+                               
                             </div>                         
                         </div>
                         
@@ -122,12 +120,12 @@
                               </div>
                           </button>
                             <%}else{%>
-                              <a href="/home/products/addcart/<%=result._id%>">
-                            <button  style="background-color: #3F51B5;"  class=" btn mt-2 border border-transparent hover:border-gray-300 dark:bg-white dark:hover:bg-gray-900 dark:text-gray-900 dark:hover:text-white dark:border-transparent bg-gray-900 hover:bg-white text-white hover:text-gray-900 flex justify-center items-center py-4 rounded w-full">
+                              
+                            <button id="addcartbtn" onclick="addtocart('<%=result._id%>')"  style="background-color: #3F51B5;"  class=" btn mt-2 border border-transparent hover:border-gray-300 dark:bg-white dark:hover:bg-gray-900 dark:text-gray-900 dark:hover:text-white dark:border-transparent bg-gray-900 hover:bg-white text-white hover:text-gray-900 flex justify-center items-center py-4 rounded w-full">
                                 <div >
                                     <p class="text-base leading-4">add to cart</p>
                                 </div>
-                            </button></a>
+                            </button>
                             <%}%>  
                           </div>
                           
@@ -150,7 +148,26 @@
 
 <script>
   
-
+function addtocart(id) {
+  $.post("/home/info/addtocart",{
+    id:id
+  },
+  (data)=>{
+    if(data.added)
+    {
+     
+      swal("product is added to cart.")
+.then((value) => {
+  location.reload()
+});
+      
+      // $("#addcartbtn").text("remove from cart")
+     
+      
+    }
+   
+  })
+}
 
 function removefromCart(id) {
   $.post("/home/info/removefromcart",
@@ -160,8 +177,13 @@ function removefromCart(id) {
   (data)=>{
       if(data.removedfromcart==true)
       {
-        swal("item removed!");
-        $("#removecartbtn").text("add to cart")
+       
+        swal("product is removed from cart.")
+.then((value) => {
+  location.reload()
+});
+      //  
+        
 
       }
   })

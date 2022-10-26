@@ -170,7 +170,7 @@
               <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
                 
                
-                <div class="container-fluid" style="width: 100%;">
+                <div class="container" style="width: 100%;">
                     <div class="table-responsive">
                         <div class="table-wrapper">
                           
@@ -200,74 +200,25 @@
                                         
                     <td><%= result[i].email%></td>
                     <td>
-                        <%if (result[i].status){%>
-                            <div class="div bg-success" style="width: 20px;height: 20px;border-radius: 50%;"></div>
-                            <%}else{%>
-                                <div class="div bg-danger" style="width: 20px;height: 20px;border-radius: 50%"></div>
-                                <%}%>
+                        
+                            <!-- <div class="div bg-success" style="width: 20px;height: 20px;border-radius: 50%;"></div> -->
+                            <select class="w-50 form-select form-select-sm" aria-label=".form-select-sm example" onchange="onstatuschange('<%=result[i]._id%>',this)">
+                              <option selected><%=result[i].status%></option>
+                              <option value="active">active</option>
+                              <option value="block">block</option>
+                            
+                            </select>
+                          
                     </td>
                     <td>
-                        <a href="/admin/users/edit?id=<%=result[i]._id%>">
-                        <button class="btn btn-info">Update</button>
-                    </a>
+                        
                     <a href="/admin/users/delete?id=<%=result[i]._id%>">
                         <button class="btn btn-danger">Delete</button>
 </a>
                     </td>
                       
                         
-                        
-                        <style>
-                          /* Basic Page Settings */
-        *{
-          padding: 0;
-          margin: 0;
-          box-sizing: border-box;
-        }
-        body{
-          background-color: #eee;
-        }
         
-        
-        /* Custom the checkbox */
-        input{
-          -webkit-appearance: none;
-          appearance: none;
-          width: 40px;
-          height: 20px;
-          background-color: #ddd;
-          border-radius: 25px;
-          transition: background .6s;
-          cursor: pointer;
-          position: relative;
-        }
-        /* Create the toggle */
-        input::after{
-          content: '';
-          width: 1.25rem;
-          height: 1.25rem;
-          border-radius: 50%;
-          background-color: #fff;
-          display: block;
-          position: absolute;
-          top: 50%;
-          left: 30%;
-          transform: translate(-50%, -50%);
-          transition: left .3s;
-        }
-        /* Change the background when it's checked */
-        input:checked{
-          background: green;
-        }
-        /* Change position on checked */
-        input:checked::after{
-          left: 70%;
-        }
-        .dataTables_filter input{
-            width: 250px;
-            height: 40px;
-        }
-                        </style>
                        
                             <a href="/admin/unblock-user?id=<%=result[i]._id%>" class="btn border-shadow update "><span class="text-gradient"><i class="fa-solid fa-user-lock"></i></span></a>
                      
@@ -275,10 +226,29 @@
                      </td>
                 </tr>
                 <%}%>
+                
             <!-- {{/each}} -->
                                     </tbody>
                                 </table>
-                            
+                                <nav aria-label="Page navigation example ">
+                                  <ul class="pagination d-flex justify-content-center">
+                                    <li class="page-item">
+                                      <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                      </a>
+                                    </li>
+                                    <%for(i=0;i<=count/9-1;i++){%>
+                                    <li class="page-item"><a class="page-link" href="/admin/orders?p=<%=i+1%>"><%=i+1%></a></li>
+                                 
+                                    <li class="page-item">
+                                      <%}%>
+                                      <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </nav>
+                             </div>
                            
                         </div>
                     </div>
@@ -286,9 +256,9 @@
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>   
             
                 <script>
-          $(document).ready( function () {
-            $('#admin_table').DataTable();
-        } );
+        //   $(document).ready( function () {
+        //     $('#admin_table').DataTable();
+        // } );
             
                 </script>
         
@@ -305,7 +275,25 @@
         
         
         </body>
-        
+        <script>
+//           $('#chk1').change(function() {
+//   alert($(this).prop('checked'))
+// })
+function onstatuschange(id,x) {
+  $.post("/admin/user/status",
+  {
+    value:x.value,
+    id:id
+  },
+  (data)=>{
+    if(data.updated==true)
+    {
+      swal("status updated");
+    }
+  })
+}
+
+        </script>
         </html>
     h</div>
     </main>

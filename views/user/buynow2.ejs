@@ -200,25 +200,34 @@ body {
                     </div>
         
                     <div class="flex flex-col xl:flex-row justify-center xl:justify-between space-y-6 xl:space-y-0 xl:space-x-6 w-full">
-                        <div class="flex flex-col sm:flex-row xl:flex-col justify-center items-center bg-white border-1 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full">
-                            <div class="flex flex-col justify-start items-start w-full space-y-4">
-                                <p class="text-xl md:text-2xl leading-normal text-gray-800 dark:text-gray-50"><%=result.model%></p>
-                                <div class="d-flex"><h1 class="text-4xl"> ₹</h1> <h1 class="text-4xl" id="priceone"><%=result.price%></h1></div>
-                                
-                            </div>
-                            <div class="mt-6 sm:mt-0 xl:my-10 xl:px-20 w-52 sm:w-96 xl:w-auto">
-                                <img id="mainimg" src="<%=result.mainImage%>" alt="headphones" />
-                            </div>
-                            <div class="d-flex">
-                              
-                            <div class="counter">
-                              <button class="btn w-25 btn-primary me-1" onclick="minus('<%=result.price%>')" id="minusbtn" style="visibility:hidden ;">-</button>
-                              <input type="text" value="1" id="inputbox">
-                              <button class="btn w-25 btn-primary ms-1" onclick="plus('<%=result.price%>')">+</button>
-                            </div> 
-                            </div>  
-                                                 
-                        </div>
+                        <div class="v border-1 p-2 w-100" style="display: flex;flex-direction: column;height:600px ;overflow-y: scroll;">
+
+                                  
+                                    
+                            <%for(i=0;i<=result.length-1;i++){%>   
+
+                               <section class="border-1 " style="display:flex;justify-content: between;height: 200px;align-items: center;">
+                                <div class="img w-25 ps-4">
+                                    <img src="<%=result[i].p[0].mainImage%>" alt="" width="40%">
+                                </div>
+                                 
+                                <div class="det" style="display: flex;flex-direction: column;;">
+                                     <h1 class="text-4xl"><%=result[i].p[0].model%></h1>
+                                     <h1 class="text-2xl"><%=result[i].p[0].price%></h1>
+                                     <ul>
+
+                                    
+                                     <%for (h of result[i].p[0].highlights){%>
+                                     <h1><%=h%></h1>
+                                    <%}%>
+                                </ul>
+                                     
+                                 </div>
+                               </section>
+                             
+                             <%}%>  
+                              </div>           
+                            
                        
         
                         <div class="p-8 bg-gray-100 dark:bg-gray-800 flex flex-col lg:w-full xl:w-3/5 d-flex flex-column justify-content-between">

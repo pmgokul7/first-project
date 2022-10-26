@@ -85,15 +85,31 @@ app.post("/admin/products/add", upload.any("myImage"), async (req, res, next) =>
     console.log(req.body);
     // req.flash('info','success')
     var imageurllist = []
-    con.get().collection("Products").insertOne(req.body).then(()=>{
+    con.get().collection("Products").insertOne(req.body).then((response)=>{
       console.log("details updated");
+      console.log(response.insertedId);
+      globalid=response.insertedId
+
     })
     for (var i = 0; i < req.files.length; i++) {
         var locaFilePath = req.files[i].path;
+
+        if(req.files[i].fieldname=="mainImage"){
+uploadToCloudinary(locaFilePath).then((r)=>{
+      con.get().collection("Products").updateOne({_id:globalid},{$set:{mainImage:r.url}}).then(()=>{
+        console.log("main image and detials uploaded");
+      })
+})
+        }
+        
+        
+
+        
+        // var locaFilePath = req.files[i].path;
         uploadToCloudinary(locaFilePath).then((result) => {
 
 
-            con.get().collection("Products").updateOne({ model: req.body.model }, { $push: { images: result.url } }).then(() => {
+            con.get().collection("Products").updateOne({ _id: req.body.model }, { $push: { images: result.url } }).then(() => {
                 
                 console.log("done");
                 
@@ -110,8 +126,8 @@ app.post("/admin/products/add", upload.any("myImage"), async (req, res, next) =>
             }
         )
 
+    
     }
-
 }
 )
 

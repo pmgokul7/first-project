@@ -463,7 +463,7 @@ body {
 				<%if(result[i].status=="canceled"){%>
 			  <div class="product d-flex align-items-center justify-content-center" disabled style="filter: grayscale(100%);">
 				<div class="product-image">
-				  <img src="<%=result[i].p[0].images[0]%>">
+				  <img src="<%=result[i].p[0].mainImage%>">
 				</div>
 				<div class="product-details">
 				  <div class="product-title"><h5><%=result[i].p[0].model%></h5></div>
@@ -493,7 +493,7 @@ body {
 			  <%}else{%>
 				<div class="product d-flex align-items-center justify-content-center">
 					<div class="product-image">
-					  <img src="<%=result[i].p[0].images[0]%>">
+					  <img src="<%=result[i].p[0].mainImage%>" height="80%">
 					</div>
 					<div class="product-details">
 					  <div class="product-title"><h5><%=result[i].p[0].model%></h5></div>
@@ -501,7 +501,7 @@ body {
 					</div>
 					<div class="product-price"><%=result[i].p[0].price%></div>
 					<div class="product-quantity">
-					   <h4><%=result[i].quantity%></h4>
+					   <h6>X<%=result[i].quantity%></h6>
 					</div>
 					<div class="product-rmoval">
 					  <!-- <button class="remove-product">
