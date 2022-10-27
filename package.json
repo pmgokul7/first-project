@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "b64-to-image": "^1.0.2",
+    "base64-to-image": "^1.0.2",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "cloudinary": "^1.32.0",

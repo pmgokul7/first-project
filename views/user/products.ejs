@@ -27,22 +27,25 @@
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
         <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <form action="products" method="post">
+          <form action="/home/products" method="post" style="margin-right: 150px;">
             <input type="text" name="search" id="" style="width:450px ;" placeholder="search here">
-          </form>
-          <button id="demo-menu-lower-right"
-        class="mdl-button mdl-js-button mdl-button--icon">
-  <i class="material-icons">more_vert</i>
-</button>
-
-<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-    for="demo-menu-lower-right">
-  <li class="mdl-menu__item">Some Action</li>
-  <li class="mdl-menu__item">Another Action</li>
-  <li disabled class="mdl-menu__item">Disabled Action</li>
- <a href="/logout"><li class="mdl-menu__item">log out</li></a>
-</ul>
-
+                  </form>
+              <button id="demo-menu-lower-right"
+          class="mdl-button mdl-js-button mdl-button--icon">
+      
+  
+    <h6 class="" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
+        
+      
+  </button>
+  
+  <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+      for="demo-menu-lower-right">
+    <a href="/home/cart">  <li class="mdl-menu__item">Cart</li></a>
+        <a href="/home/orders"><li class="mdl-menu__item">Orders</li></a>  
+          <li disabled class="mdl-menu__item">Disabled Action</li>
+         <a href="/logout"><li class="mdl-menu__item">log out</li></a>
+  </ul>
         </nav>
         
       </div>

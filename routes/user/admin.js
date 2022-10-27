@@ -111,7 +111,7 @@ route.post("/users/edit",(req,res)=>{
             foreignField:"_id",
             as:"p"
           }},{$skip:page*dataperpage},{$limit:dataperpage}]).toArray().then((result)=>{
-                // console.log(result);
+                console.log(result[0]);
                 res.render("admin/orderManagement",{result,count:count})
             })
     })

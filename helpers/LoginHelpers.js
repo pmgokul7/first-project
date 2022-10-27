@@ -23,6 +23,7 @@ module.exports={
             }
             else{
                resolve({loginstatus:false,userfound:false})
+               
             }
          })
     })
@@ -45,7 +46,8 @@ module.exports={
                   else{
                      bcrypt.hash(data.password,10).then((hashedpass)=>{
                         hashedpass.toString()
-                         db.get().collection("user").insertOne({name:data.user,mobile:data.mobile,email:data.email,password:hashedpass,status:true}).then(()=>{
+                         db.get().collection("user").insertOne({name:data.user,mobile:data.mobile,email:data.email,password:hashedpass,status:"active"}).then(()=>{
+
                             resolve({Signupstatus:true})
                          })
                   })

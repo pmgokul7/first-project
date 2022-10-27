@@ -151,23 +151,37 @@ body {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css'>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-      <div class="mdl-layout__header-row">
-        <!-- Title -->
-        <span class="mdl-layout-title">Title</span>
-        <!-- Add spacer, to align navigation to the right -->
-        <div class="mdl-layout-spacer"></div>
-        <!-- Navigation. We hide it in small screens. -->
-        <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>  
-        </nav>
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <a href="/home" style="text-decoration: none;color: #fff;"><span class="mdl-layout-title">Home</span></a>  
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. We hide it in small screens. -->
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+        <form action="/home/products" method="post" style="margin-right: 150px;">
+          <input type="text" name="search" id="" style="width:450px ;" placeholder="search here">
+                </form>
+            <button id="demo-menu-lower-right"
+        class="mdl-button mdl-js-button mdl-button--icon">
+    
 
-        
-      </div>
-    </header>
+  <h6 class="" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
+      
+    
+</button>
+
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+    for="demo-menu-lower-right">
+  <a href="/home/cart">  <li class="mdl-menu__item">Cart</li></a>
+      <a href="/home/orders"><li class="mdl-menu__item">Orders</li></a>  
+        <li disabled class="mdl-menu__item">Disabled Action</li>
+       <a href="/logout"><li class="mdl-menu__item">log out</li></a>
+</ul>
+      </nav>
+      
+    </div>
+  </header>
   
     <div class="mdl-layout__drawer">
       <span class="mdl-layout-title">Title</span>
@@ -351,7 +365,7 @@ body {
       
       address=$(`.form-check-input:checked`).val()
       console.log(address);
-      $.post("/home/orderconfirm",{productid:x,quantity:Number($("#inputbox").val()),address,date:new Date(),price:Number($("#priceone").text())},(d)=>{
+      $.post("/home/orderconfirm",{productid:x,quantity:Number($("#inputbox").val()),address,date:new Date(),price:$("#priceone").text()},(d)=>{
   console.log(d);
 })
 swal("Order placed!", "Your Order placed successfully!", "success");

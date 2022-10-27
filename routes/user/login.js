@@ -3,6 +3,7 @@ const route=express.Router()
 const helper=require("../../helpers/LoginHelpers")
 const con=require("../../config/connection") 
 const otpgen=require("otp-generators")
+const { ObjectId } = require("mongodb")
 const client=require("twilio")("AC310ba1f6e25df76fe77562d899355658","f181af19d88019bab6b437c2aaa7ef68")
 
 route.get("/",(req,res)=>{
@@ -32,6 +33,15 @@ route.post("/",(req,res)=>{
         console.log("logged in");
         req.session.user=result.result  
         req.session.userLogged=true
+        con.get().collection("cart").findOne({user:new ObjectId(req.session.user._id)}).then((found)=>{
+            if(!found)
+            {
+               con.get().collection("cart").insertOne({user:new ObjectId(req.session.user._id),products:[],count:0}).then(()=>{
+            console.log("cart also created");
+           }) 
+            }
+        })
+        
         res.redirect("/home")
      }
      else if(result.loginstatus==false)
@@ -41,6 +51,7 @@ route.post("/",(req,res)=>{
      }
      else if(userfound==false)
      {
+        
         req.flash('info','no user found')
         res.redirect("/login")
      }

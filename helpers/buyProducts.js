@@ -58,7 +58,7 @@ module.exports={
 
     confirmCODOrder:(data)=>{
         return new Promise((resolve,reject)=>{
-            db.get().collection("orders").insertOne({product:new ObjectId(data.body.productid),user:(data.session.user.name),method:"COD",status:"placed",address:data.body.address,time:data.body.date,quantity:data.body.quantity,total:data.body.price}).then((result)=>{
+            db.get().collection("orders").insertOne({product:new ObjectId(data.body.productid),user:(data.session.user.name),method:"COD",status:"placed",address:data.body.address,time:data.body.date,quantity:data.body.quantity,total:parseInt(data.body.price)*parseInt(data.body.quantity)}).then((result)=>{
                 resolve(result)
             })
         })

@@ -2,6 +2,123 @@
 <%-include("../partials/top.ejs")%>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <style>
+
+
+
+
+body {
+	 font-family: Arial, sans-serif;
+	 background: #ddd;
+}
+ h1 {
+	 text-align: center;
+	 font-family: "Trebuchet MS", Tahoma, Arial, sans-serif;
+	 color: #333;
+	 text-shadow: 0 1px 0 #fff;
+	 margin: 50px 0;
+}
+ #wrapper {
+	 width: 100px;
+	 margin: 0 auto;
+	 background: #fff;
+	 padding: 20px;
+	 border: 10px solid #aaa;
+	 border-radius: 15px;
+	 background-clip: padding-box;
+	 text-align: center;
+}
+ .button {
+	
+}
+ .button:hover {
+	 border-color: #999;
+	 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+ .button:active {
+	 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset;
+}
+ .overlay {
+	 position: absolute;
+	 top: 0;
+	 bottom: 0;
+	 left: 0;
+	 right: 0;
+	 background: rgba(0, 0, 0, 0.5);
+	 transition: opacity 200ms;
+	 visibility: hidden;
+	 opacity: 0;
+}
+ .overlay.light {
+	 background: rgba(255, 255, 255, 0.5);
+}
+ .overlay .cancel {
+	 position: absolute;
+	 width: 100%;
+	 height: 100%;
+	 cursor: default;
+}
+ .overlay:target {
+	 visibility: visible;
+	 opacity: 1;
+}
+ .popup {
+	 margin: 75px auto;
+	 padding: 20px;
+	 background: #fff;
+	 border: 1px solid #666;
+	 width: 900px;
+	
+	 box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+	 position: relative;
+}
+ .light .popup {
+	 border-color: #aaa;
+	 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+ .popup h2 {
+	 margin-top: 0;
+	 color: #666;
+	 font-family: "Trebuchet MS", Tahoma, Arial, sans-serif;
+}
+ .popup .close {
+	 position: absolute;
+	 width: 20px;
+	 height: 20px;
+	 top: 20px;
+	 right: 20px;
+	 opacity: 0.8;
+	 transition: all 200ms;
+	 font-size: 24px;
+	 font-weight: bold;
+	 text-decoration: none;
+	 color: #666;
+}
+ .popup .close:hover {
+	 opacity: 1;
+}
+ .popup .content {
+	 max-height: 400px;
+	 /* overflow: auto; */
+}
+ .popup p {
+	 margin: 0 0 1em;
+}
+ .popup p:last-child {
+	 margin: 0;
+}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 	@import "compass/css3";
 /* I wanted to go with a mobile first approach, but it actually lead to more verbose CSS in this case, so I've gone web first. Can't always force things... Side note: I know that this style of nesting in SASS doesn't result in the most performance efficient CSS code... but on the OCD/organizational side, I like it. So for CodePen purposes, CSS selector performance be damned. */
 /* Global settings */
@@ -351,69 +468,7 @@ body {
 </style>
 <%-include("../partials/top.ejs")%>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<div class="modal  fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-	<div class="modal-dialog modal-dialog-centered modal-dialog modal-xl">
-	  <div class="modal-content">
-		<div class="modal-header">
-		  <h6 class="modal-title" id="exampleModalToggleLabel"> s</h6>
-		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		</div>
-		<div class="modal-body">
-			<div class="container mx-auto">
-				<div class="card">
-				  <div class="row d-flex justify-content-between px-3 top">
-					<div class="d-flex">
-					  <h5>ORDER <span class="text-primary font-weight-bold">#Y34XDHR</span></h5>
-					</div>
-					<div class="d-flex flex-column text-sm-right">
-					  <p class="mb-0">Expected Arrival <span>01/12/19</span></p>
-					  <p>USPS <span class="font-weight-bold">234094567242423422898</span></p>
-					</div>
-				  </div> <!-- Add class 'active' to progress -->
-				  <div class="row d-flex justify-content-center">
-					<div class="col-12">
-					  <ul id="progressbar" class="text-center">
-						<li class="active step0"></li>
-						<li class="step0"></li>
-						<li class="step0"></li>
-						<li class="step0"></li>
-					  </ul>
-					</div>
-				  </div>
-				  <div class="row  top" style="display:flex;">
-					<div class=" d-flex justify-content-between icon-content"> 
-						
-					  <div class="d-flex">
-						<img class="icon" src="https://i.imgur.com/9nnc9Et.png">
-						<p class="font-weight-bold">Order<br>Processed</p>
-					  </div>
-					  <div class="d-flex icon-content"> <img class="icon" src="https://i.imgur.com/u1AzR7w.png">
-						<div class="">
-						  <p class="font-weight-bold">Order<br>Shipped</p>
-						</div>
-					  </div>
-					  <div class=" d-flex icon-content"> <img class="icon" src="https://i.imgur.com/TkPm63y.png">
-						<div class="">
-						  <p class="font-weight-bold">Order<br>En Route</p>
-						</div>
-					  </div>
-					  <div class=" d-flex icon-content"> <img class="icon" src="https://i.imgur.com/HdsziHP.png">
-						<div class=">
-						  <p class="font-weight-bold">Order<br>Arrived</p>
-						</div>
-					  </div>
-					</div>
-					
-				  </div>
-				</div>
-			  </div>
-		</div>
-		<!-- <div class="modal-footer">
-		  <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Open second modal</button>
-		</div> -->
-	  </div>
-	</div>
-  </div>
+
   
 
 <body>
@@ -454,85 +509,153 @@ body {
         </div>
         <main class="mdl-layout__content">
           <div class="page-content"><!-- Your content goes here -->
-			<h1>Shopping Cart</h1>
+			<h2 class="ms-4">Shopping Cart</h2>
 
-			<div class="shopping-cart  justify-content-between" style="margin-top: 2%;">
+
+
+
+
+
+
+			<table class="table container mt-4">
+				<thead>
+				  <tr>
+					<th scope="col">#</th>
+					<th scope="col">image</th>
+					<th scope="col">product</th>
+					<th scope="col">Price</th>
+					<th scope="col">Quantity</th>
+					<th scope="col">Actions</th>
+
+				  </tr>
+				</thead>
+				<tbody>
+					<%for(i=0;i<=result.length-1;i++){%>
+						<%if(result[i].status=="canceled"){%>
+							<tr style="filter: grayscale(100%);">
+								<th scope="row"><%=i+1%></th>
+								<td><img src="<%=result[i].p[0].mainImage%>" width="100px"></td>
+								<td><div class="product-title"><h5><%=result[i].p[0].model%></h5></div></td>
+								<td><div class="product-price"><h5><%=result[i].p[0].price%></h5></div></td>
+								<td><div class="product-quantity"><h5>X<%=result[i].quantity%></h5></div></td>
+								<td></td>
+								<td><button disabled class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>','<%=result[i]._id%>')">
+									order canceled
+								  </button></td>
+							
 			
-			
-			<%for(i=0;i<=result.length-1;i++){%>
-				<%if(result[i].status=="canceled"){%>
-			  <div class="product d-flex align-items-center justify-content-center" disabled style="filter: grayscale(100%);">
-				<div class="product-image">
-				  <img src="<%=result[i].p[0].mainImage%>">
-				</div>
-				<div class="product-details">
-				  <div class="product-title"><h5><%=result[i].p[0].model%></h5></div>
-				  <!-- <p class="product-description">The best dog bones of all time. Holy crap. Your dog will be begging for these things! I got curious once and ate one myself. I'm a fan.</p> -->
-				</div>
-				<div class="product-price"><%=result[i].p[0].price%></div>
-				<div class="product-quantity">
-				   <h6>X<%=result[i].quantity%></h6>
-				</div>
-				<div class="product-rmoval">
-				  <!-- <button class="remove-product">
-					Remove
-				  </button> -->
-			 <!-- <span data-bs-toggle="modal" href="#xampleModalToggle" role="button">
-					status
-				 </span> -->
-				  
-				</div>
-				<!-- <div class="product-line-price">25.98</div> -->
-				<div class="product-removal">
-					<button class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>',this)">
-                      order canceled
-					</button>
-				</div>
-				
-			  </div>
-			  <%}else{%>
-				<div class="product d-flex align-items-center justify-content-center">
-					<div class="product-image">
-					  <img src="<%=result[i].p[0].mainImage%>" height="80%">
-					</div>
-					<div class="product-details">
-					  <div class="product-title"><h5><%=result[i].p[0].model%></h5></div>
-					  <!-- <p class="product-description">The best dog bones of all time. Holy crap. Your dog will be begging for these things! I got curious once and ate one myself. I'm a fan.</p> -->
-					</div>
-					<div class="product-price"><%=result[i].p[0].price%></div>
-					<div class="product-quantity">
-					   <h6>X<%=result[i].quantity%></h6>
-					</div>
-					<div class="product-rmoval">
-					  <!-- <button class="remove-product">
-						Remove
-					  </button> -->
-					 <span data-bs-toggle="modal" href="#exampleModalToggle" role="button">
-						status
-					 </span>
-					  
-					</div>
-					<!-- <div class="product-line-price">25.98</div> -->
-					<div class="product-removal">
-						<button class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>')">
+							  </tr>
+							  <%}else{%>
+				  <tr>
+					<th scope="row"><%=i+1%></th>
+					<td><img src="<%=result[i].p[0].mainImage%>" width="100px"></td>
+					<td><div class="product-title"><h5><%=result[i].p[0].model%></h5></div></td>
+					<td><div class="product-price"><h5><%=result[i].p[0].price%></h5></div></td>
+					<td><div class="product-quantity"><h5>X<%=result[i].quantity%></h5></div></td>
+					<td> <p><a class="button" href="#popup1" id="st" onclick="stat('<%=result[i].status%>','<%=result[i]._id%>')">track your order</a></p></td>	
+						<td><button class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>')">
 						cancel order
-					  </button>
+					  </button></td>	</td>
+
+				  </tr>
+				  <%}%><%}%>	
+				</tbody>
+			  </table>
+
+			  <div id="popup1" class="overlay">
+				<div class="popup">
+					<h2>Track Your Order</h2>
+					<a class="close" href="#">&times;</a>
+					<div class="content">
+					   <div class="container mx-auto">
+						   <div class="card">
+							 <div class="row d-flex justify-content-between px-3 top">
+							   <div class="d-flex">
+								 <h5 id="orderid">ORDER <span id="orderd" class="text-primary font-weight-bold">#Y34XDHR</span></h5>
+							   </div>
+							   <div class="d-flex flex-column text-sm-right">
+								 <!-- <p class="mb-0">Expected Arrival <span>01/12/19</span></p> -->
+								 <!-- <p>USPS <span class="font-weight-bold">234094567242423422898</span></p> -->
+							   </div>
+							 </div> <!-- Add class 'active' to progress -->
+							 <div class="row d-flex justify-content-center">
+							   <div class="col-12">
+								 <ul id="progressbar" class="text-center">
+								   <li class="active step0"></li>
+								   <li class="step0"></li>
+								   <li class="step0"></li>
+								   <li class="step0"></li>
+								 </ul>
+							   </div>
+							 </div>
+							 <div class="row  top" style="display:flex;">
+							   <div class=" d-flex justify-content-between icon-content"> 
+								   
+								 <div class="d-flex">
+								   <img class="icon" src="https://i.imgur.com/9nnc9Et.png">
+								   <p class="font-weight-bold">Order<br>Processed</p>
+								 </div>
+								 <div class="d-flex icon-content"> <img class="icon" src="https://i.imgur.com/u1AzR7w.png">
+								   <div class="">
+									 <p class="font-weight-bold">Order<br>Shipped</p>
+								   </div>
+								 </div>
+								 <div class=" d-flex icon-content"> <img class="icon" src="https://i.imgur.com/TkPm63y.png">
+								   <div class="">
+									 <p class="font-weight-bold">Order<br>En Route</p>
+								   </div>
+								 </div>
+								 <div class=" d-flex icon-content"> <img class="icon" src="https://i.imgur.com/HdsziHP.png">
+								   <div class=">
+									 <p class="font-weight-bold">Order<br>Arrived</p>
+								   </div>
+								 </div>
+							   </div>
+							   
+							 </div>
+						   </div>
+					   </div>
 					</div>
-					
-				  </div>
-				<%}%>
-				<%}%>
-			
-			  
-			 
-			
-			</div></div>
+				</div>
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
         </main>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script>
 	
+function stat(status,id){
+$("#orderid").html(`ORDER-ID <span id="orderd" class="text-primary font-weight-bold">${id}</span>`)
+if(status=="placed"){
+	$("#progressbar").html('<li class="active step0"></li><li class="step0"></li><li class="step0"></li><li class="step0"></li>')
+}else if(status=="Shipped"){
+	$("#progressbar").html('<li class="active step0"></li><li class="active step0"></li><li class="step0"></li><li class="step0"></li>')
+}else if(status=="On the way"){
+	$("#progressbar").html('<li class="active step0"></li><li class="active step0"></li><li class="active step0"></li><li class="step0"></li>')
 
+}
+else{
+	$("#progressbar").html('<li class="active step0"></li><li class="active step0"></li><li class="active step0"></li><li class="active step0"></li>')
+
+}
+}
 
 
 

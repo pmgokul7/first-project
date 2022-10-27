@@ -1,9 +1,10 @@
-
-
-
-<%-include("../partials/top.ejs")%>
+<%-include("../partials/top")%>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css'>
+<script src="https://unpkg.com/js-image-zoom@0.7.0/js-image-zoom.js" type="application/javascript"></script>
 <style>
- ul li{
+ #list{
     margin: 0;
     list-style: none;
     background: url(https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/checked.png) left center no-repeat;
@@ -14,223 +15,755 @@
     opacity: 0.9;
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css'>
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-      <div class="mdl-layout__header-row">
-        <!-- Title -->
-        <span class="mdl-layout-title">Title</span>
-        <!-- Add spacer, to align navigation to the right -->
-        <div class="mdl-layout-spacer"></div>
-        <!-- Navigation. We hide it in small screens. -->
-        <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-        </nav>
-      </div>
-    </header>
-    <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">Title</span>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-      </nav>
-    </div>
-    <main class="mdl-layout__content">
-      <div class="page-content"><!-- Your content goes here -->
+    <style type="text/css">
+    html {
+        background-color: #D3CEC0;
+    }
+
+    body{
+        margin: 0 auto;
+    }
+
+    .piclist{
+        margin-top: 30px;
+    }
+    .piclist li{
+        display: inline-block;
+        width: 70px !important;
+        height: 70px !important;
+    }
+    .piclist li img{
+        width: 100%;
+        height: auto;
+    }
+
+    /* custom style */
+    .picZoomer-pic-wp,
+    .picZoomer-zoom-wp{
+        border: 1px solid #fff;
+    }
+
+
+
+    .picZoomer{
+	position: relative;
+}
+.picZoomer-pic-wp{
+	position: relative;
+	overflow: hidden;
+}
+.picZoomer-pic-wp:hover .picZoomer-cursor{
+	display: block;
+}
+.picZoomer-zoom-pic{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.picZoomer-pic{
+	width: 100%;
+	height: 100%;
+}
+.picZoomer-zoom-wp{
+	display: none;
+	position: absolute;
+	z-index: 999;
+	overflow: hidden;
+}
+.picZoomer-cursor{
+	display: none;
+	cursor: crosshair;
+	width: 100px;
+	height: 100px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-radius: 50%;
+	border: 1px solid #eee;
+	background-color: rgba(0,0,0,.1);
+}
+.picZoomCursor-ico{
+	width: 23px;
+	height: 23px;
+	position: absolute;
+	top: 40px;
+	left: 40px;
+	background: url(images/zoom-ico.png) left top no-repeat;
+}
+
+html,body,div,span,object,iframe,p,blockquote,pre,a,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video,button,input,textarea,h1,h2,h3,h4,h5,h6 {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+html {
+    -webkit-font-smoothing: subpixel-antialiased;
+    /*-webkit-text-stroke-width: 0.2px;*/
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    line-height: 1;
+    -webkit-text-size-adjust: none;
+}
+
+button,input,textarea {
+    -webkit-appearance: none;
+    font-family: "Microsoft YaHei",微软雅黑,Helvetica, Arial, sans-serif;
+    /*font-family: tahoma,arial,\5b8b\4f53,sans-serif;*/
+}
+input:required, input:invalid{
+    border:0 none; 
+    outline: 0 none; 
+    -webkit-box-shadow:none; 
+    -moz-box-shadow:none; 
+    -ms-box-shadow:none; 
+    -o-box-shadow:none; 
+    box-shadow: none;
+}
+a{
+	text-decoration: none;
+}
+img {
+    vertical-align: middle;
+}
+
+ul,ol {
+    list-style: none;
+}
+
+address,cite,dfn,em,var {
+    font-style: normal;
+}
+
+sup {
+    vertical-align: text-top;
+}
+
+sub {
+    vertical-align: text-bottom;
+}
+
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
+    display: block;
+}
+
+blockquote,q {
+    quotes: none;
+}
+
+blockquote:before,blockquote:after,q:before,q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+input {
+    vertical-align: top;
+}
+
+.clearfix {
+    zoom: 1;
+}
+
+*html.clearfix {
+    height: 1%;
+}
+
+.clearfix:after {
+    clear: both;
+    content: '/0821';
+    display: block;
+    font-size: 0;
+    line-height: 0;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+}
+
+.clear {
+    clear: both;
+    display: block;
+    overflow: hidden;
+    visibility: hidden;
+    width: 0;
+    height: 0
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+}
+body{
+    line-height: 1.5;
+}
+.card-wrapper{
+    max-width: 1100px;
+    margin: 0 auto;
+}
+img{
+    width: 100%;
+    display: block;
+}
+.img-display{
+    overflow: hidden;
+}
+.img-showcase{
+    display: flex;
+    width: 100%;
+    transition: all 0.5s ease;
+}
+.img-showcase img{
+    min-width: 100%;
+}
+.img-select{
+    display: flex;
+}
+.img-item{
+    margin: 0.3rem;
+}
+.img-item:nth-child(1),
+.img-item:nth-child(2),
+.img-item:nth-child(3){
+    margin-right: 0;
+}
+.img-item:hover{
+    opacity: 0.8;
+}
+.product-content{
+    /* padding: 2rem 1rem; */
+}
+.product-title{
+    font-size: 2rem;
+    text-transform: capitalize;
+    font-weight: 600;
+    position: relative;
+    color: #12263a;
+    margin: 1rem 0;
+}
+.product-title::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    width: 80px;
+    background: #12263a;
+}
+.product-link{
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    background: #256eff;
+    color: #fff;
+    padding: 0 0.3rem;
+    transition: all 0.5s ease;
+}
+.product-link:hover{
+    opacity: 0.9;
+}
+.product-rating{
+    color: #ffc107;
+}
+.product-rating span{
+    font-weight: 600;
+    color: #252525;
+}
+.product-price{
+    margin: 1rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+.product-price span{
+    font-weight: 400;
+}
+.last-price span{
+    color: #f64749;
+    text-decoration: line-through;
+}
+.new-price span{
+    color: #256eff;
+}
+.product-detail h2{
+    text-transform: capitalize;
+    color: #12263a;
+    padding-bottom: 0.6rem;
+}
+.product-detail p{
+    font-size: 0.9rem;
+    padding: 0.3rem;
+    opacity: 0.8;
+}
+.product-detail ul{
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+.product-detail ul li{
+    margin: 0;
+    list-style: none;
+    background: url(https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/checked.png) left center no-repeat;
+    background-size: 18px;
+    padding-left: 1.7rem;
+    margin: 0.4rem 0;
+    font-weight: 600;
+    opacity: 0.9;
+}
+.product-detail ul li span{
+    font-weight: 400;
+}
+.purchase-info{
+    margin: 1.5rem 0;
+}
+.purchase-info input,
+.purchase-info .btn{
+    border: 1.5px solid #ddd;
+    border-radius: 25px;
+    text-align: center;
+    padding: 0.45rem 0.8rem;
+    outline: 0;
+    margin-right: 0.2rem;
+    /* margin-bottom: 1rem; */
+}
+.purchase-info input{
+    width: 60px;
+}
+.purchase-info .btn{
+    cursor: pointer;
+    color: #fff;
+}
+.purchase-info .btn:first-of-type{
+    background: #256eff;
+}
+.purchase-info .btn:last-of-type{
+    background: #f64749;
+}
+.purchase-info .btn:hover{
+    opacity: 0.9;
+}
+.social-links{
+    display: flex;
+    align-items: center;
+}
+.social-links a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #000;
+    border: 1px solid #000;
+    margin: 0 0.2rem;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: all 0.5s ease;
+}
+.social-links a:hover{
+    background: #000;
+    border-color: transparent;
+    color: #fff;
+}
+
+@media screen and (min-width: 992px){
+    .card{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 1.5rem;
+    }
+    .card-wrapper{
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .product-imgs{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .product-content{
+        padding-top: 0;
+    }
+}
+
+embed{ /*for the damn thouder plugin*/
+    display: none;
+}
+
+/*********************************************/
+
+
+    </style>
     
-        <div>
-            <div class="py-16 px-4 md:px-6 2xl:px-0 flex justify-center items-center 2xl:mx-auto 2xl:container">
-    
-                <div class="flex flex-col justify-start items-start w-full space-y-9">
-                    <div class="flex justify-start flex-col items-start space-y-2">
-                        <button class="flex flex-row items-center text-gray-600 dark:text-white hover:text-gray-500 space-x-1">
-                            <svg class="fill-stroke" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2.91681 7H11.0835" stroke="currentColor" stroke-width="0.666667" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M2.91681 7L5.25014 9.33333" stroke="currentColor" stroke-width="0.666667" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M2.91681 7.00002L5.25014 4.66669" stroke="currentColor" stroke-width="0.666667" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <p class="text-sm leading-none">Back</p>
-                        </button>
-                        <p class="text-3xl lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800 dark:text-gray-50">Checkout</p>
-                    </div>
-        
-                    <div class="flex flex-col xl:flex-row justify-center xl:justify-between space-y-6 xl:space-y-0 xl:space-x-6 w-full">
-                        <div class="   flex flex-col sm:flex-row xl:flex-col justify-center items-center bg-white border-1 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full">
-                            <div class="flex flex-col justify-start items-start w-full space-y-4">
-                                <p class="text-xl md:text-2xl leading-normal text-gray-800 dark:text-gray-50"><%=result.model%></p>
-                                <h1 class="text-4xl"> ₹ <%=result.price%></h1>
-                            </div>
-                            <div class="mt-6 sm:mt-0 xl:my-10 xl:px-20 w-52 sm:w-96 xl:w-auto">
-                                <img id="mainimg" src="<%=result.mainImage%>" alt="headphones" />
-                            </div>
-                            <div class="d-flex">
-                               
-                            </div>                         
-                        </div>
-                        
-        
-                        <div class="p-8 bg-gray-100 dark:bg-gray-800 flex flex-col lg:w-full xl:w-3/5 d-flex flex-column justify-content-between">
-                            <div class="detials">
-                                <h1 class="text-2xl mb-4"><%=result.model%></h1>
-                                <ul>
-                                    <%for(h of result.highlights){%>
-                                    <li> <span><%=h%></span></li>
-                                     <%}%>
-                                  </ul>
-                                 
-                                    <a class="mt-4" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                      Detials:
-                                    </a>
-                                    
-                                  
-                                  <div class="colapse" id="collapseExample">
-                                    <div class="card card-body" style="max-height:300px ;overflow-y: scroll;">
-                                     <%=result.description%>
-                                    </div>
-                                  </div>
-                            </div>
-                             <div> 
-                              <a href="/home/checkout/<%=result._id%>"> <button style="background-color: #3F51B5;" class="border border-transparent  bg-gray-900 dark:bg-white dark:hover:bg-gray-900 dark:hover:border-gray-900 dark:text-gray-900 dark:hover:text-white hover:bg- text-white hover:text-gray-900 flex flex-row justify-center items-center space-x-2 py-4 rounded w-full">
-                                <div>
-                                  
-                                </div>
-                                <div>
-                                    <p class="text-base leading-4 text-2xl">Buy Now</p>
-                                </div>
-                            </button></a>
-        
-                            <div class="flex flex-row justify-center items-center mt-2">
-                                <hr class="border w-full" />
-                                <p class="flex flex-shrink-0 px-4 text-base leading-4 text-gray-600 dark:text-white">or</p>
-                                <hr class="border w-full" />
-                                
-                            </div>
-                       
-                          <%if(locals.cart){%>
-                            <button id="removecartbtn" onclick="removefromCart('<%=result._id%>')" style="background-color: #3F51B5;"  class=" btn mt-2 border border-transparent hover:border-gray-300 dark:bg-white dark:hover:bg-gray-900 dark:text-gray-900 dark:hover:text-white dark:border-transparent bg-gray-900 hover:bg-white text-white hover:text-gray-900 flex justify-center items-center py-4 rounded w-full">
-                              <div >
-                                  <p class="text-base leading-4">remove from  cart</p>
-                              </div>
-                          </button>
-                            <%}else{%>
-                              
-                            <button id="addcartbtn" onclick="addtocart('<%=result._id%>')"  style="background-color: #3F51B5;"  class=" btn mt-2 border border-transparent hover:border-gray-300 dark:bg-white dark:hover:bg-gray-900 dark:text-gray-900 dark:hover:text-white dark:border-transparent bg-gray-900 hover:bg-white text-white hover:text-gray-900 flex justify-center items-center py-4 rounded w-full">
-                                <div >
-                                    <p class="text-base leading-4">add to cart</p>
-                                </div>
-                            </button>
-                            <%}%>  
-                          </div>
-                          
-        
+   
+    <script type="text/javascript" src="src/jquery.picZoomer.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('.picZoomer').picZoomer();
+
+
+            //切换图片
+            $('.piclist li').on('click',function(event){
+                var $pic = $(this).find('img');
+                $('.picZoomer-pic').attr('src',$pic.attr('src'));
+            });
+        });
+
+        const imgs = document.querySelectorAll('.img-select a');
+const imgBtns = [...imgs];
+let imgId = 1;
+
+imgBtns.forEach((imgItem) => {
+    imgItem.addEventListener('click', (event) => {
+        event.preventDefault();
+        imgId = imgItem.dataset.id;
+        slideImage();
+    });
+});
+
+function slideImage(){
+    const displayWidth = document.querySelector('.img-showcase img:first-child').clientWidth;
+
+    document.querySelector('.img-showcase').style.transform = `translateX(${- (imgId - 1) * displayWidth}px)`;
+}
+
+window.addEventListener('resize', slideImage);
+    </script>
+</head>
+
+
+</html>
 
 
 
-                           
-        
-                            
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <a href="/home" style="text-decoration: none;color: #fff;"><span class="mdl-layout-title">Home</span></a>  
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+             
+              
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Title</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/admin">Dashboard</a>
+              <a class="mdl-navigation__link" href="/admin/products">Products</a>
+              <a class="mdl-navigation__link" href="/admin/users">Users</a>
+              <a class="mdl-navigation__link" href="/admin/category">Category</a>
+          </nav>
         </div>
+        <main class="mdl-layout__content">
+          <div class="page-content">
+
+            <div>
+              <div class="py-7 px-4 md:px-6 2xl:px-0 flex justify-center items-center 2xl:mx-auto 2xl:container">
+      
+                  <div class="flex flex-col justify-start items-start w-full space-y-9">
+                      <div class="flex justify-start flex-col items-start space-y-2">
+                          <button class="flex flex-row items-center text-gray-600 dark:text-white hover:text-gray-500 space-x-1">
+                              <svg class="fill-stroke" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M2.91681 7H11.0835" stroke="currentColor" stroke-width="0.666667" stroke-linecap="round" stroke-linejoin="round" />
+                                  <path d="M2.91681 7L5.25014 9.33333" stroke="currentColor" stroke-width="0.666667" stroke-linecap="round" stroke-linejoin="round" />
+                                  <path d="M2.91681 7.00002L5.25014 4.66669" stroke="currentColor" stroke-width="0.666667" stroke-linecap="round" stroke-linejoin="round" />
+                              </svg>
+                              <p class="text-sm leading-none">Back</p>
+                          </button>
+                          <p class="text-3xl lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800 dark:text-gray-50">Checkout</p>
+                      </div>
+          
+                      <div class="flex flex-col xl:flex-row justify-center xl:justify-between space-y-6 xl:space-y-0 xl:space-x-6 w-full">
+                          <div class="   flex flex-col sm:flex-row xl:flex-col  items-center bg-white border-1 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full">
+                              <div class="flex flex-col justify-start items-start w-full space-y-4">
+                                  <p class="text-xl md:text-2xl leading-normal text-gray-800 dark:text-gray-50"><%=result.model%></p>
+                                  <h1 class="text-4xl"> ₹ <%=result.price%></h1>
+                              </div>
+
+    
+          <div class="picZoomer" id="mainimg">
+            <img src="<%=result.mainImage%>" height="320px" width="320px"/>
+        </div>
+        <div class="d-flex">
+                               
+        </div>  
        
-         <!-- Button trigger modal -->
+        </div>
+        <div id="cont" class="p-8 bg-gray-100 dark:bg-gray-800 flex flex-col lg:w-full xl:w-3/5 d-flex flex-column justify-content-between">
+          <div class="detials">
+              <h1 class="text-2xl mb-4"><%=result.model%></h1>
+              <ul>
+                  <%for(h of result.highlights){%>
+                  <li id="list"> <span><%=h%></span></li>
+                   <%}%>
+                </ul>
+               
+                  <a class="mt-4" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Detials:
+                  </a>
+                  
+                
+                <div class="mt-3 mb-3" id="collapseExample">
+                  <div class="card d-flex" style="max-height:300px ;overflow-y: scroll;">
+                   <%=result.description%>
+                  </div>
+                </div>
+          </div>
+           <div> 
+            <a href="/home/checkout/<%=result._id%>"> <button style="background-color: #3F51B5;" class="border border-transparent  bg-gray-900 dark:bg-white dark:hover:bg-gray-900 dark:hover:border-gray-900 dark:text-gray-900 dark:hover:text-white hover:bg- text-white hover:text-gray-900 flex flex-row justify-center items-center space-x-2 py-4 rounded w-full">
+              <div>
+                
+              </div>
+              <div>
+                  <p class="text-base leading-4 text-2xl">Buy Now</p>
+              </div>
+          </button></a>
 
+          <div class="flex flex-row justify-center items-center mt-2">
+              <hr class="border w-full" />
+              <p class="flex flex-shrink-0 px-4 text-base leading-4 text-gray-600 dark:text-white">or</p>
+              <hr class="border w-full" />
+              
+          </div>
+     
+        <%if(locals.cart){%>
+          <button id="removecartbtn" onclick="removefromCart('<%=result._id%>')" style="background-color: #3F51B5;"  class=" btn mt-2 border border-transparent hover:border-gray-300 dark:bg-white dark:hover:bg-gray-900 dark:text-gray-900 dark:hover:text-white dark:border-transparent bg-gray-900 hover:bg-white text-white hover:text-gray-900 flex justify-center items-center py-4 rounded w-full">
+            <div >
+                <p class="text-base leading-4">remove from  cart</p>
+            </div>
+        </button>
+          <%}else{%>
+            
+          <button id="addcartbtn" onclick="addtocart('<%=result._id%>')"  style="background-color: #3F51B5;"  class=" btn mt-2 border border-transparent hover:border-gray-300 dark:bg-white dark:hover:bg-gray-900 dark:text-gray-900 dark:hover:text-white dark:border-transparent bg-gray-900 hover:bg-white text-white hover:text-gray-900 flex justify-center items-center py-4 rounded w-full">
+              <div >
+                  <p class="text-base leading-4">add to cart</p>
+              </div>
+          </button>
+          <%}%>  
+        </div>
+      </div>
+                      </div>
+                      </div>
+              </div>
 
+      
+    
+         
+    
+          
+    
+          
+    
+          
+      
+   
+</div>
+</main>
 <script>
   
-function addtocart(id) {
-  $.post("/home/info/addtocart",{
-    id:id
-  },
-  (data)=>{
-    if(data.added)
-    {
-     
-      swal("product is added to cart.")
-.then((value) => {
-  location.reload()
-});
-      
-      // $("#addcartbtn").text("remove from cart")
-     
-      
-    }
-   
-  })
-}
-
-function removefromCart(id) {
-  $.post("/home/info/removefromcart",
-  {
-    id:id
-  },
-  (data)=>{
-      if(data.removedfromcart==true)
+  function addtocart(id) {
+    $.post("/home/info/addtocart",{
+      id:id
+    },
+    (data)=>{
+      if(data.added)
       {
        
-        swal("product is removed from cart.")
-.then((value) => {
-  location.reload()
-});
-      //  
+        swal("product is added to cart.")
+  .then((value) => {
+    location.reload()
+  });
         
-
+        // $("#addcartbtn").text("remove from cart")
+       
+        
       }
+     
+    })
+  }
+  
+  function removefromCart(id) {
+    $.post("/home/info/removefromcart",
+    {
+      id:id
+    },
+    (data)=>{
+        if(data.removedfromcart==true)
+        {
+         
+          swal("product is removed from cart.")
+  .then((value) => {
+    location.reload()
+  });
+        //  
+          
+  
+        }
+    })
+  }
+  
+  
+  
+  
+  
+    
+  </script>
+<script type="text/javascript">
+   $("#plus").click(()=>{
+    //  $("#inp").attr(    'value','45')
+    alert("hai")
+   })
+  
+  
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36251023-1']);
+    _gaq.push(['_setDomainName', 'jqueryscript.net']);
+    _gaq.push(['_trackPageview']);
+  
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  
+  
+  /*!     
+          jquery.picZoomer.js
+          v 1.0
+          David
+          http://www.CodingSerf.com
+  */
+  
+  //放大镜控件
+  ;(function($){
+      $.fn.picZoomer = function(options){
+          var opts = $.extend({}, $.fn.picZoomer.defaults, options), 
+              $this = this,
+              $picBD = $('<div class="picZoomer-pic-wp"></div>').css({'width':opts.picWidth+'px', 'height':opts.picHeight+'px'}).appendTo($this),
+              $pic = $this.children('img').addClass('picZoomer-pic').appendTo($picBD),
+              $cursor = $('<div class="picZoomer-cursor"><i class="f-is picZoomCursor-ico"></i></div>').appendTo($picBD),
+              cursorSizeHalf = {w:$cursor.width()/2 ,h:$cursor.height()/2},
+              $zoomWP = $('<div class="picZoomer-zoom-wp"><img src="" alt="" class="picZoomer-zoom-pic"></div>').appendTo($this),
+              $zoomPic = $zoomWP.find('.picZoomer-zoom-pic'),
+              picBDOffset = {x:$picBD.offset().left,y:$picBD.offset().top};
+  
+          
+          opts.zoomWidth = opts.zoomWidth||opts.picWidth;
+          opts.zoomHeight = opts.zoomHeight||opts.picHeight;
+          var zoomWPSizeHalf = {w:opts.zoomWidth/2 ,h:opts.zoomHeight/2};
+  
+          //初始化zoom容器大小
+          $zoomWP.css({'width':opts.zoomWidth+'px', 'height':opts.zoomHeight+'px'});
+          $zoomWP.css(opts.zoomerPosition || {top: 0, left: opts.picWidth+30+'px'});
+          //初始化zoom图片大小
+          $zoomPic.css({'width':opts.picWidth*opts.scale+'px', 'height':opts.picHeight*opts.scale+'px'});
+  
+          //初始化事件
+          $picBD.on('mouseenter',function(event){
+              $cursor.show();
+              $zoomWP.show();
+              $zoomPic.attr('src',$pic.attr('src'))
+          }).on('mouseleave',function(event){
+              $cursor.hide();
+              $zoomWP.hide();
+          }).on('mousemove', function(event){
+              var x = event.pageX-picBDOffset.x,
+                  y = event.pageY-picBDOffset.y;
+  
+              $cursor.css({'left':x-cursorSizeHalf.w+'px', 'top':y-cursorSizeHalf.h+'px'});
+              $zoomPic.css({'left':-(x*opts.scale-zoomWPSizeHalf.w)+'px', 'top':-(y*opts.scale-zoomWPSizeHalf.h)+'px'});
+  
+          });
+          return $this;
+  
+      };
+      $.fn.picZoomer.defaults = {
+          picWidth: 450,
+          picHeight: 550,
+          scale:2.0,
+          zoomerPosition: {top: '-130px', left: '735px'},
+          
+          zoomWidth: 495,
+          zoomHeight: 600
+      };
+  })(jQuery);
+  $("#mainimg").mouseenter(()=>{
+      $("#cont").css("visibility", "hidden");
   })
-}
+  $("#mainimg").mouseleave(()=>{
+      $("#cont").css("visibility", "visible")
+  })
+  </script>
+   <script id="rendered-js" >
 
 
 
 
 
+
+    function imgchange(img,x)
+    {
+      document.getElementById("mainimg").src=img
+       
+    }
+    
+    let closeIcon = document.getElementById("closeIcon");
+    let openIcon = document.getElementById("openIcon");
+    let dropdown = document.getElementById("dropdown");
+    let text = document.getElementById("changetext");
+    // more free and premium Tailwind CSS components at https://tailwinduikit.com/
+    const showMenu = flag => {
+    if (flag) {
+    closeIcon.classList.toggle("hidden");
+    openIcon.classList.toggle("hidden");
+    dropdown.classList.toggle("hidden");
+    } else {
+    closeIcon.classList.toggle("hidden");
+    openIcon.classList.toggle("hidden");
+    dropdown.classList.toggle("hidden");
+    }
+    };
+    
+    const changeText = country => {
+    text.innerHTML = country;
+    closeIcon.classList.toggle("hidden");
+    openIcon.classList.toggle("hidden");
+    dropdown.classList.toggle("hidden");
+    };
+    
+    </script>
   
-</script>
-  
-  <script id="rendered-js" >
-
-
-
-
-
-
-function imgchange(img,x)
-{
-  document.getElementById("mainimg").src=img
-   
-}
-
-let closeIcon = document.getElementById("closeIcon");
-let openIcon = document.getElementById("openIcon");
-let dropdown = document.getElementById("dropdown");
-let text = document.getElementById("changetext");
-// more free and premium Tailwind CSS components at https://tailwinduikit.com/
-const showMenu = flag => {
-if (flag) {
-closeIcon.classList.toggle("hidden");
-openIcon.classList.toggle("hidden");
-dropdown.classList.toggle("hidden");
-} else {
-closeIcon.classList.toggle("hidden");
-openIcon.classList.toggle("hidden");
-dropdown.classList.toggle("hidden");
-}
-};
-
-const changeText = country => {
-text.innerHTML = country;
-closeIcon.classList.toggle("hidden");
-openIcon.classList.toggle("hidden");
-dropdown.classList.toggle("hidden");
-};
-
-</script>

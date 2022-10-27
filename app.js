@@ -10,6 +10,9 @@ const flash=require("connect-flash")
 const otpgen=require("otp-generators")
 const client=require("twilio")("AC310ba1f6e25df76fe77562d899355658","f181af19d88019bab6b437c2aaa7ef68")
 const helper=require("./helpers/LoginHelpers")
+var base64ToImage = require('base64-to-image');
+
+
 
 
 
@@ -82,9 +85,12 @@ app.post("otp-send",(req,res)=>{
 
 
 app.post("/admin/products/add", upload.any("myImage"), async (req, res, next) => {
-    console.log(req.body);
-    // req.flash('info','success')
-    var imageurllist = []
+  console.log(req.body)
+
+
+
+// var optionalObj = {'fileName': 'imageFileName', 'type':'png'};
+// base64ToImage(base64Str,path); 
     con.get().collection("Products").insertOne(req.body).then((response)=>{
       console.log("details updated");
       console.log(response.insertedId);
@@ -96,8 +102,8 @@ app.post("/admin/products/add", upload.any("myImage"), async (req, res, next) =>
 
         if(req.files[i].fieldname=="mainImage"){
 uploadToCloudinary(locaFilePath).then((r)=>{
-      con.get().collection("Products").updateOne({_id:globalid},{$set:{mainImage:r.url}}).then(()=>{
-        console.log("main image and detials uploaded");
+      con.get().collection("Products").updateOne({_id:globalid},{$set:{mainImage:r.url}}).then((err,res)=>{
+        console.log(err);
       })
 })
         }
@@ -109,8 +115,8 @@ uploadToCloudinary(locaFilePath).then((r)=>{
         uploadToCloudinary(locaFilePath).then((result) => {
 
 
-            con.get().collection("Products").updateOne({ _id: req.body.model }, { $push: { images: result.url } }).then(() => {
-                
+            con.get().collection("Products").updateOne({ _id: globalid}, { $push: { images: result.url } }).then(() => {
+                console.log("req url:"+result.url);
                 console.log("done");
                 
             })
@@ -118,6 +124,7 @@ uploadToCloudinary(locaFilePath).then((r)=>{
 
         }).then(()=>{
             res.redirect("/admin/products")
+            console.log(req.body);
         })
         
         .catch(er=>
@@ -166,10 +173,11 @@ app.post("/adminlogin",(req,res)=>{
 
 
  app.get("/",(req,res)=>{
-    if(req.session.user){
+    if(req.session.user)
+    {
         res.redirect("/home")
-        
     }
+    
     else
     {
         res.redirect("/login")
@@ -221,7 +229,15 @@ app.post("/adminlogin",(req,res)=>{
         }
         else{
            helper.userSignupValidator(req.body).then(()=>{
-          
+
+            
+
+
+
+
+
+      
+            
                 console.log("regsitered");
                 req.flash('info2','user registered successfully')
                 res.redirect("/login")
