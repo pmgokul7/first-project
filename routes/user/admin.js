@@ -40,7 +40,11 @@ route.get("/products/delete",(req,res)=>{
 
  route.get("/products/add",(req,res)=>{
     con.get().collection("categories").findOne({}).then((result)=>{
-        res.render("admin/addProduct",{result})
+        con.get().collection("cat").find({}).toArray().then(resul=>{
+            res.render("admin/addProduct",{result,resul})
+            console.log(resul);
+        })
+        
     })
     
 })
@@ -82,9 +86,12 @@ route.get("/users",(req,res)=>{
 
 route.get("/products/edit",(req,res)=>{
     con.get().collection("Products").findOne({_id:new ObjectId(req.query.id)}).then((result)=>{
-        con.get().collection("categories").find().toArray().then((cat)=>{
-            res.render("admin/updateproduct",{result,cat})  
+        con.get().collection("cat").find({}).toArray().then((resul)=>{
+             con.get().collection("categories").find().toArray().then((cat)=>{
+            res.render("admin/updateproduct",{result,cat,resul})  
         })
+        })
+       
        
     })
     
@@ -131,5 +138,49 @@ route.post("/users/edit",(req,res)=>{
         res.send({updated:true})
     })
     console.log(req.body);
+  })
+
+
+
+  route.get("/categories",(req,res)=>{
+    con.get().collection("cat").find({}).toArray().then((result)=>{
+        // console.log(result);
+        res.render("admin/categories",{result})
+    }
+    )
+    
+  })
+  
+route.get("/deletecategory",(req,res)=>{
+    con.get().collection("cat").deleteOne({_id:new ObjectId(req.query.id)}).then((result)=>{
+        // console.log(result);
+        res.redirect("/admin/categories")
+    }
+    )
+})
+  
+route.get("/editcat",(req,res)=>{
+    con.get().collection("cat").findOne({_id:new ObjectId(req.query.id)}).then((result)=>{
+        res.render("admin/editcategory",{result})
+        // console.log(result);
+    })
+})
+
+  route.post("/addcat",(req,res)=>{
+    if(req.body.newcat==""){
+        res.redirect("/admin/categories")
+    }
+    else{
+con.get().collection("cat").insertOne({name:req.body.newcat}).then(()=>{
+    res.redirect("/admin/categories")
+    })
+    }
+    
+    
+  })
+  route.post("/editcat",(req,res)=>{
+    con.get().collection("cat").updateOne({_id:new ObjectId(req.query.id)},{$set:{name:req.body.newcat}}).then(()=>{
+        res.redirect("/admin/categories")
+    })
   })
 module.exports=route

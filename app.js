@@ -247,7 +247,7 @@ app.post("/adminlogin",(req,res)=>{
        })
  })
 app.post("/admin/products/edit",(req,res)=>{
-    con.get().collection("Products").updateOne({_id:new ObjectId(req.query.id)},{$set:{model:req.body.model,brand:req.body.brand,ROM:req.body.ROM,RAM:req.body.RAM,stock:req.body.stock,rating:req.body.rating,highlights:req.body.highlights,description:req.body.description}}).then(()=>{
+    con.get().collection("Products").updateOne({_id:new ObjectId(req.query.id)},{$set:{model:req.body.model,brand:req.body.brand,ROM:req.body.ROM,RAM:req.body.RAM,stock:req.body.stock,rating:req.body.rating,highlights:req.body.highlights,description:req.body.description,category:req.body.category}}).then(()=>{
         console.log("data updated");
         res.redirect("/admin/products")
     })

@@ -54,13 +54,14 @@ con.get().collection("cart").findOne({user:new ObjectId(req.session.user._id)}).
     {
         console.log("cart detected" , req.session.user.name);
         con.get().collection("cart").aggregate([{$match:{user:new ObjectId(req.session.user._id)}},{$unwind:"$products"},{$lookup:{from:"Products",
-localField:"products",
+localField:"products.product",
 foreignField:"_id", 
 as:"p"
-}}]).toArray().then((result)=>{
+}}])
+.toArray().then((result)=>{
     if(result)
     {
-       console.log(result);
+       console.log(result[0].p);
     res.render("user/cart",{result})  
     }
     else{
@@ -99,7 +100,7 @@ as:"p"
 // })
 
 route.post("/cart/remove",(req,res)=>{
-    con.get().collection("cart").updateOne({user:new ObjectId(req.session.user._id)},{$pull:{'products':new ObjectId(req.query.id)}}).then(()=>{
+    con.get().collection("cart").updateOne({user:new ObjectId(req.session.user._id)},{$pull:{"products":{product:new ObjectId(req.query.id)}}}).then(()=>{
         console.log("item deleted from cart");
         req.flash('info','ha')
         // res.redirect("/home/cart")
@@ -108,7 +109,7 @@ route.post("/cart/remove",(req,res)=>{
  })
 
  route.get("/info/remove",(req,res)=>{
-    con.get().collection("cart").deleteOne({$and:[{product:new ObjectId(req.query.id)},{user:req.session.user._id}]}).then(()=>{
+    con.get().collection("cart").deleteOne({$and:[{user:new ObjectId(req.session.user._id)}]},{$pull:{products:{product:new ObjectId(req.query.id)}}}).then(()=>{
         console.log("item deleted from cart");
         req.flash('info','ha')
         res.redirect("/home/products/info")
@@ -142,9 +143,10 @@ route.post("/addaddress/:id",(req,res)=>{
     })
 })
 route.post("/orderconfirm",(req,res)=>{
-    console.log(req.body);
+    // console.log(req.body);
     helper.confirmCODOrder(req).then(result=>{
-        console.log("placed");
+        // console.log("placed");
+        res.send(result)
     })
         
     })
@@ -156,7 +158,8 @@ route.post("/orderconfirm",(req,res)=>{
     })
 
     route.post("/info/removefromcart",(req,res)=>{
-        con.get().collection("cart").deleteOne({$and:[{user:req.session.user._id},{product:new ObjectId(req.body.id)}]}).then((result)=>{
+        // con.get().collection("cart").deleteOne({$and:[{user:req.session.user._id},{product:new ObjectId(req.body.id)}]})
+        con.get().collection("cart").updateOne({user:new ObjectId(req.session.user._id)},{$pull:{"products":{product:new ObjectId(req.body.id)}}}).then((result)=>{
              res.send({removedfromcart:true})
         })
 
@@ -165,8 +168,8 @@ route.post("/orderconfirm",(req,res)=>{
     route.post("/info/addtocart",(req,res)=>{
         con.get().collection("cart").findOne({user:new ObjectId(req.session.user._id)}).then((already)=>{
          if(already){
-            con.get().collection('cart').updateOne({user:new ObjectId(req.session.user._id)},{$addToSet:{products:new ObjectId(req.body.id)}}).then(()=>{
-                console.log("item inserted");
+            con.get().collection('cart').updateOne({user:new ObjectId(req.session.user._id)},{$addToSet:{products:{product:new ObjectId(req.body.id),count:parseInt(1)}}}).then(()=>{
+                res.send({added:true})
             })
          }
         })
@@ -174,45 +177,52 @@ route.post("/orderconfirm",(req,res)=>{
 
 
   route.get("/cart/checkout",(req,res)=>{
-    con.get().collection("user").findOne({_id:new ObjectId(req.session.user._id)}).then((user)=>{
-        con.get().collection("cart").aggregate([{$match:{$and:[{user:req.session.user._id}]}},{$lookup:{
-        from:"Products",
-        localField:"product",
-        foreignField:"_id",
-        as:"p"  
+    // con.get().collection("user").findOne({_id:new ObjectId(req.session.user._id)}).then((user)=>{
+        con.get().collection("cart").aggregate([{$match:{$and:[{user:new ObjectId(req.session.user._id)}]}},{$unwind:"$products"},{$lookup:{
+            from:"Products",
+            localField:"products.product",
+            foreignField:"_id", 
+            as:"p"
         
     }}]).toArray().then((result)=>{
-        // console.log(req.session.user._id);
-    res.render("user/buynow2",{result,user}) 
-    // console.log(user);
-    console.log(result[0]);
+
+    res.render("user/buynow2",{result,user:req.session.user}) 
+    // console.log(result[0].p);
     })
-    })
+    // })
 
 
     
    
   })
-route.post("/cart/checkout",(req,res)=>{
+
+route.post("/cart/quantityupdate",(req,res)=>{
     // console.log(req.body);
     con.get().collection("user").findOne({_id:new ObjectId(req.session.user._id)}).then((user)=>{
         con.get().collection("cart").aggregate([{$match:{$and:[{user:req.session.user._id}]}},{$lookup:{
-                    from:"Products",
-                    localField:"product",
-                    foreignField:"_id",
-                    as:"p"  
+            from:"Products",
+            localField:"products",
+            foreignField:"_id", 
+            as:"p" 
                     
                 }}]).toArray().then(result=>{
-//  console.log(req.session.user._id);
+
                     
                         res.send({result})
                     
-    // res.render("user/buynow2",{result,user}) 
-    // console.log(result[0]);
-    // res.send("hhhhhhhhhhhhhhhhh")
-          
+   
 
                 })
+    })
+})
+
+
+
+route.post("/quantityup",(req,res)=>{
+    con.get().collection("cart").findOne({user:new ObjectId(req.session.user._id)}).then((result)=>{
+        if(result){
+            con.get().collection("cart").updateOne({user:new ObjectId(req.session.user._id),"products.product":new ObjectId(req.body.id)},{$set:{"products.count":10}})
+        }
     })
 })
 

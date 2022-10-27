@@ -1,7 +1,7 @@
 <%-include("../partials/top.ejs")%>
 <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <header class="mdl-layout__header">
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+  mdl-layout--fixed-header">         <header class="mdl-layout__header">
           <div class="mdl-layout__header-row">
             <!-- Title -->
             <span class="mdl-layout-title">Add Product</span>
@@ -13,11 +13,13 @@
         </header>
         <div class="mdl-layout__drawer">
           <span class="mdl-layout-title">Title</span>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/admin">Dashboard</a>
-            <a class="mdl-navigation__link" href="/admin/products">Products</a>
-            <a class="mdl-navigation__link" href="/admin/users">Users</a>
-            <a class="mdl-navigation__link" href="/admin/category">Category</a>
+          <nav class="mdl-navigation ">
+            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin">Dashboard</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/products">Products</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/users">Users</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/orders">orders</a>
+
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/categories">Category</a>
           </nav>
         </div>
         <main class="mdl-layout__content">
@@ -48,6 +50,13 @@
                     <option>RAM</option>
                     <%for(i=0;i<=result.RAM.length-1;i++){%>
                         <option value="<%=result.RAM[i].storage%>"><%=result.RAM[i].storage%> GB</option>
+                        <%}%>
+                    
+                  </select>
+                  <select class="form-control" id="exampleFormControlSelect1" name="category">
+                    <option>Category</option>
+                    <%for(i=0;i<=resul.length-1;i++){%>
+                        <option value="<%=resul[i].name%>"><%=resul[i].name%> </option>
                         <%}%>
                     
                   </select>

@@ -35,7 +35,7 @@
               <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/users">Users</a>
               <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/orders">orders</a>
 
-              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/category">Category</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/categories">Category</a>
           </nav>
         </div>
         <main class="mdl-layout__content">
@@ -50,7 +50,7 @@
                   <th scope="col">Image</th>
                   <th scope="col">Model</th>
                   <th scope="col">User</th>
-                  <!-- <th scope="col">Address</th> -->
+                  <th scope="col">Address</th>
                   <th scope="col">Payment method</th>
                   <th scope="col">Time</th>
                   <th scope="col">Quantity</th>
@@ -65,7 +65,7 @@
                     <td style="width:5% ;"><img src="<%=result[i].p[0].mainImage%>" width="55%"></td>
                     <td><%=result[i].p[0].model%></td>
                     <td><%=result[i].user%></td>
-                    <!-- <td style="max-width:300px ;max-height:fit-content;"><%=result[i].address%></td> -->
+                    <td style="max-width:300px ;max-height:fit-content;"><%=result[i].address%></td>
                     <td><%=result[i].method%></td>
                     <td><%=result[i].time%></td>
                     <td><%=result[i].quantity%></td>

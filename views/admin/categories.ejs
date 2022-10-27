@@ -1,0 +1,103 @@
+<%-include("../partials/top.ejs")%>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+    mdl-layout--fixed-header">        <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Admin Dash</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+              <button id="demo-menu-lower-right"
+              class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">more_vert</i>
+      </button>
+      
+      <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+          for="demo-menu-lower-right">
+        <li class="mdl-menu__item">Some Action</li>
+        <li class="mdl-menu__item">Another Action</li>
+        <li disabled class="mdl-menu__item">Disabled Action</li>
+       <a href="/logout"><li class="mdl-menu__item">log out</li></a>
+      </ul>
+      
+              
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Title</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/admin">Dashboard</a>
+              <a class="mdl-navigation__link" href="/admin/products">Products</a>
+              <a class="mdl-navigation__link" href="/admin/users">Users</a>
+              <a class="mdl-navigation__link" href="/admin/orders">orders</a>
+
+              <a class="mdl-navigation__link" href="/admin/categories">Category</a>
+          </nav>
+        </div>
+        <main class="mdl-layout__content">
+          <div class="page-content"><!-- Your content goes here -->
+        
+            <div class="add container"> <form action="/admin/addcat" method="post" onsubmit="onsub()">
+
+
+                <div class="mb-3 d-flex mt-4">
+                   
+                    <input id="disabledInput" type="text" class="form-control me-4"  name="newcat" placeholder="New Category">
+                    <input class="btn btn-primary" type="submit" value="add" id="sub">
+                  </div>
+               
+               
+            </div>
+            </form>
+                
+               
+            <table class="table table-hover container" style="margin-top:150px ;">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Category name</th>
+                    <th scope="col">edit</th>
+                    <th scope="col">delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                 <%for(i=0;i<=result.length-1;i++){%>
+                  <tr>
+                    <th scope="row"><%=i+1%></th>
+                    <th scope="row"><%=result[i].name%></th>
+                   <th><a href="/admin/editcat?id=<%=result[i]._id%>"><button class="btn btn-success" onclick="editc('<%result[i]._id%>')">Edit</button></a></th>
+                   <th><a href="/admin/deletecategory?id=<%=result[i]._id%>"><button class="btn btn-danger ">delete</button></a></th>
+                   
+                  </tr>
+                  <%}%>
+                </tbody>
+              </table>
+        
+     
+        </main>
+        <script>
+        //     function editc(id) {
+                 
+        //     }
+        //  function onsub() {
+        //     window.location.reload()
+        //  }
+
+        (function() {
+    
+
+        $("#sub").click(()=>{
+           
+           $.post("/admin/addcat",{
+            value:("#inip").val()
+           },()=>{
+
+           })
+           
+            
+        })
+        </script>
+</body>

@@ -5,7 +5,7 @@ module.exports={
     info:(data)=>{
         return new Promise((resolve,reject)=>{
             db.get().collection("Products").findOne({_id:new ObjectId(data.query.id)}).then((result)=>{
-                    db.get().collection("cart").findOne({$and:[{product:new ObjectId(data.query.id)},{user:data.session.user._id}]}).then((ifres)=>{
+                    db.get().collection("cart").findOne({$and:[{"products.product":new ObjectId(data.query.id)},{user:new ObjectId(data.session.user._id)}]}).then((ifres)=>{
                         if(ifres)
                         {
                             resolve({result,ifres})
