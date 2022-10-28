@@ -536,7 +536,7 @@ body {
 								<th scope="row"><%=i+1%></th>
 								<td><img src="<%=result[i].p[0].mainImage%>" width="100px"></td>
 								<td><div class="product-title"><h5><%=result[i].p[0].model%></h5></div></td>
-								<td><div class="product-price"><h5><%=result[i].p[0].price%></h5></div></td>
+								<td><div class="product-price"><h5>₹<%=result[i].total%></h5></div></td>
 								<td><div class="product-quantity"><h5>X<%=result[i].quantity%></h5></div></td>
 								<td></td>
 								<td><button disabled class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>','<%=result[i]._id%>')">
@@ -550,7 +550,7 @@ body {
 					<th scope="row"><%=i+1%></th>
 					<td><img src="<%=result[i].p[0].mainImage%>" width="100px"></td>
 					<td><div class="product-title"><h5><%=result[i].p[0].model%></h5></div></td>
-					<td><div class="product-price"><h5><%=result[i].p[0].price%></h5></div></td>
+					<td><div class="product-price"><h5>₹<%=result[i].total%></h5></div></td>
 					<td><div class="product-quantity"><h5>X<%=result[i].quantity%></h5></div></td>
 					<td> <p><a class="button" href="#popup1" id="st" onclick="stat('<%=result[i].status%>','<%=result[i]._id%>')">track your order</a></p></td>	
 						<td><button class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>')">
