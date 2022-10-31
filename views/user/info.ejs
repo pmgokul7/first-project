@@ -599,7 +599,7 @@ window.addEventListener('resize', slideImage);
       id:id
     },
     (data)=>{
-      if(data.added)
+      if(data)
       {
        
         swal("product is added to cart.")
@@ -621,7 +621,7 @@ window.addEventListener('resize', slideImage);
       id:id
     },
     (data)=>{
-        if(data.removedfromcart==true)
+        if(data)
         {
          
           swal("product is removed from cart.")

@@ -136,7 +136,7 @@ body {
          
           
         </div>
-        <input type="button" onclick="addaddressbtn('<%result._id%>')" value="add"  class="form-control btn btn-primary">
+        <input type="button" onclick="c('<%result._id%>')" value="add"  class="form-control btn btn-primary">
       <!-- </form> -->
       </div>
       <!-- <div class="modal-footer">
@@ -278,12 +278,19 @@ body {
                                 <hr class="border w-full" />
                                 
                             </div>
-                        
-                            <button  style="background-color: #3F51B5;"  class="btn btn-primary p-4 w-100 mt-2">
+                        <form action="/payment" method="post">
+                           <button id="btn1" type="submit"  style="background-color: #3F51B5;"  class="btn btn-primary p-4 w-100 mt-2" onclick="paypal('<%=result%>')">
                                 <div>
-                                    <p class="text-base leading-4">try something else</p>
+                                    <p class="text-base leading-4">PAypal</p>
                                 </div>
-                            </button></div>
+                            </button>
+                          </form>
+                          <button id="btn2"  style="background-color: #3F51B5;"  class="btn btn-primary p-4 w-100 mt-2" onclick="razor('<%=result._id%>')">
+                            <div >
+                                <p class="text-base leading-4">RAzorpay</p>
+                            </div>
+                        </button>
+                           </div>
                           
                             
                             <!-- Modal -->
@@ -303,8 +310,74 @@ body {
 
 
   <!-- <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-1b93190375e9ccc259df3a57c1abc0e64599724ae30d7ea4c6877eb615f89387.js"></script> -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <script>
+    
+
+
+
+
+
+
+
+function razor() {
+  $.post("/placeorder",{
+    d:"djd"
+  },(d)=>{
+    if(d){
+      razorpayment(d)
+    }
+  })
+}
+  
+function razorpayment (order){
+  var options = {
+    "key": "YOUR_KEY_ID", // Enter the Key ID generated from the Dashboard
+    "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Acme Corp",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "order_9A33XWu170gUtm", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+    "prefill": {
+        "name": "Gaurav Kumar",
+        "email": "gaurav.kumar@example.com",
+        "contact": "9999999999"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+
+}
+
+
+
+
+  function paypal(x){
+   let address1=$(`.form-check-input:checked`).val()
+    $.post("/payment",
+    {productid:x._id}
+    // {productid:x,address1,date:new Date(),price:$("#priceone").text(),quantity}
+    )}
+
+  
+  
+
+
+
+
+
     function plus(a) {
       
       let  input=$("#inputbox").val()
