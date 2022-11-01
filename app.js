@@ -15,7 +15,11 @@ const client = require("twilio")(
 const helper = require("./helpers/LoginHelpers");
 var base64ToImage = require("base64-to-image");
 const paypal = require("paypal-rest-sdk");
-const Razorpay=require("razorpay")
+const Razorpay = require("razorpay");
+
+
+
+
 paypal.configure({
   mode: "sandbox", //sandbox or live
   client_id:
@@ -24,10 +28,20 @@ paypal.configure({
     "EI0jsPvICu1X9i4_M65S7KYSqy1Y8EdPngbr6rUUI3Qpcsohp5f9dHJRiuuNhMt_USFXUfgmxqeYIH2z",
 });
 
+var instance = new Razorpay({
+      key_id: "rzp_test_Zh6pjzUFwDGrQD",
+      key_secret: "YPOZcl2ZZAHkr6dwZaDTaQwA",
+    });
+
+
+
 const userRoute = require("./routes/user/user");
 const adminRoute = require("./routes/user/admin");
 const loginRoute = require("./routes/user/login");
 const { ObjectId } = require("mongodb");
+
+
+
 
 cloudinary.config({
   cloud_name: "dem5z7tgz",
@@ -86,40 +100,53 @@ async function uploadToCloudinary(locaFilePath) {
     });
 }
 app.post("/payment", (req, res) => {
-  console.log("payment caleed");
-  var create_payment_json = {
-    intent: "sale",
-    payer: {
-      payment_method: "paypal",
-    },
-    redirect_urls: {
-      return_url: "http://localhost:3000/home/orders",
-      cancel_url: "http://cancel.url",
-    },
-    transactions: [
-      {
-        item_list: {
-          items: [
-            {
-              name: req.body.product,
-              sku: "item",
-              price: "2.00",
-              currency: "USD",
-              quantity: 1,
-            },
-          ],
-        },
-        amount: {
-          currency: "USD",
-          total: "2.00",
-        },
-        description: "This is the payment description.",
+  if(req.body.payment=='razorpay'){
+  console.log("you chose razorpay");
+  var options = {
+    amount: 500000,  // amount in the smallest currency unit
+    currency: "INR",
+    receipt: "order_rcptid_11"
+  };
+  instance.orders.create(options, function(err, order) {
+    console.log(order);
+  });
+  
+   
+
+
+
+  }
+  else if(req.body.payment=='paypal'){
+    console.log("you chose paypal");
+    var create_payment_json = {
+      "intent": "sale",
+      "payer": {
+          "payment_method": "paypal"
       },
-    ],
+      "redirect_urls": {
+          "return_url": "http://localhost:3000/home/success",
+          "cancel_url": "http://cancel.url"
+      },
+      "transactions": [{
+          "item_list": {
+              "items": [{
+                  "name": req.body.model,
+                  "sku": "item",
+                  "price": req.body.total,
+                  "currency": "USD",
+                  "quantity": req.body.quantity
+              }]
+          },
+          "amount": {
+              "currency": "USD",
+              "total": req.body.total
+          },
+          "description": "This is the payment description."
+      }]
   };
   paypal.payment.create(create_payment_json, function (error, payment) {
     if (error) {
-      throw error;
+        throw error;
     } else {
       console.log("Create Payment Response");
       console.log(payment);
@@ -131,40 +158,37 @@ app.post("/payment", (req, res) => {
         res.redirect(redirect_url);
       }
     }
-  });
 });
 
 
 
 
-
-
-
-
-
-
-
-
-app.post("/placeorder", (req, res) => {
-  var instance=new Razorpay({
-    key_id:"rzp_test_Zh6pjzUFwDGrQD",
-    key_secret:"YPOZcl2ZZAHkr6dwZaDTaQwA",
   }
+console.log(req.body);
+})
   
-  )
-  var options={
-    amount:45621,
-    currency:"INR",
-    receipt:"46sd4"
-  };
-  instance.orders.create(options,function (err,order) {
-    if(err){
-      console.log(err);
-    }
-    console.log("new order:",order);
-    res.send(order)
-  })
-});
+
+
+
+
+// app.post("/placeorder", (req, res) => {
+//   var instance = new Razorpay({
+//     key_id: "rzp_test_Zh6pjzUFwDGrQD",
+//     key_secret: "YPOZcl2ZZAHkr6dwZaDTaQwA",
+//   });
+//   var options = {
+//     amount: 45621,
+//     currency: "INR",
+//     receipt: "46sd4",
+//   };
+//   instance.orders.create(options, function (err, order) {
+//     if (err) {
+//       console.log(err);
+//     }
+//     console.log("new order:", order);
+//     res.send({orderid:order.id});
+//   });
+// });
 
 
 
@@ -177,9 +201,9 @@ app.post("/placeorder", (req, res) => {
 
 
 
-app.get("/success", (req, res) => {
-  console.log("done paymne");
-});
+
+
+
 app.post("otp-send", (req, res) => {});
 
 app.post(

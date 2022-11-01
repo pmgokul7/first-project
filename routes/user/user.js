@@ -42,8 +42,16 @@ route.post("/products", (req, res) => {
     .find({ model: { $regex: req.body.search, $options: "i" } })
     .toArray()
     .then((result) => {
-      searcsh = req.body.search;
-      res.render("user/products", { result, searcsh, user: req.session.user });
+      con.get().collection("wishlist").find({user:ObjectId(req.session.user._id)}).toArray().then((wish)=>
+      {
+        searcsh = req.body.search;
+
+
+        console.log("user is:",req.session.user.wishlist);
+        res.render("user/products", { result, searcsh, wish, user:req.session.user});
+      })
+
+     
     });
 });
 
@@ -210,5 +218,73 @@ con.get().collection("user").updateOne({_id:new ObjectId(req.session.user._id)},
  })
 
 
+route.post("/addtowish",(req,res)=>{
+ con.get().collection("wishlist").insertOne({product:ObjectId(req.body.pid),user:ObjectId(req.session.user._id)}).then((r)=>{
+  console.log(r);
+  res.send({added:true})
+ })
+})
 
+route.get("/wishlist",(req,res)=>{
+  con.get().collection("wishlist").aggregate([
+    { $match: { user:ObjectId(req.session.user._id) } },
+    {
+      $lookup: {
+        from: "Products",
+        localField: "product",
+        foreignField: "_id",
+        as: "p",
+      },
+    },
+    
+  ]).toArray().then((r)=>{
+    res.render("user/wislist",{r})
+  })
+  
+})
+
+route.get("/success",(req,res)=>{
+  const execute_payment_json = {
+    "payer_id": payerId,
+    "transactions": [{
+        "amount": {
+            "currency": "USD",
+            "total": totalamount
+        }
+    }]
+  };
+
+   
+  paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
+    if (error) {
+        console.log(error.response);
+        throw error;
+    } else {
+      orderSchema.updateMany({
+        _id : paypalorderid,
+        
+      },
+      {
+        $set: { 
+          payment : "PayPal",
+          status : "placed"
+          
+        }
+      },function(err,doc){
+        if(err){
+            console.log(err);
+        }else{
+            console.log(doc);
+        }
+      })
+
+      res.redirect("/ordersuccess")
+    }
+});
+
+
+
+
+  res.render("user/paymentsuccess")
+})
 module.exports = route;
