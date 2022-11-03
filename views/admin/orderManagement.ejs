@@ -52,6 +52,7 @@
                   <th scope="col">User</th>
                   <th scope="col">Address</th>
                   <th scope="col">Payment method</th>
+                  <th scope="col">Payment status</th>
                   <th scope="col">Time</th>
                   <th scope="col">Quantity</th>
                   <th scope="col">price</th>
@@ -65,11 +66,25 @@
                     <td style="width:5% ;"><img src="<%=result[i].p[0].mainImage%>" width="55%"></td>
                     <td><%=result[i].p[0].model%></td>
                     <td><%=result[i].user%></td>
-                    <td style="max-width:300px ;max-height:fit-content;"><%=result[i].address%></td>
+                    <td style="max-width:300px ;max-height:fit-content;"><%=result[i].address.name%><br>
+                      Mob:<%=result[i].address.mobile%><br>
+                      <%=result[i].address.address1%><br>
+                      <%=result[i].address.post%>
+                      <br><%=result[i].address.pin%>
+                    </td>
                     <td><%=result[i].method%></td>
+                    <td><%=result[i].paymentstatus%></td>
                     <td><%=result[i].time%></td>
                     <td><%=result[i].quantity%></td>
                     <td><%=result[i].total%></td>
+                    <%if(result[i].paymentstatus=="pending"){%>
+                      <td><h6 class="text-warning">payment pending</h6></td>
+                      <%}else if(result[i].status=="canceled"){%>
+                        <td>
+                          <h6 class="text-danger">order canceled</h6>
+
+                        </td>
+                      <%}else{%>
                     <td><select onchange="statuschange('<%=result[i]._id%>',this)" class="form-select" aria-label="Default select example" id="list">
                       <option selected><%=result[i].status%></option>
                       <option value="Shipped">Shipped</option>
@@ -79,6 +94,7 @@
                     </select></td>
                     
                   </tr>
+                  <%}%>
                   <%}%>
               
               </tbody>

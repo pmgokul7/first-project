@@ -32,14 +32,14 @@ route.post("/", (req, res) => {
       con
         .get()
         .collection("cart")
-        .findOne({ user: new ObjectId(req.session.user._id) })
+        .findOne({ user:  ObjectId(req.session.user._id) })
         .then((found) => {
           if (!found) {
             con
               .get()
               .collection("cart")
               .insertOne({
-                user: new ObjectId(req.session.user._id),
+                user:  ObjectId(req.session.user._id),
                 products: [],
                 count: 0,
               })

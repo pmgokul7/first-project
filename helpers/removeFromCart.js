@@ -8,8 +8,8 @@ module.exports = {
       db.get()
         .collection("cart")
         .updateOne(
-          { user: new ObjectId(data.session.user._id) },
-          { $pull: { products: { product: new ObjectId(data.body.id) } } }
+          { user:  ObjectId(data.session.user._id) },
+          { $pull: { products: { product:  ObjectId(data.body.id) } } }
         )
         .then((result) => {
           resolve({ removedfromcart: true });

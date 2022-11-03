@@ -16,6 +16,9 @@
 }
 </style>
     <style type="text/css">
+        #det::-webkit-scrollbar{
+            display: none;
+        }
     html {
         background-color: #D3CEC0;
     }
@@ -537,7 +540,7 @@ window.addEventListener('resize', slideImage);
                   
                 
                 <div class="mt-3 mb-3" id="collapseExample">
-                  <div class="card d-flex" style="max-height:300px ;overflow-y: scroll;">
+                  <div class="card d-flex p-2" id="det" style="max-height:200px ;overflow-y:scroll ;">
                    <%=result.description%>
                   </div>
                 </div>

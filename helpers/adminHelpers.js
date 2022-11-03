@@ -8,7 +8,7 @@ module.exports = {
       db.get()
         .collection("user")
         .updateOne(
-          { _id: new ObjectId(data.id) },
+          { _id:  ObjectId(data.id) },
           { $set: { userBlocked: true } }
         )
         .then(() => {
@@ -20,7 +20,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       db.get()
         .collection("user")
-        .deleteOne({ _id: new ObjectId(data.id) })
+        .deleteOne({ _id:  ObjectId(data.id) })
         .then(() => {
           resolve({ userDeleted: true });
         });
@@ -30,7 +30,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       db.get()
         .collection("Products")
-        .deleteOne({ _id: new ObjectId(data.id) })
+        .deleteOne({ _id:  ObjectId(data.id) })
         .then(() => {
           resolve({ productDeleted: true });
         });

@@ -80,7 +80,7 @@ route.get("/users/edit", (req, res) => {
   con
     .get()
     .collection("user")
-    .findOne({ _id: new ObjectId(req.query.id) })
+    .findOne({ _id:  ObjectId(req.query.id) })
     .then((result) => {
       res.render("admin/edituser", { result });
     });
@@ -90,7 +90,7 @@ route.get("/users/delete", (req, res) => {
   con
     .get()
     .collection("user")
-    .deleteOne({ _id: new ObjectId(req.query.id) })
+    .deleteOne({ _id:  ObjectId(req.query.id) })
     .then(() => {
       res.redirect("/admin/users");
     });
@@ -100,7 +100,7 @@ route.get("/products/edit", (req, res) => {
   con
     .get()
     .collection("Products")
-    .findOne({ _id: new ObjectId(req.query.id) })
+    .findOne({ _id:  ObjectId(req.query.id) })
     .then((result) => {
       con
         .get()
@@ -125,7 +125,7 @@ route.post("/users/edit", (req, res) => {
     .get()
     .collection("user")
     .updateOne(
-      { _id: new ObjectId(req.query.id) },
+      { _id:  ObjectId(req.query.id) },
       {
         $set: {
           name: req.body.name,
@@ -178,7 +178,7 @@ route.post("/orders/update", (req, res) => {
     .get()
     .collection("orders")
     .updateOne(
-      { _id: new ObjectId(req.body.orderid) },
+      { _id:  ObjectId(req.body.orderid) },
       { $set: { status: req.body.status } }
     )
     .then(() => {
@@ -191,7 +191,7 @@ route.post("/user/status", (req, res) => {
     .get()
     .collection("user")
     .updateOne(
-      { _id: new ObjectId(req.body.id) },
+      { _id:  ObjectId(req.body.id) },
       { $set: { status: req.body.value } }
     )
     .then(() => {
@@ -217,7 +217,7 @@ route.get("/deletecategory", (req, res) => {
   con
     .get()
     .collection("cat")
-    .deleteOne({ _id: new ObjectId(req.query.id) })
+    .deleteOne({ _id:  ObjectId(req.query.id) })
     .then((result) => {
       // console.log(result);
       res.redirect("/admin/categories");
@@ -228,7 +228,7 @@ route.get("/editcat", (req, res) => {
   con
     .get()
     .collection("cat")
-    .findOne({ _id: new ObjectId(req.query.id) })
+    .findOne({ _id:  ObjectId(req.query.id) })
     .then((result) => {
       res.render("admin/editcategory", { result });
       // console.log(result);
@@ -253,7 +253,7 @@ route.post("/editcat", (req, res) => {
     .get()
     .collection("cat")
     .updateOne(
-      { _id: new ObjectId(req.query.id) },
+      { _id:  ObjectId(req.query.id) },
       { $set: { name: req.body.newcat } }
     )
     .then(() => {
