@@ -8,24 +8,18 @@ const addToCart = require("../../helpers/addTocart");
 const removeFromCart = require("../../helpers/removeFromCart");
 const removeFromCart2 = require("../../helpers/removeFromCart2");
 // const showCart = require("../../helpers/showCart");
-const bcrypt=require("bcrypt")
-const paypal=require("paypal-rest-sdk")
+const bcrypt = require("bcrypt");
+const paypal = require("paypal-rest-sdk");
 
+const carthelper = require("../../helpers/cartHelper");
+const cartHelper = require("../../helpers/cartHelper");
+const { json } = require("body-parser");
 
-
-
-const carthelper=require("../../helpers/cartHelper")
-
-
-route.get("/cart",(req,res)=>{
-  carthelper.getCartProducts(req).then((result)=>{
-    res.render("user/cart",{result})
-  })
-})
-
-
-
-
+route.get("/cart", (req, res) => {
+  carthelper.getCartProducts(req).then((result) => {
+    res.render("user/cart", { result });
+  });
+});
 
 route.use(function (req, res, next) {
   if (req.session.user) {
@@ -67,7 +61,7 @@ route.post("/products", (req, res) => {
         .findOne({ _id: ObjectId(req.session.user._id) })
         .then((wish) => {
           searcsh = req.body.search;
-             console.log(wish);
+          console.log(wish);
           res.render("user/products", {
             result,
             searcsh,
@@ -89,8 +83,8 @@ route.get("/cart", (req, res) => {
 });
 
 route.get("/cart/remove", (req, res) => {
-  removeFromCart2.removeFromCart2(req).then(()=>{
-    res.redirect("/home/cart")
+  removeFromCart2.removeFromCart2(req).then(() => {
+    res.redirect("/home/cart");
   });
 });
 
@@ -136,34 +130,71 @@ route.post("/info/addtocart", (req, res) => {
 });
 
 route.get("/cart/checkout", (req, res) => {
-  // con.get().collection("user").findOne({_id: ObjectId(req.session.user._id)}).then((user)=>{
   con
     .get()
     .collection("cart")
     .aggregate([
-      { $match: { $and: [{ user: ObjectId(req.session.user._id) }] } },
-      { $unwind: "$products" },
+      {
+        $match: { user: ObjectId(req.session.user._id) },
+      },
+      {
+        $unwind: "$products",
+      },
+
       {
         $lookup: {
           from: "Products",
           localField: "products.product",
           foreignField: "_id",
-          as: "p",
+          as: "pro",
+        },
+      },
+      {
+        $project: {
+          "products.product": 1,
+          "products.count": 1,
+          pro: { $arrayElemAt: ["$pro", 0] },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: { $multiply: ["$products.count", "$pro.price"] } },
         },
       },
     ])
     .toArray()
-    .then((result) => {
-      res.render("user/buynow2", { result, user: req.session.user });
-      // console.log(result[0].p);
+    .then((cartItems) => {
+      con
+        .get()
+        .collection("cart")
+        .aggregate([
+          { $match: { $and: [{ user: ObjectId(req.session.user._id) }] } },
+          { $unwind: "$products" },
+          {
+            $lookup: {
+              from: "Products",
+              localField: "products.product",
+              foreignField: "_id",
+              as: "p",
+            },
+          },
+        ])
+        .toArray()
+       
+        .then((result) => {
+          console.log("cartitems:",cartItems);
+          cartProducts = result;
+          res.render("user/buynow2", {
+            result,
+            user: req.session.user,
+            cartItems,
+          });
+        });
     });
+
   // })
 });
-
-
-
-
-
 
 route.get("/profile", (req, res) => {
   con
@@ -204,43 +235,43 @@ route.get("/deleteaddress", (req, res) => {
 });
 
 route.post("/addtowish", (req, res) => {
-  // con.get().collection("wishlist").findOne({product: ObjectId(req.body.pid)}).then((ris)=>{
-  //   if(ris){
-  //     res.send({alreadyfound:true})
-  //     console.log("found already");
-  //   }
-  //   else{
+  // con
+  //   .get()
+  //   .collection("user")
+  //   .updateOne(
+  //     { _id: ObjectId(req.session.user._id) },
+  //     { $push: { wishlist: ObjectId(req.body.pid) } }
+  //   )
+  //   .then((r) => {
+  //     console.log(r);
+  //     res.send({ added: true });
+  //   });
+  // }
+  con
+    .get()
+    .collection("wishlist")
+    .findOne({ user: ObjectId(req.session.user._id) })
+    .then((result) => {
+      if (result) {
+      }
+    });
+  console.log("add called");
+});
+
+route.post("/removefromwish", (req, res) => {
   con
     .get()
     .collection("user")
     .updateOne(
       { _id: ObjectId(req.session.user._id) },
-      { $push: { wishlist: ObjectId(req.body.pid) } }
+      { $pull: { wishlist: ObjectId(req.body.pid) } }
     )
     .then((r) => {
-      console.log(r);
+      // console.log(r);
       res.send({ added: true });
     });
-  // }
-  console.log("add called");
-});
-
-
-
-route.post("/removefromwish",(req,res)=>{
-  con
-  .get()
-  .collection("user")
-  .updateOne(
-    { _id: ObjectId(req.session.user._id) },
-    { $pull: { wishlist: ObjectId(req.body.pid) } }
-  )
-  .then((r) => {
-    console.log(r);
-    res.send({ added: true });
-  });
   console.log("called remove");
-})
+});
 
 // })
 
@@ -269,89 +300,188 @@ route.get("/success", (req, res) => {
   const payerId = req.query.PayerID;
   const paymentId = req.query.paymentId;
   const execute_payment_json = {
-    "payer_id": payerId,
-    "transactions": [{
-        "amount": {
-            "currency": "USD",
-        }
-    }]
-  }; 
-  
-  paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
-    //When error occurs when due to non-existent transaction, throw an error else log the transaction details in the console then send a Success string reposponse to the user.
-  if (error) {
-      console.log(error.response);
-      throw error;
-  } else {
-      console.log(JSON.stringify(payment));
-      res.send('Success');
-  }
-});
+    payer_id: payerId,
+    transactions: [
+      {
+        amount: {
+          currency: "USD",
+        },
+      },
+    ],
+  };
+
+  paypal.payment.execute(
+    paymentId,
+    execute_payment_json,
+    function (error, payment) {
+      //When error occurs when due to non-existent transaction, throw an error else log the transaction details in the console then send a Success string reposponse to the user.
+      if (error) {
+        console.log(error.response);
+        throw error;
+      } else {
+        // console.log(JSON.stringify(payment));
+        res.send("Success");
+      }
+    }
+  );
 
   res.render("user/paymentsuccess");
 });
 
-
-
-
-route.post("/plus",(req,res)=>{
-  console.log("plus called");
-  con.get().collection("cart").findOne({user:ObjectId(req.session.user._id)}).then((result)=>{
-    if(result){
-      con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id),"products.product":ObjectId(req.body.pid)},{$inc:{'products.$.count':1}}).then((err,resu)=>{
-        if(err){
-                  console.log(err);
-
-        }
-        else{
-          console.log(resu);
-        }
-      })
-    }
-  })
-})
-
-
-route.get("/changepassword",(req,res)=>{
+route.get("/changepassword", (req, res) => {
   msg = req.flash("msg");
 
-  res.render("user/changepassword",{msg})
-})
+  res.render("user/changepassword", { msg });
+});
 
-route.post("/changepass",(req,res)=>{
-  if(req.body.oldpass==""||req.body.newpass==""||req.body.repeatpass==""){
-    res.send({status:"empty"})
-  }else{
-  con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)}).then((result)=>{
-console.log(req.body);
+route.post("/changepass", (req, res) => {
+  if (
+    req.body.oldpass == "" ||
+    req.body.newpass == "" ||
+    req.body.repeatpass == ""
+  ) {
+    res.send({ status: "empty" });
+  } else {
+    con
+      .get()
+      .collection("user")
+      .findOne({ _id: ObjectId(req.session.user._id) })
+      .then((result) => {
+        // console.log(req.body);
 
-    if(result){
-      bcrypt.compare(req.body.oldpass,result.password).then((compareresult)=>{
-       if(compareresult==true){
-        console.log("old and new password match");
-        bcrypt.hash(req.body.newpass,10).then((hashedPass)=>{
-           con.get().collection("user").updateOne({_id:ObjectId(req.session.user._id)},{$set:{password:hashedPass}}).then(()=>{
-            console.log("updated successfully");
-            res.send({status:"updated"})
-           });
-        })
-      }
-      else{
-        res.send({status:"error"})
-        console.log("old and new password wont match");
-      }
-      })
-   
-     
-    }else{
-      res.redirect("/login")
-    }
-  
-  })
-
+        if (result) {
+          bcrypt
+            .compare(req.body.oldpass, result.password)
+            .then((compareresult) => {
+              if (compareresult == true) {
+                console.log("old and new password match");
+                bcrypt.hash(req.body.newpass, 10).then((hashedPass) => {
+                  con
+                    .get()
+                    .collection("user")
+                    .updateOne(
+                      { _id: ObjectId(req.session.user._id) },
+                      { $set: { password: hashedPass } }
+                    )
+                    .then(() => {
+                      console.log("updated successfully");
+                      res.send({ status: "updated" });
+                    });
+                });
+              } else {
+                res.send({ status: "error" });
+                console.log("old and new password wont match");
+              }
+            });
+        } else {
+          res.redirect("/login");
+        }
+      });
   }
+});
 
+route.post("/changeQuantity", (req, res) => {
+  cartHelper.changeProQuantity(req).then((result) => {
+    res.send(result);
+  });
+});
+
+route.post("/addressadd/:id", (req, res) => {
+  console.log("called");
+});
+
+route.post("/orderconfirmcart", (req, res) => {
+  // console.log(cartProducts);
+  cartProducts.map(s=>{
+    con.get().collection("orders").insertOne({
+
+      product:ObjectId(s.p[0]._id),
+          user: req.session.user.name,
+          method: "COD",
+          status: "placed",
+          address:JSON.parse(req.body.address),
+          time: req.body.date,
+          quantity:s.products.count,
+          total: parseInt(s.p[0].price) * parseInt(s.products.count),
+    }).then(()=>{
+         
+      
+    })
+  })
+      res.send({status:"success"})
+
+  
+});
+
+route.post("/cartPayment",(req,res)=>{
+  address=JSON.parse(req.body.address)
+
+  
+  if(req.body.payment=="paypal"){
+    cartProducts.map((s)=>{
+     
+    })
+    console.log("you chose paypal");
+    var create_payment_json = {
+      intent: "sale",
+      payer: {
+        payment_method: "paypal",
+      },
+      redirect_urls: {
+        return_url: "http://localhost:3000/home/cartSuccess",
+        cancel_url: "http://cancel.url",
+      },
+      transactions: [
+        {
+         
+          amount: {
+            currency: "USD",
+            total: req.body.total,
+          },
+          description: "This is the payment description.",
+        },
+      ],
+    };
+    paypal.payment.create(create_payment_json, function (error, payment) {
+      if (error) {
+        throw error;
+      } else {
+        console.log(payment);
+        for (let i = 0; i < payment.links.length; i++) {
+          if (payment.links[i].rel === "approval_url") {
+            // res.redirect(payment.links[i].href);
+            res.send({paypal:payment.links[i].href})
+            // res.send({paypal:"hai"})
+          }
+        }
+        cartProducts.map(s=>{
+          con.get().collection("orders").insertOne({
+            product:ObjectId(s.p[0]._id),
+            user: req.session.user.name,
+            method: "paypal",
+            status: "pending",
+            paymentstatus:"pending",
+            address:JSON.parse(req.body.address),
+            time: new Date().toLocaleString('en-US'),
+            quantity:s.products.count,
+            total: parseInt(s.p[0].price) * parseInt(s.products.count),
+      
+          }).then((r)=>{
+            items=[]
+            console.log("products inserted after paypal bu pending");
+            items.push(r.insertedId)
+            console.log(r.insertedId);
+          })
+        })
+      
+      }
+    });
+  }
 })
 
+route.get("/cartSuccess",(req,res)=>{
+  console.log("success");
+  
+})
 
 module.exports = route;

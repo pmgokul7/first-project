@@ -133,8 +133,10 @@ app.post("/payment", (req, res) => {
         });
       });
   } else if (req.body.payment == "paypal") {
-    // console.log(req.body);
+    console.log("this is body",req.body);
     console.log("you chose paypal");
+
+
     var create_payment_json = {
       intent: "sale",
       payer: {
@@ -146,20 +148,10 @@ app.post("/payment", (req, res) => {
       },
       transactions: [
         {
-          item_list: {
-            items: [
-              {
-                name: req.body.model,
-                sku: "item",
-                price: req.body.total,
-                currency: "USD",
-                quantity: req.body.quantity,
-              },
-            ],
-          },
+          
           amount: {
             currency: "USD",
-            total: req.body.total,
+            total:req.body.total,
           },
           description: "This is the payment description.",
         },
@@ -167,7 +159,7 @@ app.post("/payment", (req, res) => {
     };
     paypal.payment.create(create_payment_json, function (error, payment) {
       if (error) {
-        throw error;
+        throw error
       } else {
         // console.log(payment);
         for (let i = 0; i < payment.links.length; i++) {

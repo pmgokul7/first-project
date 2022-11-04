@@ -78,6 +78,7 @@ module.exports = {
   },
 
   confirmCODOrder: (data) => {
+    console.log("body is",data.body);
     return new Promise((resolve, reject) => {
       db.get()
         .collection("orders")
@@ -86,10 +87,11 @@ module.exports = {
           user: data.session.user.name,
           method: "COD",
           status: "placed",
-          address: data.body.address,
-          time: data.body.date,
+          paymentstatus:"seccess",
+          address:JSON.parse( data.body.address),
+          time: new Date().toLocaleString('en-IN'),
           quantity: data.body.quantity,
-          total: parseInt(data.body.price) * parseInt(data.body.quantity),
+          total: parseInt(data.body.price)
         })
         .then((result) => {
           resolve(result);

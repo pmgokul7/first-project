@@ -5,9 +5,7 @@
       .red {
         color: rgb(255, 68, 68);
       }
-      .wishlistbtn:hover {
-        cursor: pointer;
-      }
+
     </style>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -119,7 +117,7 @@
             >
               <div
                 class="leftc d-flex justify-content-center align-items-center ms-2"
-                style=""
+            
               >
                 <img src="<%=result[i].mainImage%>" alt="" width="60%" />
               </div>
@@ -135,7 +133,7 @@
 
                 <i
                   class="fa fa-heart fa-2xl me-4"
-                  style="color: black"
+                  style="color: black,"
                   onclick="colorchangetored(this,'<%=result[i]._id%>')"
                 ></i>
               </div>

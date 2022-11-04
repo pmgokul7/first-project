@@ -1,51 +1,5 @@
 <!DOCTYPE html>
 
-<!-- <html lang="en" >
-
-<head>
-
-  <meta charset="UTF-8">
-  
-<link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
-<meta name="apple-mobile-web-app-title" content="CodePen">
-
-<link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
-
-<link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
-
-
-  <title>CodePen - Free Tailwind CSS Checkouts Component</title>
-  <title>Tailwind CSS Checkouts - Free &amp; Premium components</title>
-<meta name="title" content="Tailwind CSS Checkouts - Free &amp; Premium components">
-<meta name="description" content="Tailwind checkout is the series of steps a customer has to take after purchasing something from the website.">
-<link rel="canonical" href="https://tailwinduikit.com/components/E-commerce/Components/Checkouts">
-  
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css'>
-  
-
-  <script>
-  window.console = window.console || function(t) {};
-</script>
-
-  
-  
-  <script>
-  if (document.location.search.match(/type=embed/gi)) {
-    window.parent.postMessage("resize", "*");
-  }
-</script>
-
-
-</head>
-
-<body translate="no" >
- 
-
-  
-
-</body>
-
-</html> -->
 <%-include("../partials/top.ejs")%>
 <script
   src="https://code.jquery.com/jquery-3.6.1.js"
@@ -331,7 +285,7 @@
                   </p>
                   <div class="d-flex">
                     <h1 class="text-4xl">₹</h1>
-                    <h1 class="text-4xl" id="priceone"><%=result.price%></h1>
+                    <h1 class="text-4xl bg-danger" id="priceone"><%=result.price%></h1>
                   </div>
                 </div>
                 <div
@@ -446,17 +400,7 @@
                     <hr class="border w-full" />
                   </div>
 
-                  <!-- <button id="btn1" type="submit"  style="background-color: #3F51B5;"  class="btn btn-primary p-4 w-100 mt-2" onclick="paypal('<%=result._id%>')">
-                                <div>
-                                    <p class="text-base leading-4">PAypal</p>
-                                </div>
-                            </button>
-                     
-                          <button id="btn2"  style="background-color: #3F51B5;"  class="btn btn-primary p-4 w-100 mt-2" onclick="razor('<%=result._id%>')">
-                            <div >
-                                <p class="text-base leading-4">RAzorpay</p>
-                            </div>
-                        </button> -->
+                  
 
                   <form action="/payment" method="post">
                     <div
@@ -696,7 +640,7 @@
               quantity: Number($("#inputbox").val()),
               address,
               date: new Date(),
-              price: $("#priceone").text(),
+              price: Number($("#priceone").text()),
             },
             (d) => {
               console.log(d);
