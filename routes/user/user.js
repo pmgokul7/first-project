@@ -404,7 +404,9 @@ route.post("/orderconfirmcart", (req, res) => {
           quantity:s.products.count,
           total: parseInt(s.p[0].price) * parseInt(s.products.count),
     }).then(()=>{
-         
+         con.get().collection("orders").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then(()=>{
+          console.log("cart is empty ");
+         })
       
     })
   })
@@ -454,6 +456,8 @@ route.post("/cartPayment",(req,res)=>{
             // res.send({paypal:"hai"})
           }
         }
+
+        items=[]
         cartProducts.map(s=>{
           con.get().collection("orders").insertOne({
             product:ObjectId(s.p[0]._id),
@@ -467,7 +471,7 @@ route.post("/cartPayment",(req,res)=>{
             total: parseInt(s.p[0].price) * parseInt(s.products.count),
       
           }).then((r)=>{
-            items=[]
+            
             console.log("products inserted after paypal bu pending");
             items.push(r.insertedId)
             console.log(r.insertedId);
@@ -480,8 +484,21 @@ route.post("/cartPayment",(req,res)=>{
 })
 
 route.get("/cartSuccess",(req,res)=>{
-  console.log("success");
-  
+  console.log(items);
+  items.map((s)=>{
+    con.get().collection("orders").updateOne({_id:s},{$set:{paymentstatus:"success"}}).then((result)=>{
+          console.log(result);
+          
+
+    })
+
+  })
+  con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then((r)=>{
+  console.log("after cart empty",r);
+  console.log("cart is empty")
+  })
+  res.send("success")
+
 })
 
 module.exports = route;

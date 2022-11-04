@@ -1,3 +1,4 @@
+const { application } = require("express");
 const express = require("express");
 const { ObjectId } = require("mongodb");
 const route = express.Router();
@@ -236,17 +237,25 @@ route.get("/editcat", (req, res) => {
 });
 
 route.post("/addcat", (req, res) => {
-  if (req.body.newcat == "") {
-    res.redirect("/admin/categories");
-  } else {
-    con
+
+  con.get().collection("cat").findOne({name:req.body.newcat}).then((category)=>{
+
+    if(category || req.body.newcat == ""){
+      res.redirect("/admin/categories");
+    }else{
+      con
       .get()
       .collection("cat")
       .insertOne({ name: req.body.newcat })
       .then(() => {
         res.redirect("/admin/categories");
       });
-  }
+    }
+    
+  })
+
+
+   
 });
 route.post("/editcat", (req, res) => {
   con
@@ -260,4 +269,19 @@ route.post("/editcat", (req, res) => {
       res.redirect("/admin/categories");
     });
 });
+
+route.get("/sub-categories",(req,res)=>{
+  con.get().collection('categories').find({}).toArray().then((categories)=>{
+    // console.log(categories[0].Brands);
+    res.render("admin/sub-categories",{categories})
+  })
+  
+})
+route.post("/addBrand",(req,res)=>{
+  brand=req.body.newCategory
+  con.get().collection("categories").find({name:brand}).then(r=>{
+    console.log(r);
+  })
+
+})
 module.exports = route;

@@ -1,0 +1,114 @@
+<%-include("../partials/top.ejs")%>
+<body>
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
+  mdl-layout--fixed-header">         <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Sub categories</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+              <button id="demo-menu-lower-right"
+              class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">more_vert</i>
+      </button>
+      
+      <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+          for="demo-menu-lower-right">
+        <li class="mdl-menu__item">Some Action</li>
+        <li class="mdl-menu__item">Another Action</li>
+        <li disabled class="mdl-menu__item">Disabled Action</li>
+       <a href="/logout"><li class="mdl-menu__item">log out</li></a>
+      </ul>
+      
+              
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Title</span>
+          <nav class="mdl-navigation ">
+            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin">Dashboard</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/products">Products</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/users">Users</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/orders">orders</a>
+
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/categories">Category</a>
+              <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/sub-categories">Sub Categories</a>
+
+          </nav>
+        </div>
+        <main class="mdl-layout__content">
+          <div class="page-content"><!-- Your content goes here -->
+            <div class="container d-flex justify-content-around mt-5   ">
+                <div class="cat">
+                    <h3>Brands</h3>
+                <table class=" table table-bordered  me-4" >
+                    <%for(i=0;i<=categories[0].Brands.length-1;i++){%>
+                <tr>
+                    <td><%=categories[0].Brands[i].name%></td>
+                    
+                    <td class="d-flex justify-content-end"><button class="btn btn-danger me-3"><i class="fa-solid fa-trash"></i></button><button class="btn btn-warning"><i class="fa-solid fa-square-pen"></i></i></button></td>
+                </tr>
+                <%}%>
+                </table>
+                <button class="add btn btn-info " onclick="addBrand()">Add</button>
+            </div>
+                 <div class="cat">
+                    <h3>ram</h3>
+                <table class="table  table-bordered me-4">
+                    <%for(i=0;i<=categories[0].RAM.length-1;i++){%>
+                <tr>
+                    <td><%=categories[0].RAM[i].storage%> GB</td>
+                    <td class="d-flex justify-content-end align-items-center h-100"><button class="btn btn-danger me-3"><i class="fa-solid fa-trash"></i></button><button class="btn btn-warning"><i class="fa-solid fa-square-pen"></i></i></button></td>
+                </tr>
+                <%}%>
+                
+                </table>
+                <button class="add btn btn-info" onclick="addRAM()">Add</button>
+            </div>
+                <div class="cat">
+                    <h3>ROM</h3>
+                <table class="table  table-bordered">
+                   
+                    <%for(i=0;i<=categories[0].ROM.length-1;i++){%>
+                <tr>
+                    <td><%=categories[0].ROM[i].storage%> GB</td>
+                    <td class="d-flex justify-content-end"><button class="btn btn-danger me-3  "><i class="fa-solid fa-trash"></i></button><button class="btn btn-warning"><i class="fa-solid fa-square-pen"></i></i></button></td>
+                </tr>
+                <%}%>
+                </table>
+                <button class="add btn btn-info" onclick="addRAM()">Add</button>
+            </div>
+                    
+                   
+                    
+              
+                
+            </div>
+          </div>
+        
+          
+        </main>
+        
+      <script>
+        function addBrand() {
+           var newCategory = prompt("enter new category")
+           $.post("/admin/addBrand",{
+             newCategory
+           },()=>{
+            
+           })
+
+        }
+        function addRAM() {
+           var newCategory = prompt("enter RAM")
+
+        }
+        function addROM() {
+           var newCategory = prompt("enter new ROM")
+
+        }
+      </script>
+</body>
