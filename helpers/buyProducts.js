@@ -1,4 +1,6 @@
 const db = require("../config/connection");
+const moment=require("moment")
+
 const bcrypt = require("bcrypt");
 const { ObjectId } = require("mongodb");
 module.exports = {
@@ -17,11 +19,24 @@ module.exports = {
               ],
             })
             .then((ifres) => {
-              if (ifres) {
-                resolve({ result, ifres });
-              } else {
+              db.get().collection("wishlist").findOne({$and:[
+                {"products.product":ObjectId(data.query.id)},
+                { user:  ObjectId(data.session.user._id)}
+              ]}).then(wishlistp=>{
+
+               if (ifres&&wishlistp) {
+                resolve({ result, ifres,wishlistp });
+              } else if(ifres){
+                resolve({ result,ifres });
+              }else if(wishlistp){
+                resolve({ result,wishlistp });
+              }
+              else{
                 resolve({ result });
               }
+
+              })
+             
             });
         });
     });
@@ -89,7 +104,7 @@ module.exports = {
           status: "placed",
           paymentstatus:"seccess",
           address:JSON.parse( data.body.address),
-          time: new Date().toLocaleString('en-IN'),
+          time:moment().format('MMMM Do YYYY, h:mm:ss a'),
           quantity: data.body.quantity,
           total: parseInt(data.body.price)
         })

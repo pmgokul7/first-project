@@ -512,7 +512,30 @@ window.addEventListener('resize', slideImage);
                       <div class="flex flex-col xl:flex-row justify-center xl:justify-between space-y-6 xl:space-y-0 xl:space-x-6 w-full">
                           <div class="   flex flex-col sm:flex-row xl:flex-col  items-center bg-white border-1 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full">
                               <div class="flex flex-col justify-start items-start w-full space-y-4">
-                                  <p class="text-xl md:text-2xl leading-normal text-gray-800 dark:text-gray-50"><%=result.model%></p>
+                                <div class="DIV d-flex  w-100 justify-content-between" >
+                                  <p class="text-xl md:text-2xl leading-normal text-gray-800 dark:text-gray-50"><%=result.model%></p> 
+                                  <%if(locals.wishlistp){%>
+                                  <i
+                                  id="fav"
+                                  class="fa fa-heart fa-2xl me-4"
+                                  style="color: red; cursor: pointer;"
+                                  onclick="removeFromWish('<%=result._id%>')"
+                                  
+                                ></i>
+                                <%}else{%>
+                                <i
+                                  id="nonfav"
+                                  class="fa fa-heart fa-2xl me-4"
+                                  style="color: rgb(14, 14, 14);cursor: pointer;"
+                                  onclick="addToWish('<%=result._id%>')"
+                                ></i>
+  <%}%>
+                                 
+                                </div>
+                                  
+
+
+                
                                   <h1 class="text-4xl"> ₹ <%=result.price%></h1>
                               </div>
 
@@ -528,6 +551,10 @@ window.addEventListener('resize', slideImage);
         <div id="cont" class="p-8 bg-gray-100 dark:bg-gray-800 flex flex-col lg:w-full xl:w-3/5 d-flex flex-column justify-content-between">
           <div class="detials">
               <h1 class="text-2xl mb-4"><%=result.model%></h1>
+
+
+
+
               <ul>
                   <%for(h of result.highlights){%>
                   <li id="list"> <span><%=h%></span></li>
@@ -596,7 +623,25 @@ window.addEventListener('resize', slideImage);
 </div>
 </main>
 <script>
-  
+    function addToWish(id){
+        $.post("/home/addtowish",{
+           pid:id 
+        },(s)=>{
+      console.log(s);
+      location.reload()
+        })
+    }
+  function removeFromWish(id){
+    $.post("/home/removefromwish",{
+pid:id
+    },
+    (s)=>{
+      console.log(s);
+      location.reload()
+    })
+  }
+
+
   function addtocart(id) {
     $.post("/home/info/addtocart",{
       id:id

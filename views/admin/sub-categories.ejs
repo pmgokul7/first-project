@@ -49,7 +49,7 @@
                 <tr>
                     <td><%=categories[0].Brands[i].name%></td>
                     
-                    <td class="d-flex justify-content-end"><button class="btn btn-danger me-3"><i class="fa-solid fa-trash"></i></button><button class="btn btn-warning"><i class="fa-solid fa-square-pen"></i></i></button></td>
+                    <td class="d-flex justify-content-end"><button class="btn btn-danger me-3 " onclick="deleteCat('<%=categories[0].Brands[i].name%>')"><i class="fa-solid fa-trash"></i></button><button class="btn btn-warning" ><i class="fa-solid fa-square-pen"></i></i></button></td>
                 </tr>
                 <%}%>
                 </table>
@@ -61,7 +61,7 @@
                     <%for(i=0;i<=categories[0].RAM.length-1;i++){%>
                 <tr>
                     <td><%=categories[0].RAM[i].storage%> GB</td>
-                    <td class="d-flex justify-content-end align-items-center h-100"><button class="btn btn-danger me-3"><i class="fa-solid fa-trash"></i></button><button class="btn btn-warning"><i class="fa-solid fa-square-pen"></i></i></button></td>
+                    <td class="d-flex justify-content-end align-items-center h-100"><button class="btn btn-danger me-3" onclick="deleteRAM('<%=categories[0].RAM[i].storage%>')"><i class="fa-solid fa-trash"></i></button><button class="btn btn-warning"><i class="fa-solid fa-square-pen"></i></i></button></td>
                 </tr>
                 <%}%>
                 
@@ -79,7 +79,7 @@
                 </tr>
                 <%}%>
                 </table>
-                <button class="add btn btn-info" onclick="addRAM()">Add</button>
+                <button class="add btn btn-info" onclick="addROM()">Add</button>
             </div>
                     
                    
@@ -102,13 +102,44 @@
            })
 
         }
+function deleteCat(x){
+  var res=confirm("are u sure.?")
+  if(res==true){
+    $.post("/admin/deleteBrand",{
+    brand:x
+  },()=>{
+     location.reload()
+  })
+  }
+  
+}
+
         function addRAM() {
            var newCategory = prompt("enter RAM")
+           $.post("/admin/addRAM",{
+            newCategory
+           },()=>{
 
+           })
+
+        }
+        function deleteRAM(x){
+          var res=confirm("are u sure.?")
+  if(res==true){
+    $.post("/admin/deleteRAM",{
+    storage:x
+  },()=>{
+     location.reload()
+  })
+  }
         }
         function addROM() {
            var newCategory = prompt("enter new ROM")
-
+           $.post("/admin/addROM",{
+            newCategory
+           },()=>{
+            
+           })
         }
       </script>
 </body>

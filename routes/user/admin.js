@@ -4,6 +4,7 @@ const { ObjectId } = require("mongodb");
 const route = express.Router();
 const con = require("../../config/connection");
 const helper = require("../../helpers/adminHelpers");
+const moment=require("moment")
 
 route.use(function (req, res, next) {
   if (req.session.adminlogged) {
@@ -278,10 +279,62 @@ route.get("/sub-categories",(req,res)=>{
   
 })
 route.post("/addBrand",(req,res)=>{
-  brand=req.body.newCategory
-  con.get().collection("categories").find({name:brand}).then(r=>{
-    console.log(r);
-  })
+  con.get().collection("categories").updateOne({},{$push:{"Brands":{name:req.body.newCategory}}}).then(()=>{
+    res.send({added:true})
+  });
+})
+route.post("/deleteBrand",(req,res)=>{
+  con.get().collection("categories").updateOne({},{$pull:{"Brands":{name:req.body.brand}}}).then(()=>{
+    res.send({added:true})
+  });
+})
 
+route.post("/addRAM",(req,res)=>{
+  con.get().collection("categories").updateOne({},{$push:{"RAM":{storage:req.body.newCategory}}}).then(()=>{
+    res.send({added:true})
+  });
+  // console.log(req.body);
+})
+route.post("/deleteRAM",(req,res)=>{
+  con.get().collection("categories").updateOne({},{$pull:{"RAM":{storage:req.body.storage}}}).then(()=>{
+    res.send({added:true})
+  });
+})
+route.post("/addROM",(req,res)=>{
+  con.get().collection("categories").updateOne({},{$push:{"ROM":{storage:req.body.newCategory}}}).then(()=>{
+    res.send({added:true})
+  });
+  // console.log("rom called");
+})
+ 
+
+
+route.get("/reports",(req,res)=>{
+  con.get().collection("orders").find({time:{$lt:moment().format('MMMM Do YYYY, h:mm:ss a'),$gte: moment().subtract(1, 'years').calendar()}}).toArray().then((result)=>{
+    console.log(new Date().getMonth());
+    res.render("admin/reports",{result,heading:`Sales Report ${moment().format('YYYY')}`})
+  })
+  
+})
+
+route.get("/report/month",(req,res)=>{
+  con.get().collection("orders").find({time:{$lt:moment().format('MMMM Do YYYY, h:mm:ss a'),$gte:moment().subtract(1, 'months').calendar()}}).toArray().then((result)=>{
+    res.render("admin/reports",{result,heading:`Sales Report of  Last 1 Month`})
+  })
+  console.log(`${new Date().getFullYear()}-${new Date().getMonth()-1}-${new Date().getDay()}`);
+})
+
+route.get("/report/week",(req,res)=>{
+  con.get().collection("orders").find({time:{$lt:moment().format('MMMM Do YYYY, h:mm:ss a'),$gte:moment().subtract(7, 'days').calendar()}}).toArray().then((result)=>{
+    // console.log(r);
+    res.render("admin/reports",{result,heading:"Sales Report of Last 7 days"})
+  })
+  // console.log(formatDate(new Date()));
+})
+
+route.post("/week",(req,res)=>{
+  con.get().collection("orders").find({time:{$lt:new Date(),$gt: new Date("201-01-01")}}).toArray().then((r)=>{
+    res.send(r);
+  })
 })
 module.exports = route;

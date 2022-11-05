@@ -12,6 +12,8 @@ const client = require("twilio")(
   "AC310ba1f6e25df76fe77562d899355658",
   "f181af19d88019bab6b437c2aaa7ef68"
 );
+const moment=require("moment")
+
 const helper = require("./helpers/LoginHelpers");
 var base64ToImage = require("base64-to-image");
 const paypal = require("paypal-rest-sdk");
@@ -54,15 +56,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const app = express();
-// app.use(function (req, res, next) {
-//   if (!req.user) {
-//     res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
-//     res.header("Expires", "-1");
-//     res.header("Pragma", "no-cache");
-//   }
-//   console.log(req.user);
-//   next();
-// });
+app.use(function (req, res, next) {
+  if (!req.user) {
+    res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
+    res.header("Expires", "-1");
+    res.header("Pragma", "no-cache");
+  }
+  console.log(req.user);
+  next();
+});
 app.use(
   session({
     secret: "key",
@@ -109,7 +111,7 @@ app.post("/payment", (req, res) => {
         status: "pending",
         paymentstatus: "pending",
         address: address,
-        time: new Date().toLocaleString('en-US'),
+        time:moment().format('MMMM Do YYYY, h:mm:ss a'),
         quantity: req.body.quantity,
         total: req.body.total,
       })
@@ -144,7 +146,7 @@ app.post("/payment", (req, res) => {
       },
       redirect_urls: {
         return_url: "http://localhost:3000/success",
-        cancel_url: "http://cancel.url",
+        cancel_url: "http://localhost:3000/failed",
       },
       transactions: [
         {
@@ -178,7 +180,7 @@ app.post("/payment", (req, res) => {
             status: "pending",
             paymentstatus: "pending",
             address: address,
-            time: new Date().toLocaleString('en-US'),
+            time: moment().format('MMMM Do YYYY, h:mm:ss a'),
             quantity: req.body.quantity,
             total: req.body.total,
           })
@@ -206,7 +208,7 @@ app.post("/payment", (req, res) => {
             throw error;
           } else {
             // console.log(JSON.stringify(payment));
-            res.send("Success");
+            // res.send("Success");
             con
               .get()
               .collection("orders")
@@ -216,6 +218,7 @@ app.post("/payment", (req, res) => {
               )
               .then(() => {
                 console.log("updated successfully");
+                res.render("user/success")
               });
           }
         }
@@ -223,7 +226,11 @@ app.post("/payment", (req, res) => {
     });
   }
 });
-
+app.get("/failed",(req,res)=>{
+  con.get().collection("orders").updateOne({ _id: globalobjid },{ $set: { paymentstatus: "failed", status: "pending" } }).then(()=>{
+    res.render("user/paymentfailed")
+  })
+})
 app.post("/varifyPayment",(req,res)=>{
 let hmac=crypto.createHmac('sha256','b4PuKMMLTh2w0HRjNrKe36Ax')
 hmac.update(req.body['payment[razorpay_order_id]']+'|'+req.body['payment[razorpay_payment_id]']);

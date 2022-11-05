@@ -10,7 +10,7 @@ const removeFromCart2 = require("../../helpers/removeFromCart2");
 // const showCart = require("../../helpers/showCart");
 const bcrypt = require("bcrypt");
 const paypal = require("paypal-rest-sdk");
-
+const moment=require("moment")
 const carthelper = require("../../helpers/cartHelper");
 const cartHelper = require("../../helpers/cartHelper");
 const { json } = require("body-parser");
@@ -44,6 +44,7 @@ route.get("/products/info", (req, res) => {
       result: result.result,
       cart: result.ifres,
       user: req.session.user,
+      wishlistp:result.wishlistp
     });
   });
 });
@@ -57,11 +58,12 @@ route.post("/products", (req, res) => {
     .then((result) => {
       con
         .get()
-        .collection("user")
-        .findOne({ _id: ObjectId(req.session.user._id) })
+        .collection("wishlist")
+        .find({ user: ObjectId(req.session.user._id) })
+        .toArray()
         .then((wish) => {
           searcsh = req.body.search;
-          console.log(wish);
+          console.log("this is wishlist",wish);
           res.render("user/products", {
             result,
             searcsh,
@@ -235,40 +237,30 @@ route.get("/deleteaddress", (req, res) => {
 });
 
 route.post("/addtowish", (req, res) => {
-  // con
-  //   .get()
-  //   .collection("user")
-  //   .updateOne(
-  //     { _id: ObjectId(req.session.user._id) },
-  //     { $push: { wishlist: ObjectId(req.body.pid) } }
-  //   )
-  //   .then((r) => {
-  //     console.log(r);
-  //     res.send({ added: true });
-  //   });
-  // }
+console.log(req.body);
   con
     .get()
     .collection("wishlist")
-    .findOne({ user: ObjectId(req.session.user._id) })
+    .updateOne({user: ObjectId(req.session.user._id)},{$push:{"products":{"product":ObjectId(req.body.pid)}}})
     .then((result) => {
-      if (result) {
-      }
+      console.log("inserted to wishlist");
+      res.send({added:true})
     });
-  console.log("add called");
+  
 });
 
 route.post("/removefromwish", (req, res) => {
+  console.log(req.body);
   con
     .get()
-    .collection("user")
+    .collection("wishlist")
     .updateOne(
-      { _id: ObjectId(req.session.user._id) },
-      { $pull: { wishlist: ObjectId(req.body.pid) } }
+      { user: ObjectId(req.session.user._id) },
+      { $pull: {"products":{"product": ObjectId(req.body.pid)} } }
     )
     .then((r) => {
       // console.log(r);
-      res.send({ added: true });
+      res.send({ removed:true });
     });
   console.log("called remove");
 });
@@ -400,7 +392,7 @@ route.post("/orderconfirmcart", (req, res) => {
           method: "COD",
           status: "placed",
           address:JSON.parse(req.body.address),
-          time: req.body.date,
+          time: moment().format('MMMM Do YYYY, h:mm:ss a'),
           quantity:s.products.count,
           total: parseInt(s.p[0].price) * parseInt(s.products.count),
     }).then(()=>{
@@ -466,7 +458,7 @@ route.post("/cartPayment",(req,res)=>{
             status: "pending",
             paymentstatus:"pending",
             address:JSON.parse(req.body.address),
-            time: new Date().toLocaleString('en-US'),
+            time:moment().format('MMMM Do YYYY, h:mm:ss a'),
             quantity:s.products.count,
             total: parseInt(s.p[0].price) * parseInt(s.products.count),
       
