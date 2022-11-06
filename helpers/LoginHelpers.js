@@ -17,7 +17,7 @@ module.exports = {
                   data.mobile == result.mobile &&
                   result.status == "active"
                 ) {
-                  resolve({ loginstatus: true, blocked: false, result });
+                  resolve({ loginstatus: true, blocked: false, result ,admin:false});
                 } else if (
                   compareRes == true &&
                   data.mobile == result.mobile &&

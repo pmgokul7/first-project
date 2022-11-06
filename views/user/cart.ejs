@@ -9,11 +9,27 @@
 		<div class="mdl-layout-spacer"></div>
 		<!-- Navigation. We hide it in small screens. -->
 		<nav class="mdl-navigation mdl-layout--large-screen-only">
-		  <a class="mdl-navigation__link" href="">Link</a>
-		  <a class="mdl-navigation__link" href="">Link</a>
-		  <a class="mdl-navigation__link" href="">Link</a>
-		  <a class="mdl-navigation__link" href="">Link</a>
-		</nav>
+			<form action="/home/products" method="post" style="margin-top: 25px;margin-right: 150px;">
+				<input type="text" name="search" id="" style="width:450px ;margin-bottom: 20px;" placeholder="search here">
+				</form>
+				<button id="demo-menu-lower-right"
+			class="mdl-button mdl-js-button">
+			
+	
+	  <h6 class="" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
+				
+			
+	</button>
+	
+	<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+		for="demo-menu-lower-right">
+		<a href="/home/cart">  <li class="mdl-menu__item">Cart</li></a>
+		  <a href="/home/orders"><li class="mdl-menu__item">Orders</li></a>  
+		  <a href="/home/wishlist"><li class="mdl-menu__item">wishlist</li></a>  
+		  <a href="/home/profile"><li class="mdl-menu__item">My profile</li></a> 
+		   <a href="/logout"><li class="mdl-menu__item">log out</li></a>
+	</ul>
+		  </nav>
 	  </div>
 	</header>
 	<div class="mdl-layout__drawer">
@@ -55,7 +71,7 @@
 				</td>
 				<td></td>
 				<td>
-					<a href="" class="btn btn-danger">remove</a>
+					<a href="/home/removeFromCart/<%=result[i].products.product%>" class="btn btn-danger">remove</a>
 				</td>
 			  </tr>
 			  <%}%>	
@@ -65,8 +81,9 @@
 		  <hr>
 
 		  <div class="checkoutdiv float-end me-5 mt-5">
-			
+			Total:<h1 id="totalp">0</h1>
 			<a href="/home/cart/checkout" >
+				
 			<button class="checkout btn-lg btn-success" style="height:50px ;padding: 5px 10px 5px 10px;">proceed to checkout</button>
 			</a>
 		  </div>
@@ -90,6 +107,26 @@
 					$(`#${proId}`).text(quantity+parseInt(count	))
 				}
 			 })
+		
+			 $.post("/home/gettotal",{data:"hai"},(res)=>{
+				// console.log(res[0].total);
+				if(res)
+				{
+					$("#totalp").html(res[0].total)
+				}
+				
+			})
 		}
+
+		$(document).ready(()=>{
+			$.post("/home/gettotal",{data:"hai"},(res)=>{
+				// console.log(res[0].total);
+				if(res)
+				{
+					$("#totalp").html(res[0].total)
+				}
+				
+			})
+		})
 	</script>
   </div>

@@ -29,6 +29,7 @@ route.post("/", (req, res) => {
       console.log("logged in");
       req.session.user = result.result;
       req.session.userLogged = true;
+      req.session.admin=result.admin
       con
         .get()
         .collection("cart")

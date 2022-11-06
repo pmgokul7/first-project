@@ -7,11 +7,11 @@ const helper = require("../../helpers/adminHelpers");
 const moment=require("moment")
 
 route.use(function (req, res, next) {
-  if (req.session.adminlogged) {
+  if (req.session.adminlogged==true) {
     next();
   } else {
-    // res.redirect("/adminlogin")
-    next();
+    res.redirect("/adminlogin")
+    // next();
   }
 });
 
@@ -30,6 +30,7 @@ route.get("/", (req, res) => {
           _id:null,
           sumcod:{$sum:"$total"}
         }}]).toArray().then((codd)=>{
+          console.log(codd);
           con.get().collection("orders").aggregate([{$match:{status:"placed",method:"paypal"}},{$group:{
             _id:null,
             sumpaypal:{$sum:"$total"}
@@ -45,8 +46,8 @@ route.get("/", (req, res) => {
                 // r=razorr[0].sumrazor
               }
               res.render("admin/adminDash",{paypal:paypal.length,cod:cod.length,razorpay:razor.length,codR:codd[0].sumcod,paypalR:paypall[0].sumpaypal,razorR:0,total:5+paypall[0].sumpaypal+codd[0].sumcod});
-              console.log(codd[0].sumcod);
-              console.log(paypall[0].sumpaypal);
+              console.log("codd",codd[0]);
+              console.log(paypall[0]);
 
               console.log(razorr);
 

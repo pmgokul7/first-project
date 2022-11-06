@@ -20,19 +20,22 @@ instance = new Razorpay({
   key_id: "rzp_test_kwZGFuI0hWeY2V",
   key_secret: "b4PuKMMLTh2w0HRjNrKe36Ax",
 });
-route.get("/cart", (req, res) => {
-  carthelper.getCartProducts(req).then((result) => {
-    res.render("user/cart", { result });
-  });
-});
+
 
 route.use(function (req, res, next) {
-  if (req.session.user) {
+  if (req.session.user&&req.session.admin==false) {
     next();
   } else {
     res.redirect("/login");
-    next();
+    
   }
+}); 
+
+
+route.get("/cart", (req, res) => {
+  carthelper.getCartProducts(req).then((result) => {
+    res.render("user/cart", { result ,user:req.session.user});
+  });
 });
 route.get("/", (req, res) => {
   res.render("user/userHome", { result: req.session.user });
@@ -97,7 +100,7 @@ route.get("/cart/remove", (req, res) => {
 
 route.get("/orders", (req, res) => {
   helper.myOrders(req).then((result) => {
-    res.render("user/orders", { result });
+    res.render("user/orders", { result ,user:req.session.user});
   });
 });
 
@@ -191,6 +194,7 @@ route.get("/cart/checkout", (req, res) => {
        
         .then((result) => {
           console.log("cartitems:",cartItems);
+          globalcartTotal=cartItems
           cartProducts = result;
           res.render("user/buynow2", {
             result,
@@ -255,13 +259,13 @@ console.log(req.body);
 });
 
 route.post("/removefromwish", (req, res) => {
-  console.log(req.body);
+  console.log("this is body",req.body);
   con
     .get()
     .collection("wishlist")
     .updateOne(
       { user: ObjectId(req.session.user._id) },
-      { $pull: {"products":{"product": ObjectId(req.body.pid)} } }
+      { $pull: {"products":{"product": ObjectId(req.body.id)} } }
     )
     .then((r) => {
       // console.log(r);
@@ -281,7 +285,7 @@ route.get("/wishlist", (req, res) => {
       {
         $lookup: {
           from: "Products",
-          localField: "product",
+          localField: "products.product",
           foreignField: "_id",
           as: "p",
         },
@@ -289,7 +293,8 @@ route.get("/wishlist", (req, res) => {
     ])
     .toArray()
     .then((r) => {
-      res.render("user/wislist", { r });
+      console.log("this is wishlist",r);
+      res.render("user/wislist", { r ,user:req.session.user});
     });
 });
 
@@ -554,6 +559,62 @@ route.get("/cartSuccess",(req,res)=>{
   })
   res.send("success")
 
+})
+route.post("/gettotal",(req,res)=>{
+  con
+  .get()
+  .collection("cart")
+  .aggregate([
+    {
+      $match: { user: ObjectId(req.session.user._id) },
+    },
+    {
+      $unwind: "$products",
+    },
+
+    {
+      $lookup: {
+        from: "Products",
+        localField: "products.product",
+        foreignField: "_id",
+        as: "pro",
+      },
+    },
+    {
+      $project: {
+        "products.product": 1,
+        "products.count": 1,
+        pro: { $arrayElemAt: ["$pro", 0] },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: { $multiply: ["$products.count", "$pro.price"] } },
+      },
+    },
+  ])
+  .toArray().then(total=>{
+    res.send(total)
+    console.log(total);
+  })
+})
+
+route.get("/removeFromCart/:id",(req,res)=>{
+  con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id)},{$pull:{"products":{product:ObjectId(req.params.id)}}}).then(r=>{
+    console.log(r);
+    res.redirect("/home/cart")
+  })
+  console.log(req.params);
+})
+
+route.get("/editaddress",(req,res)=>{
+  con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)}).then((add)=>{
+    // console.log(user.address[req.query.i]);
+    address=add.address[req.query.i]
+    res.render("user/editAddress",{user:req.session.user,address})
+
+  })
 })
 
 module.exports = route;

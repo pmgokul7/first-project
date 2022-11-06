@@ -481,21 +481,27 @@ body {
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation. We hide it in small screens. -->
             <nav class="mdl-navigation mdl-layout--large-screen-only">
-              <button id="demo-menu-lower-right"
-              class="mdl-button mdl-js-button mdl-button--icon">
-        <i class="material-icons">more_vert</i>
-      </button>
-      
-      <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-          for="demo-menu-lower-right">
-        <li class="mdl-menu__item">Some Action</li>
-        <li class="mdl-menu__item">Another Action</li>
-        <li disabled class="mdl-menu__item">Disabled Action</li>
-       <a href="/logout"><li class="mdl-menu__item">log out</li></a>
-      </ul>
-      
-              
-            </nav>
+				<form action="/home/products" method="post" style="margin-top: 25px;margin-right: 150px;">
+					<input type="text" name="search" id="" style="width:450px ;margin-bottom: 15px;" placeholder="search here">
+					</form>
+					<button id="demo-menu-lower-right"
+				class="mdl-button mdl-js-button">
+				
+		
+		  <h6 class="mt-3" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
+					
+				
+		</button>
+		
+		<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+			for="demo-menu-lower-right">
+			<a href="/home/cart">  <li class="mdl-menu__item">Cart</li></a>
+			  <a href="/home/orders"><li class="mdl-menu__item">Orders</li></a>  
+			  <a href="/home/wishlist"><li class="mdl-menu__item">wishlist</li></a>  
+			  <a href="/home/profile"><li class="mdl-menu__item">My profile</li></a> 
+			   <a href="/logout"><li class="mdl-menu__item">log out</li></a>
+		</ul>
+			  </nav>
           </div>
         </header>
         <div class="mdl-layout__drawer">
