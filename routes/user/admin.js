@@ -1,4 +1,4 @@
-const { application } = require("express");
+const { application, Router } = require("express");
 const express = require("express");
 const { ObjectId } = require("mongodb");
 const route = express.Router();
@@ -16,7 +16,51 @@ route.use(function (req, res, next) {
 });
 
 route.get("/", (req, res) => {
-  res.render("admin/adminDash");
+  // con.get().collection("orders").aggregate([{$match:{}},{$group:{_id:"$method",count:{$sum:1}}},]).toArray().then((orders)=>{
+  //   res.render("admin/adminDash",{orders});
+  //   console.log(orders);
+  // })
+  con.get().collection("orders").find({method:"paypal"}).toArray().then(paypal=>{
+    console.log(paypal.length);
+    con.get().collection("orders").find({method:"COD"}).toArray().then(cod=>{
+      console.log(cod.length);
+      con.get().collection("orders").find({method:"razorpay"}).toArray().then(razor=>{
+        console.log(razor.length);
+        con.get().collection("orders").aggregate([{$match:{status:"placed",method:"COD"}},{$group:{
+          _id:null,
+          sumcod:{$sum:"$total"}
+        }}]).toArray().then((codd)=>{
+          con.get().collection("orders").aggregate([{$match:{status:"placed",method:"paypal"}},{$group:{
+            _id:null,
+            sumpaypal:{$sum:"$total"}
+          }}]).toArray().then((paypall)=>{
+            // console.log("this is placed paypal",paypall);
+            con.get().collection("orders").aggregate([{$match:{status:"placed",method:"razorpay"}},{$group:{
+              _id:null,
+              sumrazor:{$sum:"$total"}
+            }}]).toArray().then((razorr)=>{
+              if(razorr===undefined){
+                r=0
+              }else{
+                // r=razorr[0].sumrazor
+              }
+              res.render("admin/adminDash",{paypal:paypal.length,cod:cod.length,razorpay:razor.length,codR:codd[0].sumcod,paypalR:paypall[0].sumpaypal,razorR:0,total:5+paypall[0].sumpaypal+codd[0].sumcod});
+              console.log(codd[0].sumcod);
+              console.log(paypall[0].sumpaypal);
+
+              console.log(razorr);
+
+            })
+
+            
+          })
+
+        })
+        
+      })
+    })
+  })
+  
 });
 
 route.get("/products", (req, res) => {
@@ -336,5 +380,12 @@ route.post("/week",(req,res)=>{
   con.get().collection("orders").find({time:{$lt:new Date(),$gt: new Date("201-01-01")}}).toArray().then((r)=>{
     res.send(r);
   })
+})
+
+route.get("/ordersData",(req,res)=>{
+  con.get().collection("orders").aggregate([{$match:{}},{$group:{_id:"$method",count:{$sum:1}}},]).toArray().then((orders)=>{
+    res.json(orders)
+  })
+  
 })
 module.exports = route;

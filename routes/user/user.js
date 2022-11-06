@@ -1,4 +1,6 @@
 const { Router } = require("express");
+const Razorpay = require("razorpay");
+const crypto=require("crypto")
 const express = require("express");
 const { ObjectId, ObjectID, Db } = require("mongodb");
 const route = express.Router();
@@ -14,7 +16,10 @@ const moment=require("moment")
 const carthelper = require("../../helpers/cartHelper");
 const cartHelper = require("../../helpers/cartHelper");
 const { json } = require("body-parser");
-
+instance = new Razorpay({
+  key_id: "rzp_test_kwZGFuI0hWeY2V",
+  key_secret: "b4PuKMMLTh2w0HRjNrKe36Ax",
+});
 route.get("/cart", (req, res) => {
   carthelper.getCartProducts(req).then((result) => {
     res.render("user/cart", { result });
@@ -473,8 +478,66 @@ route.post("/cartPayment",(req,res)=>{
       }
     });
   }
-})
+  else  if(req.body.payment=="razorpay"){
+    console.log("you chose razorpay");
+    console.log(req.body);
+    console.log(cartProducts);
+    items2=[]
+   cartProducts.map(s=>{
+    con.get().collection("orders").insertOne({
+      product:ObjectId(s.p[0]._id),
+      user: req.session.user.name,
+      method: "razorpay",
+      status: "pending",
+      paymentstatus:"pending",
+      address:JSON.parse(req.body.address),
+      time:moment().format('MMMM Do YYYY, h:mm:ss a'),
+      quantity:s.products.count,
+      total: parseInt(s.p[0].price) * parseInt(s.products.count),
 
+    }).then(r=>{
+          items2.push(r.insertedId)
+    })
+   })
+    var options = {
+      amount: req.body.total,  // amount in the smallest currency unit
+      currency: "INR",
+      receipt: "order_rcptid_11"
+    };
+    instance.orders.create(options, function(err, order) {
+      if(err){
+        console.log(err);
+      }
+      else{
+        console.log(order);
+        res.send(order)
+       
+
+      }
+      
+    });
+    
+  }
+})
+route.post("/varifypayment",(req,res)=>{
+  console.log(req.body);
+  let hmac=crypto.createHmac('sha256','b4PuKMMLTh2w0HRjNrKe36Ax')
+  hmac.update(req.body['payment[razorpay_order_id]']+'|'+req.body['payment[razorpay_payment_id]']);
+  hmac=hmac.digest('hex')
+  items2.map(s=>{
+    if(hmac==req.body['payment[razorpay_signature]']){
+    con.get().collection("orders").updateOne({_id:s},{$set:{status:"placed",paymentstatus:"success"}}).then((e)=>{
+     console.log("this is after razorpay success");
+    })
+ }
+ else{
+   con.get().collection("orders").updateOne({_id:s},{$set:{status:"failed payment"}}).then((e)=>{
+     console.log("this is after razorpay fAiled");
+    })
+ }
+  })
+  
+})
 route.get("/cartSuccess",(req,res)=>{
   console.log(items);
   items.map((s)=>{

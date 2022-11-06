@@ -36,66 +36,143 @@
 
               <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/categories">Category</a>
               <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/sub-categories">Sub Categories</a>
+              <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
           </nav>
         </div>
         <main class="mdl-layout__content">
           <div class="page-content"><!-- Your content goes here -->
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-            <div id="barchart_material" style="width: 100%; height: 500px;"></div>
-          </div>
-          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-       
-          <script>
-             google.charts.load("current", {
-      packages: ["corechart"]
-    });
+           
 
-    google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Month', 'Bolivia', 'Ecuador', 'Madagascar', 'Papua New Guinea', 'Rwanda', 'Average'],
-        ['2016/04', 136, 691, 629, 1026, 366, 569.6],
-        ['2016/05', 165, 938, 522, 998, 450, 614.6],
-        ['2016/06', 135, 1120, 599, 1268, 288, 682],
-        ['2016/07', 157, 1167, 587, 807, 397, 623],
-        ['2016/08', 139, 1110, 615, 968, 215, 609.4]
-      ]);
+  
 
-      var options = {
-        hAxis: {
-          title: 'Month'
-        },
-        seriesType: 'bars',
-        series: {
-          // Index no. based from data (5 for Average Data)
-          5: {
-            type: 'line'
-          }
-        },
-        title: "Annual Sales Report for FY'16",
-        width: '100%',
-        height: 400,
-        vAxis: {
-          title: 'Units Sold (In Millions)'
-        },
-        legend: {
-          position: 'none'
-        },
-        bar: {
-          groupWidth: '90%'
-        },
-//        isStacked: true
-      };
+    <h1 id="paypal" style="display: none;"><%=paypal%></h1>
+    <h1 id="cod"  style="display: none;"><%=cod%></h1>
+    <h1 id="razorpay" style="display: none;"><%=razorpay%></h1>
 
-      var chart = new google.visualization.ComboChart(document.getElementById('barchart_material'));
 
-      chart.draw(data, options);
-    }
-          </script>
+
+
+    <h1 id="codd"><%=codR%></h1>
+   
+    
+    <h1 id="paypall"><%=paypalR%></h1>
+   
+    <div class="container d-flex mt-4 justify-content-between" style="box-sizing:content-box;"> <div class=" w-50">
+            <div class="me-4" style="border: 2px solid rgb(175, 166, 166); ">
+              <h2 class="ps-3 pt-2"> Total Orders:<%=Number(paypal+cod+razorpay)%></h2>
+
+              <canvas class="p-3" id="myChart"></canvas>
+            </div>
+           
           
-        </main>
+          </div>
+          <div class=" w-50 " style="border: 2px solid rgb(175, 166, 166);">
+            <div>
+              <h2 class="ps-3 pt-2">Orders</h2>
+              <h2 class="p-3">Total Revenue:&nbsp&nbsp&nbsp&nbsp;<%=total%></h2>
+              <canvas class="p-3" id="myChart2" ></canvas>
+            </div>
+           
+          
+          </div>
+    </div>
+         
         
+
+
+
+
+
+
+        
+        </main>
+       
+        
+        <script>
+           
+   $(document).ready(()=>{
+    console.log($("#paypal").html());
+    var myVAlues=new Array();
+            $.get("/admin/ordersData",(res)=>{
+            for(i=0;i<res.length;i++)
+            {
+              myVAlues.push(res[i].count)
+            }
+                 
+           
+            })
+
+console.log(myVAlues);
+          const labels = [
+            'paypal',
+            'COD',
+            'Razorpay',
+            
+          ];
+          
+        
+          const data = {
+            labels: labels,
+            datasets: [{
+              label: 'Orders',
+              backgroundColor: 'rgb(100,128,255)',
+              borderColor: '',
+              data:[$("#paypal").html(),$("#cod").html(),$("#razorpay").html()],
+            }]
+          };
+        
+          const config = {
+            type: 'bar',
+            data: data,
+            options: {}
+          };
+          const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+          );
+    
+
+
+
+
+
+
+         const labels2 = [
+            'paypal',
+            'COD',
+            'Razorpay',
+            
+          ];
+          
+        
+          const data2 = {
+            labels: labels2,
+            datasets: [{
+              label: 'total Revenue',
+              backgroundColor: 'rgb(100,228,255)',
+              borderColor: 'rgb(100,228,255)',
+              data:[$("#paypall").html(),$("#codd").html()],
+            }]
+          };
+        
+          const config2 = {
+            type: 'line',
+            data: data2,
+            options: {}
+          };
+          const myChart2 = new Chart(
+            document.getElementById('myChart2'),
+            config2
+          );
+        })
+
+
+
+        
+        </script>
+        
+         
       
 </body>
