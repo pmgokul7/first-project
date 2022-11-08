@@ -111,9 +111,10 @@ app.post("/payment", (req, res) => {
         status: "pending",
         paymentstatus: "pending",
         address: address,
-        time:moment().format('MMMM Do YYYY, h:mm:ss a'),
+        time:moment().format("L"),
+          date:moment().toDate(),
         quantity: req.body.quantity,
-        total: req.body.total,
+        total:Number(req.body.total),
       })
       .then((re) => {
         globalobjrezorid=re.insertedId;
@@ -180,9 +181,10 @@ app.post("/payment", (req, res) => {
             status: "pending",
             paymentstatus: "pending",
             address: address,
-            time: moment().format('MMMM Do YYYY, h:mm:ss a'),
+            time:moment().format("L"),
+            date:moment().toDate(),
             quantity: req.body.quantity,
-            total: req.body.total,
+            total:Number(req.body.total),
           })
           .then((r) => {
             globalobjid = r.insertedId;

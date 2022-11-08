@@ -25,12 +25,12 @@ route.get("/", (req, res) => {
     con.get().collection("orders").find({method:"COD"}).toArray().then(cod=>{
       console.log(cod.length);
       con.get().collection("orders").find({method:"razorpay"}).toArray().then(razor=>{
-        console.log(razor.length);
+        // console.log(razor.length);
         con.get().collection("orders").aggregate([{$match:{status:"placed",method:"COD"}},{$group:{
           _id:null,
           sumcod:{$sum:"$total"}
         }}]).toArray().then((codd)=>{
-          console.log(codd);
+          // console.log(codd);
           con.get().collection("orders").aggregate([{$match:{status:"placed",method:"paypal"}},{$group:{
             _id:null,
             sumpaypal:{$sum:"$total"}
@@ -40,16 +40,13 @@ route.get("/", (req, res) => {
               _id:null,
               sumrazor:{$sum:"$total"}
             }}]).toArray().then((razorr)=>{
-              if(razorr===undefined){
-                r=0
-              }else{
-                // r=razorr[0].sumrazor
-              }
-              res.render("admin/adminDash",{paypal:paypal.length,cod:cod.length,razorpay:razor.length,codR:codd[0].sumcod,paypalR:paypall[0].sumpaypal,razorR:0,total:5+paypall[0].sumpaypal+codd[0].sumcod});
-              console.log("codd",codd[0]);
-              console.log(paypall[0]);
+             console.log("razorr:",razorr);
+             
+              res.render("admin/adminDash",{paypal:paypal.length,cod:cod.length,razorpay:razor.length,codR:codd[0].sumcod,paypalR:paypall[0].sumpaypal,razorR:razorr[0].sumrazor,total:5+paypall[0].sumpaypal+codd[0].sumcod});
+              // console.log("codd",codd[0]);
+              // console.log(paypall[0]);
 
-              console.log(razorr);
+              console.log(razorr,paypall,codd);
 
             })
 
@@ -355,33 +352,147 @@ route.post("/addROM",(req,res)=>{
 
 
 route.get("/reports",(req,res)=>{
-  con.get().collection("orders").find({time:{$lt:moment().format('MMMM Do YYYY, h:mm:ss a'),$gte: moment().subtract(1, 'years').calendar()}}).toArray().then((result)=>{
-    console.log(new Date().getMonth());
+  const now=new Date()
+  const start=new Date(`${new Date().getFullYear()}`,0,1)
+  con.get().collection("orders").find({date:{$lt:now,$gte:start}}).toArray().then((result)=>{
+    console.log("new date:",start);
+console.log(now);
     res.render("admin/reports",{result,heading:`Sales Report ${moment().format('YYYY')}`})
   })
   
 })
 
 route.get("/report/month",(req,res)=>{
-  con.get().collection("orders").find({time:{$lt:moment().format('MMMM Do YYYY, h:mm:ss a'),$gte:moment().subtract(1, 'months').calendar()}}).toArray().then((result)=>{
-    res.render("admin/reports",{result,heading:`Sales Report of  Last 1 Month`})
-  })
-  console.log(`${new Date().getFullYear()}-${new Date().getMonth()-1}-${new Date().getDay()}`);
+  const now=new Date()
+  if(now.getMonth==1){
+    backMonth=12
+    backYear=now.getFullYear()-1
+  }
+  else{
+    backMonth=now.getMonth()-1
+    backYear=now.getFullYear()
+  }
+  const start=new Date(`${backYear},${backMonth},${now.getDate()}`)
+    con.get().collection("orders").find({date:{$lt:now,$gt:start}}).toArray().then((result)=>{
+      console.log(now);
+      console.log(start);
+      console.log(result);
+
+
+      res.render("admin/reports",{result,heading:`Sales Report of  Last 1 Month`})
+    })
+  
+
 })
 
 route.get("/report/week",(req,res)=>{
-  con.get().collection("orders").find({time:{$lt:moment().format('MMMM Do YYYY, h:mm:ss a'),$gte:moment().subtract(7, 'days').calendar()}}).toArray().then((result)=>{
-    // console.log(r);
+  const now=new Date()
+  if(now.getMonth!=1)
+  {
+  if(now.getDate==7){
+    nbackday=30
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()
+  }
+  else if(now.getDate==6){
+    nbackday=29
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()
+
+  }
+  else if(now.getDate==5){
+    nbackday=28
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()
+
+  }
+  else if(now.getDate==4){
+    nbackday=27
+    nbackMonth=now.getMonth()
+  }else if(now.getDate==3){
+    nbackday=26
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()
+
+  }
+  else if(now.getDate==2){
+    nbackday=25
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()
+
+  }
+  else if(now.getDate==1){
+    nbackday=24
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()
+
+  }
+  else{
+    nbackday=now.getDay()-7
+    nbackMonth=now.getMonth()
+    nbackYear=now.getFullYear()
+  }
+}else{
+  if(now.getDate==7){
+    nbackday=30
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()-1
+
+  }
+  else if(now.getDate==6){
+    nbackday=29
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()-1
+
+  }
+  else if(now.getDate==5){
+    nbackday=28
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()-1
+
+  }
+  else if(now.getDate==4){
+    nbackday=27
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()-1
+
+  }else if(now.getDate==3){
+    nbackday=26
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()-1
+
+  }
+  else if(now.getDate==2){
+    nbackday=25
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()-1
+
+  }
+  else if(now.getDate==1){
+    nbackday=24
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()-1
+
+  }
+  else{
+    nbackday=now.getDay()-7
+    nbackMonth=now.getMonth()-1
+    nbackYear=now.getFullYear()-1
+  }
+}
+ const start=new Date(`${nbackYear},${nbackMonth},${nbackday}`)
+  con.get().collection("orders").find({date:{$lt:now,$gte:start}}).toArray().then((result)=>{
+    console.log(result);
     res.render("admin/reports",{result,heading:"Sales Report of Last 7 days"})
   })
   // console.log(formatDate(new Date()));
 })
 
-route.post("/week",(req,res)=>{
-  con.get().collection("orders").find({time:{$lt:new Date(),$gt: new Date("201-01-01")}}).toArray().then((r)=>{
-    res.send(r);
-  })
-})
+// route.post("/week",(req,res)=>{
+//   con.get().collection("orders").find({time:{$lt:new Date(),$gt: new Date("201-01-01")}}).toArray().then((r)=>{
+//     res.send(r);
+//   })
+// })
 
 route.get("/ordersData",(req,res)=>{
   con.get().collection("orders").aggregate([{$match:{}},{$group:{_id:"$method",count:{$sum:1}}},]).toArray().then((orders)=>{

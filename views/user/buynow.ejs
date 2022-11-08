@@ -280,7 +280,7 @@
                   </p>
                   <div class="d-flex">
                     <h1 class="text-4xl">₹</h1>
-                    <h1 class="text-4xl bg-danger" id="priceone"><%=result.price%></h1>
+                    <h1 class="text-4xl" id="priceone"><%=result.price%></h1>
                   </div>
                 </div>
                 <div
@@ -327,14 +327,14 @@
                         type="radio"
                         name="address"
                         class="addresss"
-                        id="flexRadioDefault2"
+                        id="<%=i%>"
                         onchange="onchanageInput('<%=user.address[i]%>',this)"
                         value="<%=JSON.stringify(user.address[i])%>"
                         
                       />
                       <label
                         class="form-check-label p-4 border-1 w-100 mb-3 "
-                        for="flexRadioDefault2"
+                        for="<%=i%>"
                       >
                       <h6></h6>
                         <h6><%=user.address[i].name%></h6>
@@ -618,9 +618,17 @@
               mobile: $("#mob").val(),
             },
             (data) => {
-              swal("address added!.").then((value) => {
+              if(data.empty){
+                swal("All fields must be filled!.")
+                
+              }
+              else{
+                swal("address added!.").then((value) => {
                 location.reload();
               });
+              }
+              
+              console.log(data);
             }
           );
         }

@@ -80,7 +80,11 @@ module.exports = {
   },
   addressAdd: (data) => {
     return new Promise((resolve, reject) => {
-      db.get()
+    
+      if(data.body.name==""||data.body.address1==""||data.body.address1==""||data.body.post==""||data.body.pin==""||data.body.mobile==""){
+        resolve({empty:true})
+      }else{
+  db.get()
         .collection("user")
         .updateOne(
           { _id:  ObjectId(data.session.user._id) },
@@ -89,6 +93,8 @@ module.exports = {
         .then((s) => {
           resolve({ add: true });
         });
+      }
+      console.log(data.body);
     });
   },
 
@@ -102,9 +108,10 @@ module.exports = {
           user: data.session.user.name,
           method: "COD",
           status: "placed",
-          paymentstatus:"seccess",
+          paymentstatus:"success",
           address:JSON.parse( data.body.address),
-          time:moment().format('MMMM Do YYYY, h:mm:ss a'),
+          time:moment().format("L"),
+          date:new Date(),
           quantity: data.body.quantity,
           total: parseInt(data.body.price)
         })

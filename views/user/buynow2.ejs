@@ -75,11 +75,13 @@
             id="name"
             name="name"
             required
+            onkeyup="btnenable()"
           />
         </div>
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">Mobile</label>
           <input
+          onkeyup="btnenable()"
             type="text"
             class="form-control"
             id="mob"
@@ -93,6 +95,7 @@
             >Address line1</label
           >
           <input
+          onkeyup="btnenable()"
             type="text"
             class="form-control"
             id="ad1"
@@ -106,6 +109,7 @@
             >Address line2</label
           >
           <input
+          onkeyup="btnenable()"
             type="text"
             class="form-control"
             id="ad2"
@@ -116,6 +120,7 @@
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">post</label>
           <input
+          onkeyup="btnenable()"
             type="text"
             class="form-control"
             id="post"
@@ -126,6 +131,7 @@
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">pin</label>
           <input
+          onkeyup="btnenable()"
             type="number"
             class="form-control"
             id="pin"
@@ -138,7 +144,9 @@
           type="button"
           onclick="addaddressbtn('<%result._id%>')"
           value="add"
+          id="addaddressbtn2"
           class="form-control btn btn-primary"
+          
         />
         <!-- </form> -->
       </div>
@@ -335,7 +343,7 @@
                         class="form-check-label p-4 border-1 w-100 mb-3"
                         for="<%=i%>"
                       >
-                        <h6></h6>
+                       
                         <h6><%=user.address[i].name%></h6>
                         <h6><%=user.address[i].mobile%></h6>
                         <h6><%=user.address[i].address1%></h6>
@@ -352,8 +360,7 @@
                       class="btn border border-transparent hover:border-gray-300 dark:bg-white dark:hover:bg-gray-900 dark:text-gray-900 dark:hover:text-white dark:border-transparent bg-gray-900 hover:bg-white text-white hover:text-gray-900 flex justify-center items-center rounded w-full"
                       data-bs-toggle="modal"
                       data-bs-target="#staticBackdrop"
-                    >
-                      +
+                    >+
                     </button>
                   </form>
                   <%}else{%>
@@ -474,9 +481,9 @@
     </div>
   </main>
   <script>
+    
     function addaddressbtn(id) {
-          $.post(
-            "/home/addaddress/<%=result._id%>",
+          $.post("/home/addaddress/id",
             {
               name: $("#name").val(),
               address1: $("#ad1").val(),
@@ -486,9 +493,15 @@
               mobile: $("#mob").val(),
             },
             (data) => {
-              swal("address added!.").then((value) => {
+              if(data.empty){
+                swal("all fields must filled!.")
+              }
+              else{
+                swal("address added!.").then((value) => {
                 location.reload();
               });
+              }
+              
             }
           );
         }
@@ -545,9 +558,9 @@
           image: "https://example.com/your_logo",
           order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
           handler: function (response) {
- alert(response.razorpay_payment_id);
-                alert(response.razorpay_order_id);
-                alert(response.razorpay_signature);
+//  alert(response.razorpay_payment_id);
+//                 alert(response.razorpay_order_id);
+//                 alert(response.razorpay_signature);
             varifyPayment(response,order);
           },
           prefill: {
@@ -556,7 +569,7 @@
             contact: "9999999999",
           },
           notes: {
-            address: "Razorpay Corporate Office",
+            address: "Steller super store",
           },
           theme: {
             color: "#3399cc",
@@ -574,5 +587,8 @@
 
           })
         }
+   function btnenable(){
+    $("#addaddressbtn2").prop('disabled',false)
+   }
   </script>
 </div>

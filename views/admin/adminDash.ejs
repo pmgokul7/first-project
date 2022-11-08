@@ -56,7 +56,7 @@
 
 
     <h1 id="codd" style="display: none;"><%=codR%></h1>
-   
+   <h1 id="razorr" style="display: none;"><%=razorR%></h1>
     
     <h1 id="paypall" style="display: none;"><%=paypalR%></h1>
    
@@ -71,8 +71,9 @@
           </div>
           <div class=" w-50 " style="border: 2px solid rgb(175, 166, 166);">
             <div>
-              <h2 class="ps-3 pt-2">Orders</h2>
-              <h2 class="p-3">Total Revenue:&nbsp&nbsp&nbsp&nbsp;<%=total%></h2>
+              <!-- <h2 class="ps-3 pt-2">Orders</h2> -->
+              <h2 class="p-3">Total Revenue:&nbsp&nbsp&nbsp&nbsp;₹
+                <%=total%></h2>
               <canvas class="p-3" id="myChart2" ></canvas>
             </div>
            
@@ -154,12 +155,12 @@ console.log(myVAlues);
               label: 'total Revenue',
               backgroundColor: 'rgb(100,228,255)',
               borderColor: 'rgb(100,228,255)',
-              data:[$("#paypall").html(),$("#codd").html()],
+              data:[$("#paypall").html(),$("#codd").html(),$("#razorr").html()],
             }]
           };
         
           const config2 = {
-            type: 'line',
+            type: 'bar',
             data: data2,
             options: {}
           };

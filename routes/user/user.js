@@ -111,6 +111,7 @@ route.get("/checkout/:id", (req, res) => {
 });
 
 route.post("/addaddress/:id", (req, res) => {
+  console.log("add address called");
   helper.addressAdd(req).then((result) => {
     res.send(result);
     console.log("added address");
@@ -201,6 +202,7 @@ route.get("/cart/checkout", (req, res) => {
             user: req.session.user,
             cartItems,
           });
+          console.log(req.session.user);
         });
     });
 
@@ -265,7 +267,7 @@ route.post("/removefromwish", (req, res) => {
     .collection("wishlist")
     .updateOne(
       { user: ObjectId(req.session.user._id) },
-      { $pull: {"products":{"product": ObjectId(req.body.id)} } }
+      { $pull: {"products":{"product": ObjectId(req.body.pid)} } }
     )
     .then((r) => {
       // console.log(r);
@@ -401,12 +403,14 @@ route.post("/orderconfirmcart", (req, res) => {
           user: req.session.user.name,
           method: "COD",
           status: "placed",
+          paymentstatus : "success",
           address:JSON.parse(req.body.address),
-          time: moment().format('MMMM Do YYYY, h:mm:ss a'),
+          time:moment().format("L"),
+          date:moment().toDate(),
           quantity:s.products.count,
           total: parseInt(s.p[0].price) * parseInt(s.products.count),
     }).then(()=>{
-         con.get().collection("orders").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then(()=>{
+         con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then(()=>{
           console.log("cart is empty ");
          })
       
@@ -433,7 +437,7 @@ route.post("/cartPayment",(req,res)=>{
       },
       redirect_urls: {
         return_url: "http://localhost:3000/home/cartSuccess",
-        cancel_url: "http://cancel.url",
+        cancel_url: "http://localhost:3000/home/failed",
       },
       transactions: [
         {
@@ -468,9 +472,10 @@ route.post("/cartPayment",(req,res)=>{
             status: "pending",
             paymentstatus:"pending",
             address:JSON.parse(req.body.address),
-            time:moment().format('MMMM Do YYYY, h:mm:ss a'),
+            time:moment().format("L"),
+          date:moment().toDate(),
             quantity:s.products.count,
-            total: parseInt(s.p[0].price) * parseInt(s.products.count),
+            total: Number(s.p[0].price) * Number(s.products.count),
       
           }).then((r)=>{
             
@@ -496,9 +501,10 @@ route.post("/cartPayment",(req,res)=>{
       status: "pending",
       paymentstatus:"pending",
       address:JSON.parse(req.body.address),
-      time:moment().format('MMMM Do YYYY, h:mm:ss a'),
+      time:moment().format("L"),
+          date:moment().toDate(),  
       quantity:s.products.count,
-      total: parseInt(s.p[0].price) * parseInt(s.products.count),
+      total: Number(s.p[0].price) * Number(s.products.count),
 
     }).then(r=>{
           items2.push(r.insertedId)
@@ -524,24 +530,72 @@ route.post("/cartPayment",(req,res)=>{
     
   }
 })
+route.get("/failed",(req,res)=>{
+  items.map((s)=>{
+    con.get().collection("orders").updateOne({_id:s},{$set:{paymentstatus:"failed",status:"pending"}}).then((result)=>{
+          console.log(result);
+          res.render("user/paymentfailed")
+
+    })
+
+  })
+  // con.get().collection("orders").updateOne({ _id: globalobjid },{ $set: { paymentstatus: "failed", status: "pending" } }).then(()=>{
+  //   res.render("user/paymentfailed")
+  // })
+})
+// route.post("/varifypayment",(req,res)=>{
+//   console.log(req.body);
+//   let hmac=crypto.createHmac('sha256','b4PuKMMLTh2w0HRjNrKe36Ax')
+//   hmac.update(req.body['payment[razorpay_order_id]']+'|'+req.body['payment[razorpay_payment_id]']);
+//   hmac=hmac.digest('hex')
+  
+//   items2.map(s=>{
+//     if(hmac==req.body['payment[razorpay_signature]']){
+//     con.get().collection("orders").updateOne({_id:s},{$set:{status:"placed",paymentstatus:"success"}}).then((e)=>{
+//      console.log("this is after razorpay success");
+//      res.render("user/success")
+    
+//     })
+//  }
+//  else{
+//    con.get().collection("orders").updateOne({_id:s},{$set:{status:"failed payment"}}).then((e)=>{
+//      console.log("this is after razorpay fAiled");
+//     })
+//  }
+//   })
+//   con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then((r)=>{
+//     console.log("after cart empty",r);
+//     console.log("cart is empty")
+//     })
+  
+// })
+
 route.post("/varifypayment",(req,res)=>{
-  console.log(req.body);
   let hmac=crypto.createHmac('sha256','b4PuKMMLTh2w0HRjNrKe36Ax')
   hmac.update(req.body['payment[razorpay_order_id]']+'|'+req.body['payment[razorpay_payment_id]']);
   hmac=hmac.digest('hex')
-  items2.map(s=>{
-    if(hmac==req.body['payment[razorpay_signature]']){
-    con.get().collection("orders").updateOne({_id:s},{$set:{status:"placed",paymentstatus:"success"}}).then((e)=>{
-     console.log("this is after razorpay success");
+  if(hmac==req.body['payment[razorpay_signature]']){
+    console.log("payment is success");
+    items2.map(s=>{
+      con.get().collection("orders").updateOne({_id:s},{$set:{status:"placed",paymentstatus:"success"}}).then(e=>{
+        console.log("this is after razorpay success");
+      })
     })
- }
- else{
-   con.get().collection("orders").updateOne({_id:s},{$set:{status:"failed payment"}}).then((e)=>{
-     console.log("this is after razorpay fAiled");
+    con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then((r)=>{
+          console.log("cart is empty")
+          })
+    res.render("user/success")
+
+
+  }else{
+    console.log("payment is failed");
+    items2.map(s=>{
+      con.get().collection("orders").updateOne({_id:s},{$set:{status:"failed payment",paymentstatus:"failed"}}).then((d)=>{
+        console.log(d);
+        // console.log("payment is failed");
+      })
     })
- }
-  })
-  
+  }
 })
 route.get("/cartSuccess",(req,res)=>{
   console.log(items);
@@ -557,7 +611,7 @@ route.get("/cartSuccess",(req,res)=>{
   console.log("after cart empty",r);
   console.log("cart is empty")
   })
-  res.send("success")
+  res.render("user/success")
 
 })
 route.post("/gettotal",(req,res)=>{
