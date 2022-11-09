@@ -1,0 +1,19 @@
+<%-include("../partials/top.ejs")%>
+<%-include("../partials/header.ejs")%>
+<div class="container w-25 mt-5">
+    <form method="post" action="/admin/addcoupon">
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">coupon ID</label>
+          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" maxlength="5" minlength="5" style="text-transform: uppercase" name="code">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Discount(%)</label>
+          <input type="number" class="form-control" id="exampleInputPassword1" min="1" max="100" maxlength="3" name="discount" required>
+        </div>
+    
+        <button  class="btn btn-primary" onclick="addcoupon()">Add</button>
+      </form>
+</div>
+<script>
+   
+</script>

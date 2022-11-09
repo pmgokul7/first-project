@@ -47,4 +47,22 @@ module.exports = {
         });
     });
   },
+  addCoupon:(data)=>{
+    return new Promise(async(resolve,reject)=>{
+      // console.log(typeof(data.body.code));
+      const present=await db.get().collection("coupons").findOne({ID:data.body.code.toUpperCase()})
+      if(present){
+        resolve({alreadyThere:true})  
+      }
+      else
+      {
+      
+        db.get().collection("coupons").insertOne({ID:data.body.code.toUpperCase(),discount:parseInt(data.body.discount),users:[]}).then(()=>{
+  resolve({inserted:true})
+        })
+     
+      }
+     
+    })
+  }
 };

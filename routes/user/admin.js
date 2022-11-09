@@ -4,7 +4,9 @@ const { ObjectId } = require("mongodb");
 const route = express.Router();
 const con = require("../../config/connection");
 const helper = require("../../helpers/adminHelpers");
-const moment=require("moment")
+const moment=require("moment");
+const adminHelpers = require("../../helpers/adminHelpers");
+const couponHelpers = require("../../helpers/couponHelpers");
 
 route.use(function (req, res, next) {
   if (req.session.adminlogged==true) {
@@ -499,5 +501,40 @@ route.get("/ordersData",(req,res)=>{
     res.json(orders)
   })
   
+})
+
+route.get("/couponmanagement",(req,res)=>{
+  con.get().collection("coupons").find().toArray().then(coupons=>{
+    console.log(coupons);
+    res.render("admin/couponManagement",{coupons})
+
+  })
+
+})
+
+route.get("/addcoupon",(req,res)=>{
+  res.render("admin/addcoupon")
+})
+route.post("/addcoupon",(req,res)=>{
+  adminHelpers.addCoupon(req).then(result=>{
+    if(result.alreadyThere==true){
+      console.log("coupon is alredy there");
+      res.redirect("/admin/addcoupon")
+    }else{
+      res.redirect("/admin/couponmanagement")
+      console.log("coupon is inserted");
+
+    }
+    
+  })
+  // console.log(req.body);
+})
+
+route.get("/deletecoupon/:id",(req,res)=>{
+  couponHelpers.adminCouponDelete(req).then((result)=>{
+    if(result.deleted){
+      res.redirect("/admin/couponmanagement")
+    }
+  })
 })
 module.exports = route;

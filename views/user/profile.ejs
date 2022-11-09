@@ -129,7 +129,7 @@ li{
                
                 
               </div>
-              <input type="button" onclick="addaddressbtn('<%result._id%>')" value="add"  class="form-control btn btn-primary">
+              <input type="button" onclick="addaddressbtn('<%user._id%>')" value="add"  class="form-control btn btn-primary">
             <!-- </form> -->
             </div>
             <!-- <div class="modal-footer">
@@ -139,54 +139,16 @@ li{
           </div>
         </div>
       </div>
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
-  mdl-layout--fixed-header">         <header class="mdl-layout__header">
-          <div class="mdl-layout__header-row">
-            <!-- Title -->
-            <span class="mdl-layout-title">Admin Dash</span>
-            <!-- Add spacer, to align navigation to the right -->
-            <div class="mdl-layout-spacer"></div>
-            <!-- Navigation. We hide it in small screens. -->
-            <nav class="mdl-navigation mdl-layout--large-screen-only">
-              <button id="demo-menu-lower-right"
-              class="mdl-button mdl-js-button mdl-button--icon">
-        <i class="material-icons">more_vert</i>
-      </button>
-      
-      <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-          for="demo-menu-lower-right">
-        <li class="mdl-menu__item">Some Action</li>
-        <li class="mdl-menu__item">Another Action</li>
-        <a href="/home/profile">
-        <li  class="mdl-menu__item d-flex align-items-center justify-content-between">My Profile<i class="fa-sharp fa-solid fa-user"></i></li>
-    </a>
-       <a href="/logout"><li class="mdl-menu__item d-flex align-items-center justify-content-between">log out</i><i class="fa-sharp fa-solid fa-power-off"></i>
-       </li></a>
-      </ul>
-      
-              
-            </nav>
-          </div>
-        </header>
-        <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">Title</span>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">My profile</a>
-      </nav>
-    </div>
-        <main class="mdl-layout__content">
-          <div class="page-content"><!-- Your content goes here -->
+<%-include("../partials/userHeader.ejs")%>
+      <!-- Your content goes here -->
             <div class="container rounded bg-white mt-5 mb-5">
                 <div class="row">
                     <div class="col-md-3 border-right d-flex">
                         <d class="d-flex flex-column  align-items-center text-center p-3 py-5">
                             <img class="rounded-circle d-flex flex-column" width="50px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                            <span class="font-weight-bold"><%=result.name%></span>
+                            <span class="font-weight-bold"><%=user.name%></span>
                         
-                            <span class="text-black-50"><%=result.email%>
+                            <span class="text-black-50"><%=user.email%>
                             
                             </span>
                             <div class="div " style="width:250px ;">
@@ -203,32 +165,11 @@ li{
                     </div>
                     <div class="col-md-5 border-right0" style="margin-top: 200px;">
                         <div class="p-3 py-5" id="myProfile" style="border-radius:10px;border: 1px solid rgb(134, 134, 134);">
-                            <h3 class="text-secondary">Name:<%=result.name%></h3>
-                            <h3 class="text-secondary">email:<%=result.email%></h3>
-                            <h3 class="text-secondary">Mobile:<%=result.mobile%></h3>
+                            <h3 class="text-secondary">Name:<%=user.name%></h3>
+                            <h3 class="text-secondary">email:<%=user.email%></h3>
+                            <h3 class="text-secondary">Mobile:<%=user.mobile%></h3>
                              <a href="/home/changepassword" class="btn btn-outline-secondary w-100 mt-4">change password</a>
-                             
-                            <!-- <div class="d-flex justify-content-between align-items-center mb-3">
-                                
-                                <h4 class="text-right">Profile Settings</h4>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="first name" value=""></div>
-                              
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="enter phone number" value=""></div>
-                                <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text" class="form-control" placeholder="enter address line 1" value=""></div>
-                                <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                                <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                                <div class="col-md-12"><label class="labels">State</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                                <div class="col-md-12"><label class="labels">Area</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                                <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control" placeholder="enter email id" value=""></div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"></div>
-                            </div>
-                            <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div> -->
+                           
                         </div>
                         <div class="p-3 py-5 " id="myWallet">
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -262,18 +203,18 @@ li{
     
                                    
                                     </div><br> 
-                                    <%for(i=0;i<=result.address.length-1;i++){%>
+                                    <%for(i=0;i<=user.address.length-1;i++){%>
                                 <div class="col-md-12 mai"><div class="address mb-3">
                                     
                                     <div class="addresss p-3 d-flex justify-content-between">
                                         <div class="left">
                                            
-                                            <h6><%=result.address[i].name%></h6>
-                                           <h6><%=result.address[i].mobile%></h6>
-                                           <h6><%=result.address[i].address1%></h6>
-                                           <h6><%=result.address[i].address2%></h6>
-                                           <h6><%=result.address[i].post%></h6>
-                                           <h6><%=result.address[i].pin%></h6>
+                                            <h6><%=user.address[i].name%></h6>
+                                           <h6><%=user.address[i].mobile%></h6>
+                                           <h6><%=user.address[i].address1%></h6>
+                                           <h6><%=user.address[i].address2%></h6>
+                                           <h6><%=user.address[i].post%></h6>
+                                           <h6><%=user.address[i].pin%></h6>
                                         </div>
                                         <div class="btns d-flex flex-column ">
                                          
@@ -334,7 +275,7 @@ li{
 
         function addaddressbtn(id) {
       
-      $.post("/home/addaddress/<%=result._id%>",
+      $.post("/home/addaddress/<%=user._id%>",
       {name:$("#name").val(),
        address1:$("#ad1").val(),
        address1:$("#ad2").val(),

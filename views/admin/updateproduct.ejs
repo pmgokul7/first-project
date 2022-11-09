@@ -1,31 +1,6 @@
 <%-include("../partials/top.ejs")%>
-<body>
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer
-  mdl-layout--fixed-header">        <header class="mdl-layout__header">
-          <div class="mdl-layout__header-row">
-            <!-- Title -->
-            <span class="mdl-layout-title">Add Product</span>
-            <!-- Add spacer, to align navigation to the right -->
-            <div class="mdl-layout-spacer"></div>
-            <!-- Navigation. We hide it in small screens. -->
-          
-          </div>
-        </header>
-        <div class="mdl-layout__drawer">
-          <span class="mdl-layout-title">Title</span>
-          <nav class="mdl-navigation ">
-            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin">Dashboard</a>
-            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/products">Products</a>
-            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/users">Users</a>
-            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/orders">orders</a>
-
-            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/categories">Category</a>
-            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/sub-categories">Sub Categories</a>
-            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/reports">sales Reports</a>
-          </nav>
-        </div>
-        <main class="mdl-layout__content">
-          <div class="page-content"><!-- Your content goes here -->
+<%-include("../partials/header.ejs")%>
+<!-- Your content goes here -->
         
         <div class="container">
             <form action="/admin/products/edit?id=<%=result._id%>" method="post"  >

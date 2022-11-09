@@ -1,0 +1,36 @@
+<%-include("../partials/top.ejs")%>
+<%-include("../partials/header.ejs")%>
+<div class="container">
+
+    <a href="/admin/addcoupon" class="mt-4 mb-4 mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+        Add Coupons +
+      </a>
+<table class="table table-hover">
+    <thead>
+    
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">ID</th>
+        <th scope="col">Discount(%)</th>
+        <th scope="col">usage</th>
+        <th scope="col">options</th>
+
+      </tr>
+      
+    </thead>
+    <tbody>
+        <%for(i=0;i<=coupons.length-1;i++){%>
+      <tr class="" style="height: 60px;">
+        <th scope="row"><%=i+1%></th>
+        <td class=""><%=coupons[i].ID%></td>
+        <td><%=coupons[i].discount%></td>
+        <td><%=coupons[i].users.length%></td>
+        <td><a href="/admin/deletecoupon/<%=coupons[i]._id%>"><i class="text-danger fa-xl fa-solid fa-trash" style="cursor: pointer;"></i></a></td>
+      </tr>
+      <%}%>
+    </tbody>
+  </table>
+</div>
+<script>
+  
+</script>

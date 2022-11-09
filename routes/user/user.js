@@ -15,7 +15,12 @@ const paypal = require("paypal-rest-sdk");
 const moment=require("moment")
 const carthelper = require("../../helpers/cartHelper");
 const cartHelper = require("../../helpers/cartHelper");
+
+
+const couponHelper=require("../../helpers/couponHelpers")
+const profileHelper=require("../../helpers/profileHelpers")
 const { json } = require("body-parser");
+const { log } = require("console");
 instance = new Razorpay({
   key_id: "rzp_test_kwZGFuI0hWeY2V",
   key_secret: "b4PuKMMLTh2w0HRjNrKe36Ax",
@@ -38,12 +43,12 @@ route.get("/cart", (req, res) => {
   });
 });
 route.get("/", (req, res) => {
-  res.render("user/userHome", { result: req.session.user });
+  res.render("user/userHome", { user: req.session.user });
 });
 
 route.get("/products", (req, res) => {
   // con.get().collection("wishlist").aggregate([{$match:{}},{$lookup:}])
-  res.render("user/products");
+  res.render("user/products",{user:req.session.user});
 });
 
 route.get("/products/info", (req, res) => {
@@ -82,15 +87,15 @@ route.post("/products", (req, res) => {
     });
 });
 
-route.get("/cart", (req, res) => {
-  //    console.log(req.session.user);
-  // showCart.showCart(req).then((result) => {
-  //   if (result.resultfound) {
-  //     res.render("user/cart", { result: result.ress });
-  //     console.log(result);
-  //   }
-  // });
-});
+// route.get("/cart", (req, res) => {
+//   //    console.log(req.session.user);
+//   // showCart.showCart(req).then((result) => {
+//   //   if (result.resultfound) {
+//   //     res.render("user/cart", { result: result.ress });
+//   //     console.log(result);
+//   //   }
+//   // });
+// });
 
 route.get("/cart/remove", (req, res) => {
   removeFromCart2.removeFromCart2(req).then(() => {
@@ -106,10 +111,16 @@ route.get("/orders", (req, res) => {
 
 route.get("/checkout/:id", (req, res) => {
   helper.checkout(req).then((result) => {
-    res.render("user/buynow", { result: result.result, user: result.user });
+    res.render("user/buynow", { result: result.result, user: result.user ,price:req.query.price});
   });
 });
 
+
+// route.get("/checkout/:id", (req, res) => {
+//   helper.checkout(req).then((result) => {
+//     res.json( { result: result.result, user: result.user ,price:req.query.price});
+//   });
+// });
 route.post("/addaddress/:id", (req, res) => {
   console.log("add address called");
   helper.addressAdd(req).then((result) => {
@@ -210,14 +221,11 @@ route.get("/cart/checkout", (req, res) => {
 });
 
 route.get("/profile", (req, res) => {
-  con
-    .get()
-    .collection("user")
-    .findOne({ _id: ObjectId(req.session.user._id) })
-    .then((result) => {
-      // console.log(result);
-      res.render("user/profile", { result });
-    });
+  profileHelper.getProfile(req).then(result=>{
+    console.log(result);
+    res.render("user/profile",{result,user:req.session.user})
+  })
+  
 });
 
 route.get("/deleteaddress", (req, res) => {
@@ -426,6 +434,7 @@ route.post("/cartPayment",(req,res)=>{
 
   
   if(req.body.payment=="paypal"){
+    console.log("this is carttotal",cartTotal[0].total);
     cartProducts.map((s)=>{
      
     })
@@ -444,7 +453,8 @@ route.post("/cartPayment",(req,res)=>{
          
           amount: {
             currency: "USD",
-            total: req.body.total,
+            total: cartTotal[0].total,
+            
           },
           description: "This is the payment description.",
         },
@@ -543,32 +553,7 @@ route.get("/failed",(req,res)=>{
   //   res.render("user/paymentfailed")
   // })
 })
-// route.post("/varifypayment",(req,res)=>{
-//   console.log(req.body);
-//   let hmac=crypto.createHmac('sha256','b4PuKMMLTh2w0HRjNrKe36Ax')
-//   hmac.update(req.body['payment[razorpay_order_id]']+'|'+req.body['payment[razorpay_payment_id]']);
-//   hmac=hmac.digest('hex')
-  
-//   items2.map(s=>{
-//     if(hmac==req.body['payment[razorpay_signature]']){
-//     con.get().collection("orders").updateOne({_id:s},{$set:{status:"placed",paymentstatus:"success"}}).then((e)=>{
-//      console.log("this is after razorpay success");
-//      res.render("user/success")
-    
-//     })
-//  }
-//  else{
-//    con.get().collection("orders").updateOne({_id:s},{$set:{status:"failed payment"}}).then((e)=>{
-//      console.log("this is after razorpay fAiled");
-//     })
-//  }
-//   })
-//   con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then((r)=>{
-//     console.log("after cart empty",r);
-//     console.log("cart is empty")
-//     })
-  
-// })
+
 
 route.post("/varifypayment",(req,res)=>{
   let hmac=crypto.createHmac('sha256','b4PuKMMLTh2w0HRjNrKe36Ax')
@@ -649,6 +634,7 @@ route.post("/gettotal",(req,res)=>{
     },
   ])
   .toArray().then(total=>{
+    cartTotal=total
     res.send(total)
     console.log(total);
   })
@@ -671,4 +657,15 @@ route.get("/editaddress",(req,res)=>{
   })
 })
 
+
+route.post("/couponcheck",(req,res)=>{
+  couponHelper.checkCode(req).then(result=>{
+    console.log(result);
+    res.send(result)
+  })
+})
+
+route.post("/removeCoupon",(req,res)=>{
+   couponHelper.removeCoupon(req)
+})
 module.exports = route;

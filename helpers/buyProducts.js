@@ -100,7 +100,8 @@ module.exports = {
 
   confirmCODOrder: (data) => {
     console.log("body is",data.body);
-    return new Promise((resolve, reject) => {
+    return new Promise(async(resolve, reject) => {
+      product=await db.get().collection("Products").findOne({_id:ObjectId(data.body.productid)})
       db.get()
         .collection("orders")
         .insertOne({
@@ -112,8 +113,8 @@ module.exports = {
           address:JSON.parse( data.body.address),
           time:moment().format("L"),
           date:new Date(),
-          quantity: data.body.quantity,
-          total: parseInt(data.body.price)
+          quantity: 1,
+          total:parseInt(product.price)-parseInt(product.price)*data.body.discount/100
         })
         .then((result) => {
           resolve(result);

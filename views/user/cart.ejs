@@ -1,48 +1,6 @@
 <%-include("../partials/top")%>
 
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-	<header class="mdl-layout__header">
-	  <div class="mdl-layout__header-row">
-		<!-- Title -->
-		<span class="mdl-layout-title">Title</span>
-		<!-- Add spacer, to align navigation to the right -->
-		<div class="mdl-layout-spacer"></div>
-		<!-- Navigation. We hide it in small screens. -->
-		<nav class="mdl-navigation mdl-layout--large-screen-only">
-			<form action="/home/products" method="post" style="margin-top: 25px;margin-right: 150px;">
-				<input type="text" name="search" id="" style="width:450px ;margin-bottom: 20px;" placeholder="search here">
-				</form>
-				<button id="demo-menu-lower-right"
-			class="mdl-button mdl-js-button">
-			
-	
-	  <h6 class="" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
-				
-			
-	</button>
-	
-	<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-		for="demo-menu-lower-right">
-		<a href="/home/cart">  <li class="mdl-menu__item">Cart</li></a>
-		  <a href="/home/orders"><li class="mdl-menu__item">Orders</li></a>  
-		  <a href="/home/wishlist"><li class="mdl-menu__item">wishlist</li></a>  
-		  <a href="/home/profile"><li class="mdl-menu__item">My profile</li></a> 
-		   <a href="/logout"><li class="mdl-menu__item">log out</li></a>
-	</ul>
-		  </nav>
-	  </div>
-	</header>
-	<div class="mdl-layout__drawer">
-	  <span class="mdl-layout-title">Title</span>
-	  <nav class="mdl-navigation">
-		<a class="mdl-navigation__link" href="">Link</a>
-		<a class="mdl-navigation__link" href="">Link</a>
-		<a class="mdl-navigation__link" href="">Link</a>
-		<a class="mdl-navigation__link" href="">Link</a>
-	  </nav>
-	</div>
-	<main class="mdl-layout__content">
-	  <div class="page-content"><!-- Your content goes here -->
+<%-include("../partials/userHeader.ejs")%>
 		<div class="container">
 		<table class="table  mt-5
 		">

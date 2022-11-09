@@ -34,7 +34,7 @@ return new Promise((resolve,reject)=>{
               }
             }
         ]).toArray().then((cartItems)=>{
-            // console.log("cccccccccccccccc",cartItems);
+            
             resolve(cartItems)
         })
 })

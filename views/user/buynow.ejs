@@ -30,18 +30,34 @@
   .counter .up {
     width: 5px;
   }
-  .counter input {
+  /* .counter input {
     width: 50px;
     border: 1px solid black;
     line-height: 30px;
     font-size: 20px;
     text-align: center;
     /* background: #0052cc; */
-    /* color: #fff; */
-    appearance: none;
-    outline: 0;
+  /* color: #fff; */
+  /* appearance: none; */
+  /* outline: 0; */
+  /* }  */
+  .coupon-inputbox {
+    outline: none;
+    border: 1px solid rgb(216, 215, 215);
+    padding: 10px;
+    width: 50%;
+    margin-right: 5px;
+    text-align: center;
   }
-  .counter span {
+
+  .coupon-input {
+    display: flex;
+    flex-direction: column;
+    /* background-color: #3f51b5; */
+  }
+
+  .bb {
+    display: none;
   }
 </style>
 <!-- Modal -->
@@ -168,52 +184,7 @@
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
 />
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-  <header class="mdl-layout__header">
-    <div class="mdl-layout__header-row">
-      <!-- Title -->
-      <a href="/home" style="text-decoration: none; color: #fff"
-        ><span class="mdl-layout-title">Home</span></a
-      >
-      <!-- Add spacer, to align navigation to the right -->
-      <div class="mdl-layout-spacer"></div>
-      <!-- Navigation. We hide it in small screens. -->
-      <nav class="mdl-navigation mdl-layout--large-screen-only">
-        <form action="/home/products" method="post" style="margin-top: 25px;margin-right: 150px;">
-			<input type="text" name="search" id="" style="width:450px ;" placeholder="search here">
-            </form>
-            <button id="demo-menu-lower-right"
-        class="mdl-button mdl-js-button">
-		
-
-  <h6 class="" style="color: #fff;font-weight: 600;"><%=result.name%></h6>
-			
-		
-</button>
-
-<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-    for="demo-menu-lower-right">
-	<a href="/home/cart">  <li class="mdl-menu__item">Cart</li></a>
-      <a href="/home/orders"><li class="mdl-menu__item">Orders</li></a>  
-	  <a href="/home/wishlist"><li class="mdl-menu__item">wishlist</li></a>  
-	  <a href="/home/profile"><li class="mdl-menu__item">My profile</li></a> 
-       <a href="/logout"><li class="mdl-menu__item">log out</li></a>
-</ul>
-      </nav>
-    </div>
-  </header>
-
-  <div class="mdl-layout__drawer">
-    <span class="mdl-layout-title">Title</span>
-    <nav class="mdl-navigation">
-      <a class="mdl-navigation__link" href="">Link</a>
-      <a class="mdl-navigation__link" href="">Link</a>
-      <a class="mdl-navigation__link" href="">Link</a>
-      <a class="mdl-navigation__link" href="">Link</a>
-    </nav>
-  </div>
-  <main class="mdl-layout__content">
-    <div class="page-content">
+<%-include("../partials/userHeader.ejs")%>
       <div>
         <div
           class="py-16 px-4 md:px-6 2xl:px-0 flex justify-center items-center 2xl:mx-auto 2xl:container"
@@ -267,20 +238,75 @@
               class="flex flex-col xl:flex-row justify-center xl:justify-between space-y-6 xl:space-y-0 xl:space-x-6 w-full"
             >
               <div
-                class="flex flex-col sm:flex-row xl:flex-col justify-center items-center bg-white border-1 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full"
+                class="flex sm:flex-row xl:flex-col justify-center items-center bg-white border-1 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full"
               >
-                <div
-                  class="flex flex-col justify-start items-start w-full space-y-4"
-                >
-                  <p
-                    class="text-xl md:text-2xl leading-normal text-gray-800 dark:text-gray-50"
-                    id="modelname"
+                <div class="d-flex flex-column items-start w-full space-y-4">
+                  <div
+                    class="div d-flex flex-column w-100 justify-content-between"
                   >
-                    <%=result.model%>
-                  </p>
-                  <div class="d-flex">
-                    <h1 class="text-4xl">₹</h1>
-                    <h1 class="text-4xl" id="priceone"><%=result.price%></h1>
+                    <div class="l d-flex justify-content-between">
+                      <p
+                        style="display: flex; flex-direction: column"
+                        class="text-xl md:text-2xl leading-normal text-gray-800 dark:text-gray-"
+                        id="modelname"
+                      >
+                        <%=result.model%>
+                      </p>
+                      <div class="coupon-input">
+                        <a id="have" href="#" class="text-end mb-2"
+                          >have a promo code.?</a
+                        >
+                        <div
+                          class="i d-flex justify-content-end"
+                          id="couponinputbox2"
+                        >
+                          <input
+                            type="text"
+                            id="couponinp"
+                            class="coupon-inputbox"
+                            placeholder="promo"
+                            maxlength="5"
+                            onkeyup="onInputChange()"
+                          />
+                          <button
+                            class="btn btn-success p-2"
+                            id="applyBtn"
+                            onclick="couponcheck()"
+                            disabled
+                          >
+                            apply
+                          </button>
+                          <button
+                            class="btn btn-danger p-2"
+                            id="removeBtn"
+                            onclick="removeCoupon()"
+                          >
+                            remove
+                          </button>
+                        </div>
+                        <p
+                          style="text-align: right"
+                          id="couponMsg"
+                          class="text-success"
+                        >
+                          Coupon applied successfully...
+                        </p>
+                        <p id="couponMsgerror" class="text-danger">
+                          Invalid coupon code
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="d-flex w-50">
+                      <h1 class="text-4xl">₹</h1>
+                      <h1
+                        class="text-4xl"
+                        id="priceone"
+                        data-test="<%=result.price%>"
+                      >
+                        <%=result.price%>
+                      </h1>
+                    </div>
                   </div>
                 </div>
                 <div
@@ -293,7 +319,7 @@
                   />
                 </div>
                 <div class="d-flex">
-                  <div class="counter">
+                  <!-- <div class="counter">
                     <button
                       class="btn w-25 btn-primary me-1"
                       onclick="minus('<%=result.price%>')"
@@ -309,7 +335,7 @@
                     >
                       +
                     </button>
-                  </div>
+                  </div> -->
                 </div>
               </div>
 
@@ -322,7 +348,6 @@
                     <%for(i=0;i<=user.address.length-1;i++){ %>
                     <div class="form-check">
                       <input
-                        
                         class="form-check-input"
                         type="radio"
                         name="address"
@@ -330,13 +355,12 @@
                         id="<%=i%>"
                         onchange="onchanageInput('<%=user.address[i]%>',this)"
                         value="<%=JSON.stringify(user.address[i])%>"
-                        
                       />
                       <label
-                        class="form-check-label p-4 border-1 w-100 mb-3 "
+                        class="form-check-label p-4 border-1 w-100 mb-3"
                         for="<%=i%>"
                       >
-                      <h6></h6>
+                        <h6></h6>
                         <h6><%=user.address[i].name%></h6>
                         <h6><%=user.address[i].mobile%></h6>
                         <h6><%=user.address[i].address1%></h6>
@@ -395,16 +419,13 @@
                     <hr class="border w-full" />
                   </div>
 
-                  
-
                   <form action="/payment" method="post">
                     <div
                       class="fancy-radio-buttons d-flex flex-column align-items-center mt-3 with-image"
                     >
                       <span class="image-container">
                         <input
-                        onchange="paymentOnchange()"
-
+                          onchange="paymentOnchange()"
                           type="radio"
                           class="payment"
                           id="opt1"
@@ -429,7 +450,6 @@
                           name="payment"
                           value="razorpay"
                           onchange="paymentOnchange()"
-
                         />
                         <label for="opt2">
                           <img
@@ -478,18 +498,66 @@
 
       <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       <script>
-        function onchanageInput(x,y){
-         address=y.value;
-         $("#btncod").prop("disabled",false)
-       
+function removeCoupon(){
+  location.reload()
+  code=$("#couponinp").val()
+  $.post("/home/removecoupon",{
+code
+  },()=>{
 
+  })
+}
+
+        function onInputChange() {
+          if ($("#couponinp").val().length > 4) {
+            $("#applyBtn").prop("disabled", false);
+          } else {
+            $("#applyBtn").prop("disabled", true);
+          }
+        }
+        $(document).ready(() => {
+          $("#removeBtn").hide();
+        });
+        function couponcheck() {
+          code = $("#couponinp").val();
+          $.post(
+            "/home/couponcheck",
+            {
+              code,
+            },
+            (response) => {
+              console.log(response.result.discount);
+              couponresponse=response.result.discount
+              var price = $("#priceone").text();
+              if (response.couponFound == true) {
+                $("#priceone").text(parseInt($("#priceone").text())- parseInt( $("#priceone").text())*response.result.discount/100)
+                console.log(response);
+                couponResult=response.result
+                $("#removeBtn").show();
+                $("#applyBtn").hide();
+                $("#couponMsg").css("visibility", "visible");
+                $("#couponMsgerror").css("visibility", "hidden");
+                // $("#priceone").text(price*response.result.discount/100)
+                // $("#applyBtn").text('remove')
+              } else if(response.couponFound==false){
+                $("#couponMsgerror").css("visibility", "visible");
+                $("#couponMsg").css("visibility", "hidden");
+              }
+            }
+          );
+        }
+        function onchanageInput(x, y) {
+          address = y.value;
+          $("#btncod").prop("disabled", false);
         }
 
-        function paymentOnchange(){
-          $("#paynowbtn").prop("disabled",false)
+        function paymentOnchange() {
+          $("#paynowbtn").prop("disabled", false);
         }
         $(document).ready(() => {
           // console.log($(".addresss:checked").val());
+          $("#couponMsg").css("visibility", "hidden");
+          $("#couponMsgerror").css("visibility", "hidden");
           var totalprice = $("#priceone").text();
           var modelname = $("#modelname").text();
           var q = $("#inputbox").val();
@@ -500,9 +568,10 @@
         });
 
         function paypal(x) {
+          console.log(x);
           let address1 = Number($(`.form-check-input:checked`).val());
           let totalprice = document.getElementById("priceone").value();
-          let quantity = document.getElementById("quantity").value();
+          // let quantity = document.getElementById("quantity").value();
           let model = document.getElementById("modelname").value();
           $.post("/payment", { totalprice: "152145" });
         }
@@ -546,16 +615,16 @@
           $("#total").val(Number(a) * Number(news));
         }
 
-        function placeorderonline(id) {
+        async function placeorderonline(id) {
           $.post(
             "/payment",
             {
               id: id,
-              total: $("#priceone").text(),
+              total: document.getElementById("priceone").dataset.test,
               model: $("#modelname").text(),
               quantity: $("#inputbox").val(),
               payment: $(".payment:checked").val(),
-              address:address
+              address: address,
             },
             (res) => {
               if (res.paypal) {
@@ -579,7 +648,7 @@
                 // alert(response.razorpay_order_id);
                 // alert(response.razorpay_signature);
 
-                varifyPayment(response,order);
+                varifyPayment(response, order);
               },
               prefill: {
                 name: "Gaurav Kumar",
@@ -595,15 +664,17 @@
             };
             var rzp1 = new Razorpay(options);
             rzp1.open();
-
           }
         }
-        function varifyPayment(payment,order){
-          $.post("/varifyPayment",{
-            payment,order
-          },()=>{
-
-          })
+        function varifyPayment(payment, order) {
+          $.post(
+            "/varifyPayment",
+            {
+              payment,
+              order,
+            },
+            () => {}
+          );
         }
 
         function addaddressbtn(id) {
@@ -618,16 +689,14 @@
               mobile: $("#mob").val(),
             },
             (data) => {
-              if(data.empty){
-                swal("All fields must be filled!.")
-                
-              }
-              else{
+              if (data.empty) {
+                swal("All fields must be filled!.");
+              } else {
                 swal("address added!.").then((value) => {
-                location.reload();
-              });
+                  location.reload();
+                });
               }
-              
+
               console.log(data);
             }
           );
@@ -635,6 +704,13 @@
 
         function cod(x) {
           address = $(`.form-check-input:checked`).val();
+          if(typeof(couponresponse)!="undefined"){
+            discount=couponresponse
+          }
+          else{
+             discount=null
+          }
+          console.log(discount);
           // console.log(address);
           $.post(
             "/home/orderconfirm",
@@ -642,6 +718,8 @@
               productid: x,
               quantity: Number($("#inputbox").val()),
               address,
+              // couponresponse: couponresponse ? couponresponse:100 ,
+              discount,
               date: new Date(),
               price: Number($("#priceone").text()),
             },

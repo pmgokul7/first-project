@@ -37,6 +37,7 @@ const userRoute = require("./routes/user/user");
 const adminRoute = require("./routes/user/admin");
 const loginRoute = require("./routes/user/login");
 const { ObjectId } = require("mongodb");
+const buyProducts = require("./helpers/buyProducts");
 
 cloudinary.config({
   cloud_name: "dem5z7tgz",
@@ -94,9 +95,10 @@ async function uploadToCloudinary(locaFilePath) {
       };
     });
 }
-app.post("/payment", (req, res) => {
+app.post("/payment", async(req, res) => {
   address=JSON.parse(req.body.address)
   console.log(address);
+  const product=await con.get().collection("Products").findOne({_id:ObjectId(req.body.id)})
   if (req.body.payment == "razorpay") {
 
     
@@ -105,7 +107,7 @@ app.post("/payment", (req, res) => {
       .get()
       .collection("orders")
       .insertOne({
-        product: ObjectId(req.body.id),
+        product: [ObjectId(req.body.id)],
         user: req.session.user.name,
         method: "razorpay",
         status: "pending",
@@ -114,12 +116,12 @@ app.post("/payment", (req, res) => {
         time:moment().format("L"),
           date:moment().toDate(),
         quantity: req.body.quantity,
-        total:Number(req.body.total),
+        total:Number(product.price),
       })
       .then((re) => {
         globalobjrezorid=re.insertedId;
         var options = {
-          amount: req.body.total*100, // amount in the smallest currency unit
+          amount: product.price*100, // amount in the smallest currency unit
           currency: "INR",
           receipt: re.insertedId + "",
         };
@@ -138,6 +140,7 @@ app.post("/payment", (req, res) => {
   } else if (req.body.payment == "paypal") {
     console.log("this is body",req.body);
     console.log("you chose paypal");
+  
 
 
     var create_payment_json = {
@@ -154,7 +157,7 @@ app.post("/payment", (req, res) => {
           
           amount: {
             currency: "USD",
-            total:req.body.total,
+            total:product.price,
           },
           description: "This is the payment description.",
         },
@@ -175,7 +178,7 @@ app.post("/payment", (req, res) => {
           .get()
           .collection("orders")
           .insertOne({
-            product: ObjectId(req.body.id),
+            product: [ObjectId(req.body.id)],
             user: req.session.user.name,
             method: "paypal",
             status: "pending",
@@ -184,7 +187,7 @@ app.post("/payment", (req, res) => {
             time:moment().format("L"),
             date:moment().toDate(),
             quantity: req.body.quantity,
-            total:Number(req.body.total),
+            total:Number(product.price),
           })
           .then((r) => {
             globalobjid = r.insertedId;
@@ -216,7 +219,7 @@ app.post("/payment", (req, res) => {
               .collection("orders")
               .updateOne(
                 { _id: globalobjid },
-                { $set: { paymentstatus: "succees", status: "placed" } }
+                { $set: { paymentstatus: "success", status: "placed" } }
               )
               .then(() => {
                 console.log("updated successfully");
