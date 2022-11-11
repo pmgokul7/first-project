@@ -106,7 +106,7 @@ module.exports = {
       db.get()
         .collection("orders")
         .insertOne({
-          product: [{product:ObjectId(data.body.productid),count:1,status:"placed"}] ,
+          product: [{product:ObjectId(data.body.productid),count:1,status:"placed", total:parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100}] ,
           user: data.session.user.name,
           method: "COD",
           status: "placed",
@@ -114,9 +114,10 @@ module.exports = {
           address:JSON.parse( data.body.address),
           time:moment().format("L"),
           coupon:data.body.ID  ?data.body.ID :null,
+          discount:data.body.discount ? data.body.discount:0,
           date:new Date(),
           quantity: 1,
-          total:parseInt(product.price)-parseInt(product.price)*data.body.discount/100
+          total:parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100
         })
         .then((result) => {
           resolve(result);

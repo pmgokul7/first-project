@@ -250,7 +250,10 @@
                         class="text-xl md:text-2xl leading-normal text-gray-800 dark:text-gray-"
                         id="modelname"
                       >
-                        <%=result.model%>
+                        <%=result.model%><br>
+                        <%if(result.price!=result.offerprice){%>
+                          <span class="mt-2" style="font-size: 15px;color:#4BB543 ;">product offer applied successfully</span>
+                          <%}%> 
                       </p>
                       <div class="coupon-input">
                         <a id="have" href="#" class="text-end mb-2"
@@ -279,9 +282,9 @@
                           
                         </div>
                         <p
-                          style="text-align: right"
+                          style="text-align: right;color:#4BB543 ;  "
                           id="couponMsg"
-                          class="text-success"
+                          class=""
                         >
                           Coupon applied successfully...
                         </p>
@@ -293,8 +296,8 @@
 
                     <div class="d-flex w-50">
                       <%if(result.price==result.offerprice){%>
-                        <h1 class="text-4xl">₹</h1>
-                        <h1
+                        <!-- <h1 class="text-4xl">₹</h1> -->
+                        ₹ <h1
                           class="text-4xl"
                           id="priceone"
                           data-test="<%=result.price%>"
@@ -303,7 +306,7 @@
                         </h1>
                         <%}else{%>
                           
-                          <h1 class="text-4xl"> ₹ <%=result.offerprice%></h1>
+                          ₹ <h1 id="priceone" class="text-4xl">  <%=result.offerprice%></h1>
                           <%}%>
                      
                     </div>
@@ -531,7 +534,7 @@ code
               couponcode=response.result.ID
               var price = $("#priceone").text();
               if (response.couponFound == true) {
-                $("#priceone").text(Math.ceil(($("#priceone").text())- parseInt( $("#priceone").text())*response.result.discount/100))
+                $("#priceone").text(Math.ceil($("#priceone").text()-$("#priceone").text()*response.result.discount/100))
                 console.log(response);
                 couponResult=response.result
                 $("#removeBtn").show();
@@ -622,15 +625,13 @@ code
             
           }
           else{
-             discount=null
+             discount=0
              ID=null
           }
           $.post(
             "/payment",
             {
               id: id,
-              total: document.getElementById("priceone").dataset.test,
-              model: $("#modelname").text(),
               discount,
               ID,
               quantity: $("#inputbox").val(),

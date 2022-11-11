@@ -8,6 +8,9 @@
     justify-content: center;
     align-items: center; margin-left: 65px;
 }
+form{
+  margin-top: 25px;
+}
 </style>
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
@@ -17,29 +20,22 @@
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
-        <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <form action="/home/products" method="post" style="background-color: white;color: black;">
-              <input type="text" id="searchInput" name="search"  placeholder="search here">
-              </form>
-              <!-- <form action="/home/products" method="post" style= height:50px ;>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-                  <label class="mdl-button mdl-js-button mdl-button--icon" for="sample6">
-                    <i class="material-icons">search</i>
-                  </label>
-                  <div class="mdl-textfield__expandable-holder">
-                    <input class="mdl-textfield__input" type="text" id="searchInput" style="background-color: #7b86c2;" name="search">
-                    <label class="mdl-textfield__label" for="sample- expandable">Expandable Input</label>
-                  </div>
-                </div>
-              </form> -->
-              <button id="demo-menu-lower-right"
+        <nav class="mdl-navigation mdl-layout--large-screen-only text-center">
+          <form action="/home/products" method="post" >
+            <input type="text" id="searchInput" name="search"  placeholder="search here">
+            </form>
+            <button id="demo-menu-lower-right"
           class="mdl-button mdl-js-button" >
+   <h6 class="" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
           
+       </button>   
+          </nav>   
+                
   
-    <h6 class="" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
+ 
               
           
-  </button>
+
   
   <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
       for="demo-menu-lower-right">

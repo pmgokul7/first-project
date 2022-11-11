@@ -39,6 +39,11 @@ route.use(function (req, res, next) {
 
 route.get("/cart", (req, res) => {
   carthelper.getCartProducts(req).then((result) => {
+   if( typeof(coupondis)=="undefined"){
+    coupondis=0
+   }else{
+    coupondis=coupondis.discount
+   }
     res.render("user/cart", { result ,user:req.session.user});
   });
 });
@@ -181,7 +186,7 @@ route.get("/cart/checkout", (req, res) => {
       {
         $group: {
           _id: null,
-          total: { $sum: { $multiply: ["$products.count", "$pro.price"] } },
+          total: { $sum: { $multiply: ["$products.count", "$pro.offerprice"] } },
         },
       },
     ])
@@ -208,10 +213,12 @@ route.get("/cart/checkout", (req, res) => {
           console.log("cartitems:",cartItems);
           globalcartTotal=cartItems
           cartProducts = result;
+         
           res.render("user/buynow2", {
             result,
             user: req.session.user,
             cartItems,
+            
           });
           console.log(req.session.user);
         });
@@ -407,6 +414,10 @@ route.post("/orderconfirmcart", (req, res) => {
   var products=[]
   con.get().collection("cart").findOne({user:ObjectId(req.session.user._id)}).then(re=>{
     products=(re.products)
+    products.map(s=>{
+     s.status="placed"
+    })
+    products[0].status="placed"
     con.get().collection("orders").insertOne({
 
       product:products,
@@ -443,7 +454,7 @@ route.post("/orderconfirmcart", (req, res) => {
 
 route.post("/cartPayment",(req,res)=>{
   address=JSON.parse(req.body.address)
-console.log(req.body);
+console.log();
   
   if(req.body.payment=="paypal"){
     console.log("bodyy:",req.body);
@@ -487,6 +498,7 @@ console.log(req.body);
         }
         con.get().collection("cart").findOne({user:ObjectId(req.session.user._id)}).then(re=>{
           products=(re.products)
+          product[0].status="pending"
           console.log(products);
         
           con.get().collection("orders").insertOne({
@@ -533,8 +545,7 @@ console.log(req.body);
         address:JSON.parse(req.body.address),
         time:moment().format("L"),
             date:moment().toDate(),  
-        coupon:req.body.ID,
-        discount:req.body.discount,
+        // quantity:s.products.count,
         total:Math.ceil(cartTotal[0].total-cartTotal[0].total*req.body.discount/100),
   
       }).then(r=>{
@@ -608,7 +619,7 @@ route.post("/varifypayment",(req,res)=>{
 route.get("/cartSuccess",(req,res)=>{
   
  
-    con.get().collection("orders").updateOne({_id:ObjectId(cartpaypalid)},{$set:{paymentstatus:"success"}}).then((result)=>{
+    con.get().collection("orders").updateOne({_id:ObjectId(cartpaypalid)},{$set:{paymentstatus:"success","product.status":"placed"}}).then((result)=>{
           console.log(result);
           
 
@@ -652,14 +663,50 @@ route.post("/gettotal",(req,res)=>{
     {
       $group: {
         _id: null,
-        total: { $sum: { $multiply: ["$products.count", "$pro.price"] } },
+        total: { $sum: { $multiply: ["$products.count", "$pro.offerprice"] } },
       },
     },
   ])
   .toArray().then(total=>{
-    cartTotal=total
-    res.send(total)
-    console.log(total);
+    con
+    .get()
+    .collection("cart")
+    .aggregate([
+      {
+        $match: { user: ObjectId(req.session.user._id) },
+      },
+      {
+        $unwind: "$products",
+      },
+  
+      {
+        $lookup: {
+          from: "Products",
+          localField: "products.product",
+          foreignField: "_id",
+          as: "pro",
+        },
+      },
+      {
+        $project: {
+          "products.product": 1,
+          "products.count": 1,
+          pro: { $arrayElemAt: ["$pro", 0] },
+        },
+      },
+      {
+        $project: {
+         
+          total: { $sum: { $multiply: ["$products.count", "$pro.offerprice"] } },
+        },
+      },
+    ])
+    .toArray().then((eachsum)=>{
+      cartTotal=total
+      res.send(total)
+      console.log(eachsum);
+    })
+
   })
 })
 
@@ -683,7 +730,9 @@ route.get("/editaddress",(req,res)=>{
 
 route.post("/couponcheck",(req,res)=>{
   console.log(req.body);
+  codefromcart=req.body.ID
   couponHelper.checkCode(req).then(result=>{
+    coupondis=result.result
     console.log(result);
     res.send(result)
   })
@@ -704,5 +753,17 @@ route.get("/orderinfo/:id",(req,res)=>{
     res.render("user/orderinfo",{user:req.session.user,order,discount:req.query.dis})
   })
  
+})
+
+route.get("/getwallet",async(req,res)=>{
+  let user=con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)})
+  if(user){
+    res.render("user/mywallet",{user:req.session.user})
+  }
+  
+})
+
+route.get("/myaddress",(req,res)=>{
+  res.render("user/myaddress",{user:req.session.user})
 })
 module.exports = route;

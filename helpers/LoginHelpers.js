@@ -1,6 +1,9 @@
 const db = require("../config/connection");
 const bcrypt = require("bcrypt");
 const { request } = require("express");
+const myref = require("otp-generators");
+const { ObjectId } = require("mongodb");
+// const otpgen=require("otpGenerators")
 module.exports = {
   userloginValidator: (data) => {
     return new Promise((resolve, reject) => {
@@ -17,7 +20,12 @@ module.exports = {
                   data.mobile == result.mobile &&
                   result.status == "active"
                 ) {
-                  resolve({ loginstatus: true, blocked: false, result ,admin:false});
+                  resolve({
+                    loginstatus: true,
+                    blocked: false,
+                    result,
+                    admin: false,
+                  });
                 } else if (
                   compareRes == true &&
                   data.mobile == result.mobile &&
@@ -41,6 +49,11 @@ module.exports = {
 
   userSignupValidator: (data) => {
     return new Promise((resolve, reject) => {
+      const myreferal = myref.generate(5, {
+        alphabets: true,
+        upperCase: true,
+        specialChar: false,
+      });
       db.get()
         .collection("user")
         .findOne({ mobile: Number(data.mobile) })
@@ -58,9 +71,32 @@ module.exports = {
                   email: data.email,
                   password: hashedpass,
                   status: "active",
+                  myreferal: myreferal,
+                  referal: data.referal,
+                  referalusers: [],
+                  wallet:0
                 })
-                .then(() => {
-                  resolve({ Signupstatus: true });
+                .then((r) => {
+                  insertedId=r.insertedId
+                  if (data.referal != "") {
+                    db.get()
+                      .collection("user")
+                      .findOne({ myreferal: data.referal })
+                      .then((user) => {
+                        if (user) {
+                          db.get()
+                            .collection("user")
+                            .updateOne(
+                              { _id: ObjectId(user._id) },
+                              { $set: { wallet: user.wallet+50 },$push:{referalusers:insertedId} }
+                            )
+                            .then(() => {
+
+                              resolve({ Signupstatus: true });
+                            });
+                        }
+                      });
+                  }
                 });
             });
           }

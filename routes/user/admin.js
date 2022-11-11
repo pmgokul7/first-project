@@ -199,20 +199,24 @@ route.get("/orders", (req, res) => {
         .collection("orders")
         .aggregate([
           { $match: {} },
+          {$unwind:"$product"},
           {
             $lookup: {
               from: "Products",
-              localField: "product",
+              localField: "product.product",
               foreignField: "_id",
               as: "p",
             },
           },
           { $skip: page * dataperpage },
           { $limit: dataperpage },
+          {
+            $sort:{date:-1}
+          }
         ])
         .toArray()
         .then((result) => {
-          console.log(result[0]);
+          console.log("all orders",result);
           res.render("admin/orderManagement", { result, count: count });
         });
     });

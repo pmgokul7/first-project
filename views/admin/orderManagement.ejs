@@ -45,63 +45,59 @@
          <div class="table-responsive container-fluid">
 
             
-            <table class="table table-hover table-bordered" style="margin-top:100px ;">
-              <thead>
-                <tr>
-                  
-                  <th scope="col">Image</th>
-                  <th scope="col">Model</th>
-                  <th scope="col">User</th>
-                  <th scope="col">Address</th>
-                  <th scope="col">Payment method</th>
-                  <th scope="col">Payment status</th>
-                  <th scope="col">Time</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">price</th>
-                  <th scope="col">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <%for(i=0;i<=result.length-1;i++){%>
-                  <tr>
-                   
-                    <td style="width:5% ;"><img src="<%=result[i].p[0].mainImage%>" width="55%"></td>
-                    <td><%=result[i].p[0].model%></td>
-                    <td><%=result[i].user%></td>
-                    <td style="max-width:300px ;max-height:fit-content;"><%=result[i].address.name%><br>
-                      Mob:<%=result[i].address.mobile%><br>
-                      <%=result[i].address.address1%><br>
-                      <%=result[i].address.post%>
-                      <br><%=result[i].address.pin%>
-                    </td>
-                    <td><%=result[i].method%></td>
-                    <td><%=result[i].paymentstatus%></td>
-                    <td><%=result[i].time%></td>
-                    <td><%=result[i].quantity%></td>
-                    <td><%=result[i].total%></td>
-                    <%if(result[i].paymentstatus=="pending"){%>
-                      <td><h6 class="text-warning">payment pending</h6></td>
-                      <%}else if(result[i].status=="canceled"){%>
-                        <td>
-                          <h6 class="text-danger">order canceled</h6>
-
-                        </td>
-                      <%}else{%>
-                    <td><select onchange="statuschange('<%=result[i]._id%>',this)" class="form-select" aria-label="Default select example" id="list">
-                      <option selected><%=result[i].status%></option>
-                      <option value="Shipped">Shipped</option>
-                      <option value="On the way">On the way</option>
-                      <option value="Arrived">Arrived</option>
-                      <option value="canceled">canceled</option>
-                    </select></td>
-                    
-                  </tr>
-                  <%}%>
-                  <%}%>
-              
-              </tbody>
-              
-            </table>
+          <table class="table">
+            <caption>List of orders</caption>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th></th>
+                <th scope="col">product</th>
+                <th scope="col">Address</th>
+                <th scope="col">coupon</th>
+                <th scope="col">date</th>
+                <th scope="col">quantity</th>
+                <th scope="col">payment</th>
+                <th scope="col">paymen status</th>
+                <th scope="col">price</th>
+                <th scope="col">action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%for(i=0;i<=result.length-1;i++){%>
+              <tr>
+                
+                <th scope="row"><%=i+1%></th>
+                <td><img src="<%=result[i].p[0].mainImage%>" height="60px" alt=""></td>
+                <td><%=result[i].p[0].model%></td>
+                <td><%=result[i].address.name%><br>
+                  <%=result[i].address.address1%><br>
+                  <%=result[i].address.post%><br>
+                  <%=result[i].address.pin%><br>
+                  <%=result[i].address.mobile%>
+                </td>
+                <td><%=result[i].coupon%></td>
+                <td><%=result[i].date.toLocaleString('en-GB')%></td>
+                <td><%=result[i].product.count%></td>
+                <td><%=result[i].method%></td>
+                <td><%=result[i].paymentstatus%></td>
+                <td>₹<%=Math.ceil(result[i].total - result[i].total * result[i].discount/100)%></td>
+                <td><div class="dropdown">
+                  <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <%=result[i].product.status%>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href="#">shipped</a></li>
+                    <li><a class="dropdown-item" href="#">on the way</a></li>
+                    <li><a class="dropdown-item" href="#">out for delivery</a></li>
+                    <li><a class="dropdown-item" href="#">delivered</a></li>
+                    <li><a class="dropdown-item" href="#">canceled</a></li>
+                  </ul>
+                </div></td>
+              </tr>
+              <%}%>
+             
+            </tbody>
+          </table>
             <nav aria-label="Page navigation example ">
               <ul class="pagination d-flex justify-content-center">
                 <li class="page-item">

@@ -1,6 +1,26 @@
 <%-include("../partials/top")%>
 
 <%-include("../partials/userHeader.ejs")%>
+<style>
+	#coupon-success{
+  color: #4BB543;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  visibility: hidden;
+}
+#codeinput2{
+  
+  border: 1px solid rgba(173, 167, 167, 0.603);
+  outline: none;
+  width: 100px;
+  text-align: center;
+  margin-right: 3px;
+}
+  #codetext{
+    width: 300px;
+    padding: 10px;
+  }
+</style>
 		<div class="container">
 		<table class="table  mt-5
 		">
@@ -20,14 +40,14 @@
 				<th scope="row"><%=i+1%></th>
 				<td><img src="<%=result[i].pro.mainImage%>" width="100px" alt=""></td>
 				<td><%=result[i].pro.model%></td>
-				<td>Rs:<%=result[i].pro.price%></td>
+				<td class="g"><%=result[i].pro.offerprice%></td>
 				
 				<td>
-					<button class="cart-item-count me-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',-1,'<%=result[i].pro._id%>a','<%=result[i].pro.price%>')">-</button>
+					<button class="cart-item-count me-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',-1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')">-</button>
 					<span id="<%=result[i].pro._id%>"><%=result[i].products.count%></span>
-					<button class="cart-item-count ms-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',1,'<%=result[i].pro._id%>a','<%=result[i].pro.price%>')" >+</button>
+					<button class="cart-item-count ms-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')" >+</button>
 				</td>
-				<td id="<%=result[i].pro._id%>a">₹<%=result[i].pro.price * result[i].products.count%></td>
+				<td id="<%=result[i].pro._id%>a">₹<%=result[i].pro.offerprice * result[i].products.count%></td>
 				<td>
 					<a href="/home/removeFromCart/<%=result[i].products.product%>" class="btn btn-danger">remove</a>
 				</td>
@@ -39,7 +59,23 @@
 		  <hr>
 
 		  <div class="checkoutdiv float-end me-5 mt-5">
-			Grand Total:<h1 id="totalp">0</h1>
+			<div class="promo w-100 d-flex flex-column align-items-end">
+                <a id="codetext" href="#" class=" text-end">have a promo code..?</a>
+
+           <div class="input-container d-flex" id="codeinput">
+            <input type="text" name="code" placeholder="hai" maxlength="5" id="codeinput2" >
+            <button onclick="applybtn()" class="btn btn-success" id="applyBtn">apply</button>
+           
+           </div>
+           <span id="coupon-success">coupon applied successfully</span>
+             
+       
+           
+
+              
+               
+            </div>
+			Grand Total:<h1 id="totalp"></h1>
 			<a href="/home/cart/checkout" >
 				
 			<button class="checkout btn-lg btn-success" style="height:50px ;padding: 5px 10px 5px 10px;">proceed to checkout</button>
@@ -51,6 +87,30 @@
 		</div>
 	</main>
 	<script>
+		function applybtn(){
+  const codevalue=$("#codeinput2").val()
+  $.post("/home/couponcheck",{
+    code:codevalue
+  },(res)=>{
+	console.log(res);
+    couponresponse=res.result.discount
+    couponcode=res.result.ID
+    if(res.couponFound==true){
+		$("#totalp").text(Math.ceil(($("#totalp").text())-parseInt($("#totalp").text())*parseInt(res.result.discount)/100))
+        $(".g").text($(".g").text())
+      $("#codeinput2").css("border","2px solid #4BB543")
+      $("#coupon-success").css("visibility","visible")
+      $("#price").html(Number($("#price").html())-Number($("#price").html()*Number(res.result.discount)/100));
+      $("#applyBtn").prop("disabled",true)
+    }
+    else if(res.couponFound==false){
+      
+      $("#codeinput2").css("border","2px solid red")
+
+    }
+    
+  })
+}
 		function changeQuantity(cartId,proId,count,carta,price){
 			//
 			quantity=parseInt($(`#${proId}`).text())
@@ -58,7 +118,8 @@
                 cart:cartId,
 				product:proId,
 				count:count,
-				quantity:quantity
+				quantity:quantity,
+		
 
 			 },(response)=>{
 				if(response){
@@ -84,7 +145,7 @@
 			$.post("/home/gettotal",{data:"hai"},(res)=>{
 				if(res)
 				{
-					$("#totalp").html(`₹${res[0].total}`)
+					$("#totalp").html(`${res[0].total}`)
 				}
 				
 			})

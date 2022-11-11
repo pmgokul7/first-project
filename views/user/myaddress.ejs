@@ -91,7 +91,7 @@ li{
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <!-- <form action="/home/addaddress/<%=result._id%>" method="post"> -->
+          
               <div class="mb-2">
                 <label for="exampleInputEmail1" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" name="name"required>
@@ -141,9 +141,9 @@ li{
       </div>
 <%-include("../partials/userHeader.ejs")%>
       <!-- Your content goes here -->
-            <div class="container rounded bg-white mt-5 mb-5">
-                <div class="row">
-                    <div class="col-md-3 border-right d-flex">
+            <div class="container rounded  mt-5 mb-5 bg-warning">
+                <div class="row d-flex">
+                    <div class="col-md-3 border-right ">
                         <d class="d-flex flex-column  align-items-center text-center p-3 py-5">
                             <img class="rounded-circle d-flex flex-column" width="50px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
                             <span class="font-weight-bold"><%=user.name%></span>
@@ -163,16 +163,37 @@ li{
                             
 
                     </div>
-                    <div class="col-md-5 border-right0" style="margin-top: 200px;">
-                        <div class="p-3 py-5" id="myProfile" style="border-radius:10px;border: 1px solid rgb(134, 134, 134);">
-                            <h3 class="text-secondary">Name:<%=user.name%></h3>
-                            <h3 class="text-secondary">email:<%=user.email%></h3>
-                            <h3 class="text-secondary">Mobile:<%=user.mobile%></h3>
-                             <a href="/home/changepassword" class="btn btn-outline-secondary w-100 mt-4">change password</a>
-                           
-                        </div>
-                       
-                       
+               
+
+                    <div class="address">
+                        <%for(i=0;i<=user.address.length-1;i++){%>
+                            <div class="col-md-12 mai"><div class="address mb-3">
+                                
+                                <div class="addresss p-3 d-flex justify-content-between">
+                                    <div class="left">
+                                       
+                                        <h6><%=user.address[i].name%></h6>
+                                       <h6><%=user.address[i].mobile%></h6>
+                                       <h6><%=user.address[i].address1%></h6>
+                                       <h6><%=user.address[i].address2%></h6>
+                                       <h6><%=user.address[i].post%></h6>
+                                       <h6><%=user.address[i].pin%></h6>
+                                    </div>
+                                    <div class="btns d-flex flex-column ">
+                                     
+                                      
+                                        <a href="/home/deleteaddress?in=<%=i%>">  </button>
+                                          <button class="btn btn-danger   h-100 d-flex justify-content-center align-items-center mb-2  w-100">
+                                            <i class="fa-solid fa-trash "></i>
+                                          </button>
+                                        </a>
+                                        
+                                    </div>
+                                       
+                                </div>
+                                    
+
+                            </div>  <%}%> 
                     </div>
                    
                 </div>

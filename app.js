@@ -96,6 +96,7 @@ async function uploadToCloudinary(locaFilePath) {
     });
 }
 app.post("/payment", async(req, res) => {
+  console.log(req.body);
   address=JSON.parse(req.body.address)
   ID=req.body.ID;
   const product=await con.get().collection("Products").findOne({_id:ObjectId(req.body.id)})
@@ -103,13 +104,13 @@ app.post("/payment", async(req, res) => {
     console.log(product);
     console.log("this sis discount",Number(product.price));
 console.log("this is final after discount",Number(product.price)-Number(product.price)*Number(req.body.discount)/100);
-    console.log("chose razorpay");
+   
   
     con
       .get()
       .collection("orders")
       .insertOne({
-        product: [{product:ObjectId(req.body.id),count:1}],
+        product: [{product:ObjectId(req.body.id),count:1,status:"pending",total:Math.ceil(Number(product.offerprice)-Number(product.offerprice)*Number(req.body.discount)/100)}],
         user: req.session.user.name,
         method: "razorpay",
         status: "pending",
@@ -119,12 +120,14 @@ console.log("this is final after discount",Number(product.price)-Number(product.
           date:moment().toDate(),
         quantity: 1,
         coupon:ID?ID:null,
-        total:Math.ceil(Number(product.price)-Number(product.price)*Number(req.body.discount)/100),
+        
+            discount:req.body.discount ?Number( req.body.discount) : 0,
+        total:Math.ceil(Number(product.offerprice)-Number(product.offerprice)*Number(req.body.discount)/100),
       })
       .then((re) => {
         globalobjrezorid=re.insertedId;
         var options = {
-          amount:(Number(product.price)-Number(product.price)*Number(req.body.discount)/100)*100, // amount in the smallest currency unit
+          amount:Math.ceil(Number(product.offerprice)-Number(product.offerprice)*Number(req.body.discount)/100)*100, // amount in the smallest currency unit
           currency: "INR",
           receipt: re.insertedId + "",
         };
@@ -160,7 +163,7 @@ console.log("this is final after discount",Number(product.price)-Number(product.
           
           amount: {
             currency: "USD",
-            total:Math.ceil(Number(product.price)-Number(product.price)*Number(req.body.discount)/100),
+            total:Math.ceil(Number(product.offerprice)-Number(product.offerprice)*Number(req.body.discount)/100),
           },
           description: "This is the payment description.",
         },
@@ -182,7 +185,7 @@ console.log("this is final after discount",Number(product.price)-Number(product.
           .get()
           .collection("orders")
           .insertOne({
-            product: [{product:ObjectId(req.body.id),count:1}],
+            product: [{product:ObjectId(req.body.id),count:1,"status":"pending",total:Math.ceil(Number(product.offerprice)-Number(product.offerprice)*Number(req.body.discount)/100),}],
             user: req.session.user.name,
             method: "paypal",
             status: "pending",
@@ -192,8 +195,9 @@ console.log("this is final after discount",Number(product.price)-Number(product.
             time:moment().format("L"),
             date:moment().toDate(),
             quantity:1,
-            total:Math.ceil(Number(product.price)-Number(product.price)*Number(req.body.discount)/100),
-            Coupon:ID?ID:null
+            total:Math.ceil(Number(product.offerprice)-Number(product.offerprice)*Number(req.body.discount)/100),
+            Coupon:coupon?coupon:null,
+            discount:req.body.discount ?Number( req.body.discount) : 0
           })
           .then((r) => {
             globalobjid = r.insertedId;
@@ -226,7 +230,7 @@ console.log("this is final after discount",Number(product.price)-Number(product.
               .collection("orders")
               .updateOne(
                 { _id: globalobjid },
-                { $set: { paymentstatus: "success", status: "placed" } }
+                { $set: { paymentstatus: "success", "product.0.status":"placed",status:"placed" } }
               )
               .then(() => {
                 console.log("updated successfully");
@@ -242,8 +246,8 @@ console.log("this is final after discount",Number(product.price)-Number(product.
   }
 });
 app.get("/failed",(req,res)=>{
-  con.get().collection("orders").updateOne({ _id: globalobjid },{ $set: { paymentstatus: "failed", status: "pending" } }).then(()=>{
-    res.render("user/paymentfailed")
+  con.get().collection("orders").updateOne({ _id: globalobjid },{ $set: { paymentstatus: "failed", status: "pending", } }).then(()=>{
+    res.render("user/paymentfailed",{user:req.session.user})
   })
 })
 app.post("/varifyPayment",(req,res)=>{
@@ -251,7 +255,7 @@ let hmac=crypto.createHmac('sha256','b4PuKMMLTh2w0HRjNrKe36Ax')
 hmac.update(req.body['payment[razorpay_order_id]']+'|'+req.body['payment[razorpay_payment_id]']);
  hmac=hmac.digest('hex')
 if(hmac==req.body['payment[razorpay_signature]']){
-   con.get().collection("orders").updateOne({_id:globalobjrezorid},{$set:{status:"placed",paymentstatus:"success"}}).then((e)=>{
+   con.get().collection("orders").updateOne({_id:globalobjrezorid},{$set:{status:"placed",paymentstatus:"success","product.0.status":"placed"}}).then((e)=>{
     console.log("this is after razorpay success");
    })
 }
@@ -287,11 +291,26 @@ app.post(
   "/admin/products/add",
   upload.any("myImage"),
   async (req, res, next) => {
-    // console.log(req.body);
+    console.log(req.body);
+    const {model,brand,ROM,RAM,category,stock,price,offerprice,rating,color}=
     con
       .get()
       .collection("Products")
-      .insertOne(req.body)
+      .insertOne({
+        model:req.body.model,
+        brand:req.body.brand,
+        ROM:req.body.ROM,
+        RAM:req.body.RAM,
+        category:req.body.category,
+        stock:parseInt(req.body.stock),
+        price:parseInt(req.body.price), 
+        offerprice:parseInt(req.body.price),
+        rating:parseInt(req.body.rating),
+        color:req.body.color,
+        highlights:req.body.highlights,
+        description:req.body.description
+
+      })
       .then((response) => {
         console.log("details updated");
         // console.log(response.insertedId);
@@ -420,15 +439,18 @@ app.post("/admin/products/edit", (req, res) => {
       { _id: new ObjectId(req.query.id) },
       {
         $set: {
-          model: req.body.model,
-          brand: req.body.brand,
-          ROM: req.body.ROM,
-          RAM: req.body.RAM,
-          stock: req.body.stock,
-          rating: req.body.rating,
-          highlights: req.body.highlights,
-          description: req.body.description,
-          category: req.body.category,
+          model:req.body.model,
+        brand:req.body.brand,
+        ROM:req.body.ROM,
+        RAM:req.body.RAM,
+        category:req.body.category,
+        stock:parseInt(req.body.stock),
+        price:parseInt(req.body.price), 
+        offerprice:parseInt(req.body.price),
+        rating:parseInt(req.body.rating),
+        color:req.body.color,
+        highlights:req.body.highlights,
+        description:req.body.description
         },
       }
     )

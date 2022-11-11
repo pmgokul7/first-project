@@ -40,11 +40,11 @@ return new Promise((resolve,reject)=>{
 })
 },
 changeProQuantity:(data)=>{
-    // console.log(data.body);
+    console.log(data.body);
     return new Promise((resolve,reject)=>{
           db.get().collection("cart").updateOne({user:ObjectId(data.session.user._id),"products.product":ObjectId(data.body.product)},{
             $inc:{'products.$.count':parseInt(data.body.count)}
-          }).then((r)=>{
+          },{$set:{'product.$.price':45}}).then((r)=>{
             // console.log(r);
             resolve({updated:true})
           })
