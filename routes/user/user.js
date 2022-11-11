@@ -403,11 +403,13 @@ route.post("/addressadd/:id", (req, res) => {
 });
 
 route.post("/orderconfirmcart", (req, res) => {
-  // console.log(cartProducts);
-  cartProducts.map(s=>{
+  // console.log(req);
+  var products=[]
+  con.get().collection("cart").findOne({user:ObjectId(req.session.user._id)}).then(re=>{
+    products=(re.products)
     con.get().collection("orders").insertOne({
 
-      product:ObjectId(s.p[0]._id),
+      product:products,
           user: req.session.user.name,
           method: "COD",
           status: "placed",
@@ -415,25 +417,36 @@ route.post("/orderconfirmcart", (req, res) => {
           address:JSON.parse(req.body.address),
           time:moment().format("L"),
           date:moment().toDate(),
-          quantity:s.products.count,
-          total: parseInt(s.p[0].price) * parseInt(s.products.count),
+          coupon:req.body.code,
+          discount:req.body.discount,
+          quantity:1,
+          total:Math.ceil(cartTotal[0].total-cartTotal[0].total*req.body.discount/100) 
     }).then(()=>{
          con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then(()=>{
           console.log("cart is empty ");
+          res.send({status:"success"})
          })
       
     })
+    
   })
-      res.send({status:"success"})
+  console.log("this is cart products",cartProducts[0].p[0]);
+  var sumCount=0
+  
+  
+   
+  // })
+     
 
   
 });
 
 route.post("/cartPayment",(req,res)=>{
   address=JSON.parse(req.body.address)
-
+console.log(req.body);
   
   if(req.body.payment=="paypal"){
+    console.log("bodyy:",req.body);
     console.log("this is carttotal",cartTotal[0].total);
     cartProducts.map((s)=>{
      
@@ -453,7 +466,7 @@ route.post("/cartPayment",(req,res)=>{
          
           amount: {
             currency: "USD",
-            total: cartTotal[0].total,
+            total:Math.ceil(cartTotal[0].total-cartTotal[0].total*req.body.discount/100),
             
           },
           description: "This is the payment description.",
@@ -472,11 +485,12 @@ route.post("/cartPayment",(req,res)=>{
             // res.send({paypal:"hai"})
           }
         }
-
-        items=[]
-        cartProducts.map(s=>{
+        con.get().collection("cart").findOne({user:ObjectId(req.session.user._id)}).then(re=>{
+          products=(re.products)
+          console.log(products);
+        
           con.get().collection("orders").insertOne({
-            product:ObjectId(s.p[0]._id),
+            product:products,
             user: req.session.user.name,
             method: "paypal",
             status: "pending",
@@ -484,16 +498,20 @@ route.post("/cartPayment",(req,res)=>{
             address:JSON.parse(req.body.address),
             time:moment().format("L"),
           date:moment().toDate(),
-            quantity:s.products.count,
-            total: Number(s.p[0].price) * Number(s.products.count),
+            coupon:req.body.ID,
+            discount:req.body.discount,
+           total:Math.ceil(cartTotal[0].total-cartTotal[0].total*req.body.discount/100),
       
           }).then((r)=>{
-            
+            cartpaypalid=r.insertedId
             console.log("products inserted after paypal bu pending");
-            items.push(r.insertedId)
+            // items.push(r.insertedId)
             console.log(r.insertedId);
           })
         })
+        // items=[]
+       
+        
       
       }
     });
@@ -503,25 +521,30 @@ route.post("/cartPayment",(req,res)=>{
     console.log(req.body);
     console.log(cartProducts);
     items2=[]
-   cartProducts.map(s=>{
-    con.get().collection("orders").insertOne({
-      product:ObjectId(s.p[0]._id),
-      user: req.session.user.name,
-      method: "razorpay",
-      status: "pending",
-      paymentstatus:"pending",
-      address:JSON.parse(req.body.address),
-      time:moment().format("L"),
-          date:moment().toDate(),  
-      quantity:s.products.count,
-      total: Number(s.p[0].price) * Number(s.products.count),
+    con.get().collection("cart").findOne({user:ObjectId(req.session.user._id)}).then(re=>{
 
-    }).then(r=>{
-          items2.push(r.insertedId)
+      products=re.products
+      con.get().collection("orders").insertOne({
+        product:products,
+        user: req.session.user.name,
+        method: "razorpay",
+        status: "pending",
+        paymentstatus:"pending",
+        address:JSON.parse(req.body.address),
+        time:moment().format("L"),
+            date:moment().toDate(),  
+        coupon:req.body.ID,
+        discount:req.body.discount,
+        total:Math.ceil(cartTotal[0].total-cartTotal[0].total*req.body.discount/100),
+  
+      }).then(r=>{
+            razorid=r.insertedId
+      })
     })
-   })
+    
+ 
     var options = {
-      amount: req.body.total,  // amount in the smallest currency unit
+      amount:Math.ceil(cartTotal[0].total-cartTotal[0].total*req.body.discount/100)*100,  // amount in the smallest currency unit
       currency: "INR",
       receipt: "order_rcptid_11"
     };
@@ -561,11 +584,11 @@ route.post("/varifypayment",(req,res)=>{
   hmac=hmac.digest('hex')
   if(hmac==req.body['payment[razorpay_signature]']){
     console.log("payment is success");
-    items2.map(s=>{
-      con.get().collection("orders").updateOne({_id:s},{$set:{status:"placed",paymentstatus:"success"}}).then(e=>{
+    
+      con.get().collection("orders").updateOne({_id:ObjectId(razorid)},{$set:{status:"placed",paymentstatus:"success"}}).then(e=>{
         console.log("this is after razorpay success");
       })
-    })
+  
     con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then((r)=>{
           console.log("cart is empty")
           })
@@ -583,20 +606,20 @@ route.post("/varifypayment",(req,res)=>{
   }
 })
 route.get("/cartSuccess",(req,res)=>{
-  console.log(items);
-  items.map((s)=>{
-    con.get().collection("orders").updateOne({_id:s},{$set:{paymentstatus:"success"}}).then((result)=>{
+  
+ 
+    con.get().collection("orders").updateOne({_id:ObjectId(cartpaypalid)},{$set:{paymentstatus:"success"}}).then((result)=>{
           console.log(result);
           
 
     })
 
-  })
+  
   con.get().collection("cart").updateOne({user:ObjectId(req.session.user._id)},{$set:{products:[]}}).then((r)=>{
   console.log("after cart empty",r);
   console.log("cart is empty")
   })
-  res.render("user/success")
+  res.render("user/success",{user:req.session.user})
 
 })
 route.post("/gettotal",(req,res)=>{
@@ -659,6 +682,7 @@ route.get("/editaddress",(req,res)=>{
 
 
 route.post("/couponcheck",(req,res)=>{
+  console.log(req.body);
   couponHelper.checkCode(req).then(result=>{
     console.log(result);
     res.send(result)
@@ -667,5 +691,18 @@ route.post("/couponcheck",(req,res)=>{
 
 route.post("/removeCoupon",(req,res)=>{
    couponHelper.removeCoupon(req)
+})
+route.get("/orderinfo/:id",(req,res)=>{
+  console.log(req.body);
+  con.get().collection("orders").aggregate([{$match:{_id:ObjectId(req.params.id)}},{$unwind:"$product"},{$lookup:{
+    from:"Products",
+    localField:"product.product",
+    foreignField:"_id",
+    as:"pp"
+  }}]).toArray().then((order)=>{
+    console.log("this is order",order);
+    res.render("user/orderinfo",{user:req.session.user,order,discount:req.query.dis})
+  })
+ 
 })
 module.exports = route;

@@ -276,13 +276,7 @@
                           >
                             apply
                           </button>
-                          <button
-                            class="btn btn-danger p-2"
-                            id="removeBtn"
-                            onclick="removeCoupon()"
-                          >
-                            remove
-                          </button>
+                          
                         </div>
                         <p
                           style="text-align: right"
@@ -298,14 +292,20 @@
                     </div>
 
                     <div class="d-flex w-50">
-                      <h1 class="text-4xl">₹</h1>
-                      <h1
-                        class="text-4xl"
-                        id="priceone"
-                        data-test="<%=result.price%>"
-                      >
-                        <%=result.price%>
-                      </h1>
+                      <%if(result.price==result.offerprice){%>
+                        <h1 class="text-4xl">₹</h1>
+                        <h1
+                          class="text-4xl"
+                          id="priceone"
+                          data-test="<%=result.price%>"
+                        >
+                          <%=result.price%>
+                        </h1>
+                        <%}else{%>
+                          
+                          <h1 class="text-4xl"> ₹ <%=result.offerprice%></h1>
+                          <%}%>
+                     
                     </div>
                   </div>
                 </div>
@@ -528,17 +528,17 @@ code
             (response) => {
               console.log(response.result.discount);
               couponresponse=response.result.discount
+              couponcode=response.result.ID
               var price = $("#priceone").text();
               if (response.couponFound == true) {
-                $("#priceone").text(parseInt($("#priceone").text())- parseInt( $("#priceone").text())*response.result.discount/100)
+                $("#priceone").text(Math.ceil(($("#priceone").text())- parseInt( $("#priceone").text())*response.result.discount/100))
                 console.log(response);
                 couponResult=response.result
                 $("#removeBtn").show();
                 $("#applyBtn").hide();
                 $("#couponMsg").css("visibility", "visible");
                 $("#couponMsgerror").css("visibility", "hidden");
-                // $("#priceone").text(price*response.result.discount/100)
-                // $("#applyBtn").text('remove')
+              
               } else if(response.couponFound==false){
                 $("#couponMsgerror").css("visibility", "visible");
                 $("#couponMsg").css("visibility", "hidden");
@@ -615,13 +615,24 @@ code
           $("#total").val(Number(a) * Number(news));
         }
 
-        async function placeorderonline(id) {
+         function placeorderonline(id) {
+          if(typeof(couponresponse)!="undefined"){
+            discount=couponresponse
+            ID=couponcode
+            
+          }
+          else{
+             discount=null
+             ID=null
+          }
           $.post(
             "/payment",
             {
               id: id,
               total: document.getElementById("priceone").dataset.test,
               model: $("#modelname").text(),
+              discount,
+              ID,
               quantity: $("#inputbox").val(),
               payment: $(".payment:checked").val(),
               address: address,
@@ -706,9 +717,11 @@ code
           address = $(`.form-check-input:checked`).val();
           if(typeof(couponresponse)!="undefined"){
             discount=couponresponse
+            ID=couponcode
           }
           else{
              discount=null
+             ID=null
           }
           console.log(discount);
           // console.log(address);
@@ -718,8 +731,8 @@ code
               productid: x,
               quantity: Number($("#inputbox").val()),
               address,
-              // couponresponse: couponresponse ? couponresponse:100 ,
               discount,
+              ID,
               date: new Date(),
               price: Number($("#priceone").text()),
             },

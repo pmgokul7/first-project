@@ -537,4 +537,11 @@ route.get("/deletecoupon/:id",(req,res)=>{
     }
   })
 })
+
+route.get("/categoryoffer",(req,res)=>{
+  con.get().collection("cat").find().toArray().then(r=>{
+     res.render("admin/categoryOffer",{user:req.session.user,r})
+  })
+ 
+})
 module.exports = route;

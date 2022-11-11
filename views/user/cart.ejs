@@ -7,11 +7,11 @@
 			<thead>
 			  <tr>
 				<th scope="col">#</th>
-				<th scope="col">First</th>
-				<th scope="col">Last</th>
-				<th scope="col">Handle</th>
-				<th scope="col">Handle</th>
-				<th scope="col">Handle</th>
+				<th scope="col">.</th>
+				<th scope="col">Model</th>
+				<th scope="col">Price</th>
+				<th scope="col">Quantity</th>
+				<th scope="col">Total</th>
 			  </tr>
 			</thead>
 			<tbody>
@@ -23,11 +23,11 @@
 				<td>Rs:<%=result[i].pro.price%></td>
 				
 				<td>
-					<button class="cart-item-count me-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',-1)">-</button>
+					<button class="cart-item-count me-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',-1,'<%=result[i].pro._id%>a','<%=result[i].pro.price%>')">-</button>
 					<span id="<%=result[i].pro._id%>"><%=result[i].products.count%></span>
-					<button class="cart-item-count ms-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',1)" >+</button>
+					<button class="cart-item-count ms-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',1,'<%=result[i].pro._id%>a','<%=result[i].pro.price%>')" >+</button>
 				</td>
-				<td></td>
+				<td id="<%=result[i].pro._id%>a">₹<%=result[i].pro.price * result[i].products.count%></td>
 				<td>
 					<a href="/home/removeFromCart/<%=result[i].products.product%>" class="btn btn-danger">remove</a>
 				</td>
@@ -39,7 +39,7 @@
 		  <hr>
 
 		  <div class="checkoutdiv float-end me-5 mt-5">
-			Total:<h1 id="totalp">0</h1>
+			Grand Total:<h1 id="totalp">0</h1>
 			<a href="/home/cart/checkout" >
 				
 			<button class="checkout btn-lg btn-success" style="height:50px ;padding: 5px 10px 5px 10px;">proceed to checkout</button>
@@ -51,7 +51,8 @@
 		</div>
 	</main>
 	<script>
-		function changeQuantity(cartId,proId,count){
+		function changeQuantity(cartId,proId,count,carta,price){
+			//
 			quantity=parseInt($(`#${proId}`).text())
              $.post("/home/changeQuantity",{
                 cart:cartId,
@@ -63,6 +64,7 @@
 				if(response){
 					
 					$(`#${proId}`).text(quantity+parseInt(count	))
+					$(`#${carta}`).text(parseInt($(`#${proId}`).text()*parseInt(price)))
 				}
 			 })
 		
@@ -70,18 +72,19 @@
 				// console.log(res[0].total);
 				if(res)
 				{
-					$("#totalp").html(res[0].total)
+					$("#totalp").html(`₹${res[0].total}`)
 				}
 				
 			})
 		}
 
 		$(document).ready(()=>{
+			
+
 			$.post("/home/gettotal",{data:"hai"},(res)=>{
-				// console.log(res[0].total);
 				if(res)
 				{
-					$("#totalp").html(res[0].total)
+					$("#totalp").html(`₹${res[0].total}`)
 				}
 				
 			})

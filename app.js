@@ -97,17 +97,19 @@ async function uploadToCloudinary(locaFilePath) {
 }
 app.post("/payment", async(req, res) => {
   address=JSON.parse(req.body.address)
-  console.log(address);
+  ID=req.body.ID;
   const product=await con.get().collection("Products").findOne({_id:ObjectId(req.body.id)})
   if (req.body.payment == "razorpay") {
-
-    
+    console.log(product);
+    console.log("this sis discount",Number(product.price));
+console.log("this is final after discount",Number(product.price)-Number(product.price)*Number(req.body.discount)/100);
+    console.log("chose razorpay");
   
     con
       .get()
       .collection("orders")
       .insertOne({
-        product: [ObjectId(req.body.id)],
+        product: [{product:ObjectId(req.body.id),count:1}],
         user: req.session.user.name,
         method: "razorpay",
         status: "pending",
@@ -115,13 +117,14 @@ app.post("/payment", async(req, res) => {
         address: address,
         time:moment().format("L"),
           date:moment().toDate(),
-        quantity: req.body.quantity,
-        total:Number(product.price),
+        quantity: 1,
+        coupon:ID?ID:null,
+        total:Math.ceil(Number(product.price)-Number(product.price)*Number(req.body.discount)/100),
       })
       .then((re) => {
         globalobjrezorid=re.insertedId;
         var options = {
-          amount: product.price*100, // amount in the smallest currency unit
+          amount:(Number(product.price)-Number(product.price)*Number(req.body.discount)/100)*100, // amount in the smallest currency unit
           currency: "INR",
           receipt: re.insertedId + "",
         };
@@ -157,7 +160,7 @@ app.post("/payment", async(req, res) => {
           
           amount: {
             currency: "USD",
-            total:product.price,
+            total:Math.ceil(Number(product.price)-Number(product.price)*Number(req.body.discount)/100),
           },
           description: "This is the payment description.",
         },
@@ -174,23 +177,27 @@ app.post("/payment", async(req, res) => {
             res.send({paypal:payment.links[i].href})
           }
         }
+        coupon=req.body.ID
         con
           .get()
           .collection("orders")
           .insertOne({
-            product: [ObjectId(req.body.id)],
+            product: [{product:ObjectId(req.body.id),count:1}],
             user: req.session.user.name,
             method: "paypal",
             status: "pending",
+            coupon:req.body.ID?req.body.ID:null, 
             paymentstatus: "pending",
             address: address,
             time:moment().format("L"),
             date:moment().toDate(),
-            quantity: req.body.quantity,
-            total:Number(product.price),
+            quantity:1,
+            total:Math.ceil(Number(product.price)-Number(product.price)*Number(req.body.discount)/100),
+            Coupon:ID?ID:null
           })
           .then((r) => {
             globalobjid = r.insertedId;
+            con.get().collection("coupons").updateOne({ID:ID},{$push:{users:req.session.user._id}})
           });
       }
     });
@@ -223,7 +230,10 @@ app.post("/payment", async(req, res) => {
               )
               .then(() => {
                 console.log("updated successfully");
-                res.render("user/success")
+                con.get().collection("coupons").updateOne({ID:coupon},{$push:{users:req.session.user._id}}).then(()=>{
+                  res.render("user/success",{user:req.session.user})
+                })
+                
               });
           }
         }

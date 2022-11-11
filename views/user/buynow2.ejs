@@ -5,6 +5,25 @@
   crossorigin="anonymous"
 ></script>
 <style>
+#coupon-success{
+  color: #4BB543;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  visibility: hidden;
+}
+#codeinput2{
+  
+  border: 1px solid rgba(173, 167, 167, 0.603);
+  outline: none;
+  width: 100px;
+  text-align: center;
+  margin-right: 3px;
+}
+  #codetext{
+    width: 300px;
+    padding: 10px;
+  }
+
   .v::-webkit-scrollbar {
     display: none;
   }
@@ -174,6 +193,7 @@
 />
 <%-include("../partials/userHeader.ejs")%>
       <div>
+        
         <div
           class="py-16 px-4 md:px-6 2xl:px-0 flex justify-center items-center 2xl:mx-auto 2xl:container"
         >
@@ -181,6 +201,7 @@
             <div class="flex justify-start flex-col items-start space-y-2">
               <button
                 class="flex flex-row items-center text-gray-600 dark:text-white hover:text-gray-500 space-x-1"
+                id="back"
               >
                 <svg
                   class="fill-stroke"
@@ -236,6 +257,22 @@
                   overflow-y: scroll;
                 "
               >
+              <div class="promo w-100 d-flex flex-column align-items-end">
+                <a id="codetext" href="#" class=" text-end">have a promo code..?</a>
+
+           <div class="input-container d-flex" id="codeinput">
+            <input type="text" name="code" placeholder="hai" maxlength="5" id="codeinput2" >
+            <button onclick="applybtn()" class="btn btn-success" id="applyBtn">apply</button>
+           
+           </div>
+           <span id="coupon-success">coupon applied successfully</span>
+             
+       
+           
+
+              
+               
+            </div>
                 <%for(i=0;i<=result.length-1;i++){%>
 
                 <section
@@ -436,7 +473,47 @@
     </div>
   </main>
   <script>
+     $(document).ready(()=>{
+    //  $("#coupon-success").css("visibility","hidden")
+     })
+
+
+// function codeinput(){
+//   const codevalue=$("#codeinput").val()
+//   // console.log(codevalue);
+//   $.post("/home/couponcheck",{
+//     code:codevalue
+//   },(res)=>{
+//     if(res.couponFound==true){
+//       $("#codeinput").css("border","2px solid green")
+//     }
+//     console.log(res);
+//   })
+// }
+
+function applybtn(){
+  const codevalue=$("#codeinput2").val()
+  $.post("/home/couponcheck",{
+    code:codevalue
+  },(res)=>{
+    couponresponse=res.result.discount
+    couponcode=res.result.ID
+    if(res.couponFound==true){
+ 
+      $("#codeinput2").css("border","2px solid #4BB543")
+      $("#coupon-success").css("visibility","visible")
+      $("#price").text(parseInt($("#price").text())-parseInt($("#price").text()*parseInt(res.result.discount)/100));
+      $("#applyBtn").prop("disabled",true)
+    }
+    else{
+      
+      $("#codeinput2").css("border","2px solid red")
+
+    }
     
+  })
+}
+
     function addaddressbtn(id) {
           $.post("/home/addaddress/id",
             {
@@ -462,11 +539,23 @@
         }
     function codFromCart(user, cart) {
       address = $(`.form-check-input:checked`).val();
+      if(typeof(couponresponse)!="undefined"){
+            discount=couponresponse
+            ID=couponcode
+            
+          }
+          else{
+             discount=null
+             ID=null
+          }
       $.post(
         "/home/orderconfirmcart",
         {
           address: address,
           date: new Date().toLocaleString("en-US"),
+          discount,
+          ID
+          
         },
         (data) => {
           if (data.status == "success") {
@@ -483,13 +572,23 @@
 
     function placeorderonline(id) {
       address = $(`.form-check-input:checked`).val();
+      if(typeof(couponresponse)!="undefined"){
+            discount=couponresponse
+            ID=couponcode
+            
+          }
+          else{
+             discount=null
+             ID=null
+          }
       $.post(
         "/home/cartPayment",
         {
           id: id,
           total: document.getElementById('price').dataset.price,
           address,
-
+         discount,
+         ID,
           payment: $(".paymentcart:checked").val(),
         },
         (res) => {
@@ -545,5 +644,8 @@
    function btnenable(){
     $("#addaddressbtn2").prop('disabled',false)
    }
+   $("#back").click(()=>{
+    window.history.back()
+   })
   </script>
 </div>

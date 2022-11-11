@@ -498,8 +498,11 @@ window.addEventListener('resize', slideImage);
                                   
 
 
-                
+                                <%if(result.price==result.offerprice){%>
                                   <h1 class="text-4xl"> ₹ <%=result.price%></h1>
+                                  <%}else{%>
+                                    <h1 class="text-4xl"> ₹ <%=result.offerprice%></h1>
+                                    <%}%>
                               </div>
 
     

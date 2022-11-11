@@ -1,5 +1,25 @@
 
 <%-include("../partials/top.ejs")%>
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog modal-dialog-centered">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body" id="modalbd">
+		  ...
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		  <button type="button" class="btn btn-primary">Save changes</button>
+		</div>
+	  </div>
+	</div>
+  </div>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <style>
 
@@ -488,8 +508,11 @@ body {
 					<th scope="col">#</th>
 					<th scope="col">image</th>
 					<th scope="col">product</th>
+					<th scope="col">Payment Method</th>
+
 					<th scope="col">Price</th>
-					<th scope="col">Quantity</th>
+					<th scope="col">no. of items</th>
+					<th></th>
 					<th scope="col">Actions</th>
 
 				  </tr>
@@ -500,6 +523,7 @@ body {
 							<tr style="filter: grayscale(100%);">
 								<th scope="row"><%=i+1%></th>
 								<td><img src="<%=result[i].p[0].mainImage%>" width="100px"></td>
+								
 								<td><div class="product-title"><h5><%=result[i].p[0].model%></h5></div></td>
 								<td><div class="product-price"><h5>₹<%=result[i].total%></h5></div></td>
 								<td><div class="product-quantity"><h5>X<%=result[i].quantity%></h5></div></td>
@@ -511,18 +535,43 @@ body {
 			
 							  </tr>
 							  <%}else{%>
-				  <tr>
-					<th scope="row"><%=i+1%></th>
-					<td><img src="<%=result[i].p[0].mainImage%>" width="100px"></td>
-					<td><div class="product-title"><h5><%=result[i].p[0].model%></h5></div></td>
-					<td><div class="product-price"><h5>₹<%=result[i].total%></h5></div></td>
-					<td><div class="product-quantity"><h5>X<%=result[i].quantity%></h5></div></td>
-					<td> <p><a class="button" href="#popup1" id="st" onclick="stat('<%=result[i].status%>','<%=result[i]._id%>')">track your order</a></p></td>	
-						<td><button class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>')">
-						cancel order
-					  </button></td>	</td>
 
-				  </tr>
+								<%if(result[i].product.length==1){%>
+									<tr>
+										<th scope="row"><%=i+1%></th>
+										<td onclick="multiClick('<%=result[i]._id%>')"><img src="<%=result[i].p[0].mainImage%>" height="50px" alt=""></td>
+										<td><div class="product-title"><h5><%=result[i].p[0].model%></h5></div></td>
+										<td><div class="product-title"><h5><%=result[i].method%></h5></div></td>
+
+										<td><div class="product-price"><h5>₹<%=Math.ceil(result[i].total)%></h5></div></td>
+										<td><div class="product-quantity"><h5>X<%=result[i].quantity%></h5></div></td>
+										
+										<td> <p><a class="button" href="#popup1" id="st" onclick="stat('<%=result[i].status%>','<%=result[i]._id%>')">track your order</a></p></td>	
+										
+											<td><button class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>')">
+										cancel order
+										  </button></td>	</td>
+					
+									  </tr>
+									<%}else{%>
+										<tr>
+											<th scope="row"><%=i+1%></th>
+											<td >
+												<img src="<%=result[i].p[0].mainImage%>" alt="" height="50px">
+												<img src="<%=result[i].p[1].mainImage%>" alt="" height="50px"> ... </td>
+											<td><h6><%=result[i].p[0].model%> and  <a href="/home/orderinfo/<%=result[i]._id%>/?dis=<%=result[i].discount%>"><%=result[i].product.length-1%>  others </a></h6></td>
+											<td><div class="product-title"><h5><%=result[i].method%></h5></div></td>
+											<td><div class="product-price"><h5>₹<%=Math.ceil(result[i].total)%></h5></div></td>
+											<td><div class="product-quantity"><h5>X<%=result[i].product.length%></h5></div></td>
+											<td> <p><a class="button" href="#popup1" id="st" onclick="stat('<%=result[i].status%>','<%=result[i]._id%>')">track your order</a></p></td>	
+											
+												<td><button class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>')">
+												cancel order
+											  </button></td>	</td>
+						
+										  </tr>
+										<%}%>
+				 
 				  <%}%>
 				  
 				  <%}%>	
@@ -555,6 +604,7 @@ body {
 								 </ul>
 							   </div>
 							 </div>
+							 
 							 <div class="row  top" style="display:flex;">
 							   <div class=" d-flex justify-content-between icon-content"> 
 								   
@@ -585,6 +635,7 @@ body {
 					</div>
 				</div>
 			</div>
+			
 
 
 
@@ -607,6 +658,18 @@ body {
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script>
+function multiClick(orderid){
+	$.post("/home/orderinfo",{
+		orderid,
+	},(response)=>{
+
+	})
+}
+
+function modalbtn(orderid){
+$("#modalbd").text(orderid)
+}
+
 	
 function stat(status,id){
 $("#orderid").html(`ORDER-ID <span id="orderd" class="text-primary font-weight-bold">${id}</span>`)

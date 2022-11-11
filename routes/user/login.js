@@ -42,7 +42,7 @@ route.post("/", (req, res) => {
               .insertOne({
                 user:  ObjectId(req.session.user._id),
                 products: [],
-                count: 0,
+                
               })
               .then(() => {
                 console.log("cart also created");

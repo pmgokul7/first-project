@@ -50,7 +50,7 @@ module.exports = {
           {
             $lookup: {
               from: "Products",
-              localField: "product",
+              localField: "product.product",
               foreignField: "_id",
               as: "p",
             },
@@ -59,6 +59,7 @@ module.exports = {
         ])
         .toArray()
         .then((result) => {
+          console.log(result);
           resolve(result);
         });
     });
@@ -105,13 +106,14 @@ module.exports = {
       db.get()
         .collection("orders")
         .insertOne({
-          product:  ObjectId(data.body.productid),
+          product: [{product:ObjectId(data.body.productid),count:1,status:"placed"}] ,
           user: data.session.user.name,
           method: "COD",
           status: "placed",
           paymentstatus:"success",
           address:JSON.parse( data.body.address),
           time:moment().format("L"),
+          coupon:data.body.ID  ?data.body.ID :null,
           date:new Date(),
           quantity: 1,
           total:parseInt(product.price)-parseInt(product.price)*data.body.discount/100
@@ -120,6 +122,9 @@ module.exports = {
           resolve(result);
         }).then(()=>{
           // db.get().collection("Products").updateOne({_id:new ObjectId(data.body.productid)},{$inc:{stock:-data.body.quantity}})
+              db.get().collection("coupons").updateOne({ID:data.body.ID},{$push:{users:data.session.user._id}}).then(()=>{
+                  console.log("coupon success");
+                }) 
         });
     });
 

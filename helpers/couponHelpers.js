@@ -21,9 +21,7 @@ module.exports = {
             }
             else{
                 resolve({ couponFound: true,result });
-                db.get().collection("coupons").updateOne({ID:data.body.code},{$push:{users:data.session.user._id}}).then(()=>{
-                  console.log("coupon success");
-                })
+               
                 
                 
             }

@@ -1,0 +1,48 @@
+<%-include("../partials/top.ejs")%>
+<%-include("../partials/userHeader.ejs")%>
+<div class="container">
+  
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">image</th>
+            <th scope="col">model</th>
+            <th scope="col">price</th>
+            <th scope="col">quantity</th>
+            <th scope="col">total</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+                  
+        <%for(i=0;i<=order.length-1;i++){%>
+          <tr>
+            <th scope="row"><%=i+1%></th>
+            <td><img src="<%=order[i].pp[0].mainImage%>" height="100px" alt=""></td>
+            <td><h6><%=order[i].pp[0].model%></h6></td>
+            <td><h6>₹<%=order[i].pp[0].price%></h6></td>
+            <td><h6>x<%=order[i].product.count%></h6></td>
+            <%if(locals.discount){%>
+            <td><strike><h6>₹<%=order[i].product.count*order[i].pp[0].price%></h6></strike>
+               <h4>₹<%=Math.ceil(order[i].product.count*order[i].pp[0].price - order[i].product.count*order[i].pp[0].price*discount/100)%></h4>
+            </td>
+            <%}else{%>
+              <td>
+                <h4>₹<%=order[i].product.count*order[i].pp[0].price%></h4>
+              </td>
+          </tr>
+          <%}%>
+          <%}%>
+         <hr>
+        
+        </tbody>
+      </table>
+      <br>
+      <div class="info-total float-end mt-3">
+        <h3>Total:₹
+          <%=order[0].total%></h3>
+          <a  href="/home/orders">Go to orders</a>
+      </div>
+      
+</div>
