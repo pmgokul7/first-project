@@ -513,7 +513,7 @@ body {
 					<th scope="col">Price</th>
 					<th scope="col">no. of items</th>
 					<th></th>
-					<th scope="col">Actions</th>
+					<th scope="col"></th>
 
 				  </tr>
 				</thead>
@@ -536,41 +536,27 @@ body {
 							  </tr>
 							  <%}else{%>
 
-								<%if(result[i].product.length==1){%>
-									<tr>
-										<th scope="row"><%=i+1%></th>
-										<td onclick="multiClick('<%=result[i]._id%>')"><img src="<%=result[i].p[0].mainImage%>" height="50px" alt=""></td>
-										<td><div class="product-title"><h5><%=result[i].p[0].model%></h5></div></td>
-										<td><div class="product-title"><h5><%=result[i].method%></h5></div></td>
-
-										<td><div class="product-price"><h5>₹<%=Math.ceil(result[i].total)%></h5></div></td>
-										<td><div class="product-quantity"><h5>X<%=result[i].quantity%></h5></div></td>
-										
-										<td> <p><a class="button" href="#popup1" id="st" onclick="stat('<%=result[i].status%>','<%=result[i]._id%>')">track your order</a></p></td>	
-										
-											<td><button class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>')">
-										cancel order
-										  </button></td>	</td>
-					
-									  </tr>
-									<%}else{%>
+			
 										<tr>
 											<th scope="row"><%=i+1%></th>
 											<td >
-												<img src="<%=result[i].p[0].mainImage%>" alt="" height="50px">
-												<img src="<%=result[i].p[1].mainImage%>" alt="" height="50px"> ... </td>
-											<td><h6><%=result[i].p[0].model%> and  <a href="/home/orderinfo/<%=result[i]._id%>/?dis=<%=result[i].discount%>"><%=result[i].product.length-1%>  others </a></h6></td>
+												<a href="/home/orderinfo/<%=result[i]._id%>/?dis=<%=result[i].discount%>"><img src="<%=result[i].p[0].mainImage%>" alt="" height="50px"></a>
+												 </td>
+											<td><h6><%=result[i].p[0].model%> <%if(result[i].product.length!=1){%>
+												and
+												<%}%>
+												  <a href="/home/orderinfo/<%=result[i]._id%>/?dis=<%=result[i].discount%>"><%if(result[i].product.length!=1){%>
+												<%=result[i].product.length-1%>  other </a></h6></td>
+												<%}%>
 											<td><div class="product-title"><h5><%=result[i].method%></h5></div></td>
 											<td><div class="product-price"><h5>₹<%=Math.ceil(result[i].total)%></h5></div></td>
 											<td><div class="product-quantity"><h5>X<%=result[i].product.length%></h5></div></td>
 											<td> <p><a class="button" href="#popup1" id="st" onclick="stat('<%=result[i].status%>','<%=result[i]._id%>')">track your order</a></p></td>	
 											
-												<td><button class="remove-product btn btn-danger  ms-4" onclick="cancelOrder('<%=result[i]._id%>')">
-												cancel order
-											  </button></td>	</td>
+												<td></td>	</td>
 						
 										  </tr>
-										<%}%>
+										
 				 
 				  <%}%>
 				  

@@ -5,7 +5,7 @@
   crossorigin="anonymous"
 ></script>
 <style>
-/* #coupon-success{
+#coupon-success{
   color: #4BB543;
   margin-top: 3px;
   margin-bottom: 3px;
@@ -22,7 +22,7 @@
   #codetext{
     width: 300px;
     padding: 10px;
-  } */
+  }
 
   .v::-webkit-scrollbar {
     display: none;
@@ -257,7 +257,7 @@
                   overflow-y: scroll;
                 "
               >
-              <!-- <div class="promo w-100 d-flex flex-column align-items-end">
+              <div class="promo w-100 d-flex flex-column align-items-end">
                 <a id="codetext" href="#" class=" text-end">have a promo code..?</a>
 
            <div class="input-container d-flex" id="codeinput">
@@ -272,7 +272,7 @@
 
               
                
-            </div> -->
+            </div>
                 <%for(i=0;i<=result.length-1;i++){%>
 
                 <section
@@ -491,28 +491,28 @@
 //   })
 // }
 
-// function applybtn(){
-//   const codevalue=$("#codeinput2").val()
-//   $.post("/home/couponcheck",{
-//     code:codevalue
-//   },(res)=>{
-//     couponresponse=res.result.discount
-//     couponcode=res.result.ID
-//     if(res.couponFound==true){
+function applybtn(){
+  const codevalue=$("#codeinput2").val()
+  $.post("/home/couponcheck",{
+    code:codevalue
+  },(res)=>{
+    couponresponse=res.result.discount
+    couponcode=res.result.ID
+    if(res.couponFound==true){
  
-//       $("#codeinput2").css("border","2px solid #4BB543")
-//       $("#coupon-success").css("visibility","visible")
-//       $("#price").text(parseInt($("#price").text())-parseInt($("#price").text()*parseInt(res.result.discount)/100));
-//       $("#applyBtn").prop("disabled",true)
-//     }
-//     else if(res.couponFound==false){
+      $("#codeinput2").css("border","2px solid #4BB543")
+      $("#coupon-success").css("visibility","visible")
+      $("#price").text(parseInt($("#price").text())-parseInt($("#price").text()*parseInt(res.result.discount)/100));
+      $("#applyBtn").prop("disabled",true)
+    }
+    else if(res.couponFound==false){
       
-//       $("#codeinput2").css("border","2px solid red")
+      $("#codeinput2").css("border","2px solid red")
 
-//     }
+    }
     
-//   })
-// }
+  })
+}
 
     function addaddressbtn(id) {
           $.post("/home/addaddress/id",

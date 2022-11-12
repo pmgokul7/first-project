@@ -10,7 +10,9 @@
             <th scope="col">model</th>
             <th scope="col">price</th>
             <th scope="col">quantity</th>
+            <th>status</th>
             <th scope="col">total</th>
+            <th>d</th>
             
           </tr>
         </thead>
@@ -21,19 +23,41 @@
             <th scope="row"><%=i+1%></th>
             <td><img src="<%=order[i].pp[0].mainImage%>" height="100px" alt=""></td>
             <td><h6><%=order[i].pp[0].model%></h6></td>
-            <td><h6>₹<%=order[i].pp[0].price%></h6></td>
+            
+            <td><h6>₹<%=order[i].pp[0].offerprice%></h6></td>
             <td><h6>x<%=order[i].product.count%></h6></td>
+
+
+            <%if(order[i].product.status=="cancelled"){%>
+             <td></td>
+              <%}else if(order[i].product.status=="delivered"){%>
+              <td><span class="text-success">product delivered</span></td>
+              <%}else{%>
+                <td><span class="text-primary text-decoration-underline " style="cursor: pointer;"> track your order</span></td>
+
+                <%}%>
             <%if(locals.discount){%>
+              
             <td><strike><h6>₹<%=order[i].product.count*order[i].pp[0].price%></h6></strike>
-               <h4>₹<%=Math.ceil(order[i].product.count*order[i].pp[0].price - order[i].product.count*order[i].pp[0].price*discount/100)%></h4>
+               <h4>₹<%=Math.ceil(order[i].product.count*order[i].pp[0].offerprice - order[i].product.count*order[i].pp[0].offerprice*discount/100)%></h4>
             </td>
             <%}else{%>
               <td>
-                <h4>₹<%=order[i].product.count*order[i].pp[0].price%></h4>
+                <strike><h6>₹<%=order[i].product.count*order[i].pp[0].price%></h6></strike> 
+                <h4>₹<%=order[i].product.count*order[i].pp[0].offerprice%></h4>
               </td>
+              <%if(order[i].product.status=="cancelled"){%>
+                <td><h6 class="text-seondary">order cancelled</h6></td>
+              <%}else if(order[i].product.status=="delivered"){%>
+                <td><button  class="btn btn-info" onclick="returnProduct('<%=order[i].product.product%>','<%=order[i].product.count%>','<%=order[i].date%>','<%=order[i].product.status%>','<%=order[i]._id%>')">return </button></td>
+              <%}else{%>
+              <td><button onclick="cancelfromcart('<%=order[i].product.product%>','<%=order[i].product.count%>','<%=order[i].date%>','<%=order[i].product.status%>','<%=order[i]._id%>','<%=order[i].discount%>')" class="btn btn-danger">cancel order</button></td>
+                <%}%>
+              <%}%>
           </tr>
           <%}%>
-          <%}%>
+         
+             
          <hr>
         
         </tbody>
@@ -46,3 +70,34 @@
       </div>
       
 </div>
+<script>
+  function returnProduct(model,count,date,status,id) {
+    $.post("/home/returnproduct",{
+      model,count,date,status,id
+    },(res)=>{
+      if(res.returnstatus==true){
+        swal("return success","Amount will credit to wallet once item is collected", "success");
+      }    
+    })
+  }
+  function cancelfromcart(model,count,date,status,id,discount){
+    permission=confirm("are you sure .?")
+    if(permission){
+      
+      $.post("/home/deletefrombulkorder",{
+        model,
+        count,
+        date,
+        status,
+        id,
+        discount
+      },(response)=>{
+           if(response.cancelled==true){
+            location.reload()
+           }
+      })
+
+    }
+   
+  }
+</script>

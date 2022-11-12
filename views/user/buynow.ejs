@@ -398,6 +398,9 @@
                   <%}%>
                 </div>
                 <div>
+                  <input type="checkbox" id="wallet" class="mb-4 me-4" onchange="checkboxchange(this,'<%=user.wallet%>')">
+                  <label for="wallet"><h6 class="user-select-none">use wallet balance ₹<%=user.wallet%> for this purchase</h6></label>
+                  
                   <button
                     style="background-color: #3f51b5"
                     class="btn btn-primary w-100 p-4"
@@ -501,6 +504,13 @@
 
       <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       <script>
+function checkboxchange(x,wallet){
+if(x.checked){
+  
+}
+}
+
+
 function removeCoupon(){
   location.reload()
   code=$("#couponinp").val()
@@ -715,6 +725,12 @@ code
         }
 
         function cod(x) {
+          if($("#wallet").is(':checked')){
+            usewallet=true
+          }
+          else{
+            usewallet=false
+          }
           address = $(`.form-check-input:checked`).val();
           if(typeof(couponresponse)!="undefined"){
             discount=couponresponse
@@ -736,6 +752,7 @@ code
               ID,
               date: new Date(),
               price: Number($("#priceone").text()),
+              usewallet
             },
             (d) => {
               console.log(d);

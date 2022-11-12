@@ -2,7 +2,7 @@ const db = require("../config/connection");
 const moment=require("moment")
 
 const bcrypt = require("bcrypt");
-const { ObjectId } = require("mongodb");
+const { ObjectId, Db } = require("mongodb");
 module.exports = {
   info: (data) => {
     return new Promise((resolve, reject) => {
@@ -74,7 +74,10 @@ module.exports = {
             .collection("user")
             .findOne({ _id:  ObjectId(data.session.user._id) })
             .then((user) => {
-              resolve({ result, user });
+              db.get().collection("user").findOne({_id:ObjectId(data.session.user._id)}).then(user=>{
+                resolve({ result, user });
+              })
+              
             });
         });
     });
@@ -100,13 +103,24 @@ module.exports = {
   },
 
   confirmCODOrder: (data) => {
-    console.log("body is",data.body);
+    if(data.body.usewallet){
+     
+     
+         walletbalance=data.session.user.wallet
+    
+       
+      
+    }else{
+      walletbalance=0
+    }
+    console.log("body issssssssssssssssssssss",data.body);
+    console.log("WALLETBALANCE issssssssssssssssssssss",walletbalance);
     return new Promise(async(resolve, reject) => {
       product=await db.get().collection("Products").findOne({_id:ObjectId(data.body.productid)})
       db.get()
         .collection("orders")
         .insertOne({
-          product: [{product:ObjectId(data.body.productid),count:1,status:"placed", total:parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100}] ,
+          product: [{product:ObjectId(data.body.productid),count:1,status:"placed", total:parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100-walletbalance < 0 ? 0 :parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100-walletbalance}] ,
           user: data.session.user.name,
           method: "COD",
           status: "placed",
@@ -117,16 +131,27 @@ module.exports = {
           discount:data.body.discount ? data.body.discount:0,
           date:new Date(),
           quantity: 1,
-          total:parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100
+          wallet:data.body.usewallet,
+          total:(parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100-walletbalance )< 0 ? 0 : (parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100)-walletbalance
         })
         .then((result) => {
+          idd=result.insertedId
+          db.get().collection("orders").findOne({_id:idd}).then(order=>{
+            console.log(parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100-order.product[0].total);
+            order=order
+            db.get().collection("coupons").updateOne({ID:data.body.ID},{$push:{users:data.session.user._id}}).then(()=>{
+              db.get().collection("user").updateOne({_id:ObjectId(data.session.user._id)},{$inc:{wallet:-parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100-order.product[0].total}}).then(()=>{
+                console.log("coupon success and wallet minus  ");
+              })
+                
+              }) 
+
+
+               console.log("this is order",order);
           resolve(result);
-        }).then(()=>{
-          // db.get().collection("Products").updateOne({_id:new ObjectId(data.body.productid)},{$inc:{stock:-data.body.quantity}})
-              db.get().collection("coupons").updateOne({ID:data.body.ID},{$push:{users:data.session.user._id}}).then(()=>{
-                  console.log("coupon success");
-                }) 
-        });
+          })
+       
+        })
     });
 
     

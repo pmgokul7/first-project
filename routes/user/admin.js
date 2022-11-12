@@ -228,8 +228,8 @@ route.post("/orders/update", (req, res) => {
     .get()
     .collection("orders")
     .updateOne(
-      { _id:  ObjectId(req.body.orderid) },
-      { $set: { status: req.body.status } }
+      { _id:  ObjectId(req.body.id),"product.product":ObjectId(req.body.model)},
+      { $set: { "product.$.status": req.body.status,"product.$.deliverytime":req.body.dtime } }
     )
     .then(() => {
       res.send({ updated: true });
@@ -295,7 +295,7 @@ route.post("/addcat", (req, res) => {
       con
       .get()
       .collection("cat")
-      .insertOne({ name: req.body.newcat })
+      .insertOne({ name: req.body.newcat ,offer:0})
       .then(() => {
         res.redirect("/admin/categories");
       });
