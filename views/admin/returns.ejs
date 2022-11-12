@@ -1,0 +1,48 @@
+<%-include("../partials/top.ejs")%>
+<%-include("../partials/header.ejs")%>
+<div class="container-fluid">
+    <div class="dropdown mt-2">
+    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+      order Management
+    </a>
+  
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+      <li><a class="dropdown-item" href="/admin/orders">orders</a></li>
+      <li><a class="dropdown-item" href="/admin/returns">Return requests</a></li>
+    </ul>
+  </div>
+  <table class="table">
+    <caption>List of users</caption>
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">image</th>
+        <th scope="col">model</th>
+        <th scope="col">price</th>
+
+        <th scope="col">Address</th>
+      </tr>
+    </thead>
+    <tbody>
+       
+        <%for(i=0;i<=returns.length-1;i++){%>
+      <tr>
+        <th scope="row"><%=i+1%></th>
+        <th><img src="<%=returns[i].pros.mainImage%>" alt="" height="80px"></th>
+        <td><%=returns[i].pros.model%></td>
+        <td><%=returns[i].o.total%></td>
+        <td><%=returns[i].o.address.name%><br>
+            <%=returns[i].o.address.address1%><br>
+            <%=returns[i].o.address.post%><br>
+            <%=returns[i].o.address.pin%>
+
+            </td>
+            <td><div class="btn btn-info">process return</div></td>
+        </td>
+      </tr>
+      <%}%>
+      
+     
+    </tbody>
+  </table>
+</div>

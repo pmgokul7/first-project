@@ -239,10 +239,11 @@
               <p
                 class="text-3xl lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800 dark:text-gray-50"
               ></p>
-
+            <%if(locals.cartItems[0]){%>
               <h4 class="text-3xl">
                 Total amount:<span id="price" data-price="<%=cartItems[0].total%>"><%=cartItems[0].total%></span>
               </h4>
+              <%}%>
             </div>
 
             <div
@@ -367,6 +368,8 @@
                     +
                   </button>
                   <%}%>
+                  <input type="checkbox" id="wallet" class="mb-4 me-4 mt-3" onchange="checkboxchange(this,'<%=user.wallet%>')">
+                  <label for="wallet"><h6 class="user-select-none">use wallet balance ₹<%=user.wallet%> for this purchase</h6></label>
                 </div>
                 <div>
                   <button
@@ -496,10 +499,10 @@ function applybtn(){
   $.post("/home/couponcheck",{
     code:codevalue
   },(res)=>{
-    couponresponse=res.result.discount
-    couponcode=res.result.ID
+   
     if(res.couponFound==true){
- 
+      couponresponse=res.result.discount
+    couponcode=res.result.ID
       $("#codeinput2").css("border","2px solid #4BB543")
       $("#coupon-success").css("visibility","visible")
       $("#price").text(parseInt($("#price").text())-parseInt($("#price").text()*parseInt(res.result.discount)/100));
@@ -539,6 +542,12 @@ function applybtn(){
         }
     function codFromCart(user, cart) {
       address = $(`.form-check-input:checked`).val();
+      if($("#wallet").is(':checked')){
+        usewallet2=true
+      }
+      else{
+        usewallet2=false
+      }
       if(typeof(couponresponse)!="undefined"){
             discount=couponresponse
             ID=couponcode
@@ -548,13 +557,15 @@ function applybtn(){
              discount=null
              ID=null
           }
+          console.log(discount,ID);
       $.post(
         "/home/orderconfirmcart",
         {
           address: address,
           date: new Date().toLocaleString("en-US"),
           discount,
-          ID
+          ID,
+          usewallet2
           
         },
         (data) => {
@@ -571,6 +582,12 @@ function applybtn(){
     }
 
     function placeorderonline(id) {
+      if($("#wallet").is(":checked")){
+        useWalletonline=true
+      }
+      else{
+        useWalletonline=false
+      }
       address = $(`.form-check-input:checked`).val();
       if(typeof(couponresponse)!="undefined"){
             discount=couponresponse
@@ -589,6 +606,7 @@ function applybtn(){
           address,
          discount,
          ID,
+         useWalletonline,
           payment: $(".paymentcart:checked").val(),
         },
         (res) => {

@@ -75,7 +75,7 @@
     $.post("/home/returnproduct",{
       model,count,date,status,id
     },(res)=>{
-      if(res.returnstatus==true){
+      if(res.return==true){
         swal("return success","Amount will credit to wallet once item is collected", "success");
       }    
     })

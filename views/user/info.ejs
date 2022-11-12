@@ -503,6 +503,9 @@ window.addEventListener('resize', slideImage);
                                   <%}else{%>
                                     <h1 class="text-4xl"> ₹ <%=result.offerprice%></h1>
                                     <%}%>
+                                    <%if(result.price!=result.offerprice){%>
+                                        <span class="mt-2" style="font-size: 15px;color:#4BB543 ;">product offer applied successfully</span>
+                                        <%}%> 
                               </div>
 
     

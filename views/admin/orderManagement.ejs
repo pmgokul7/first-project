@@ -50,8 +50,8 @@
             </a>
           
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <li><a class="dropdown-item" href="#">orders</a></li>
-              <li><a class="dropdown-item" href="#">Return requests</a></li>
+              <li><a class="dropdown-item" href="/admin/orders">orders</a></li>
+              <li><a class="dropdown-item" href="/admin/returns">Return requests</a></li>
             </ul>
           </div>
           <table class="table">
@@ -157,8 +157,10 @@
          if(data.updated==true)
          {
      
-          alert("status changed successfully")
-          location.reload()
+          swal("status changed successfully")
+         }
+         else{
+          swal("something went wrong")
          }
       })
     }

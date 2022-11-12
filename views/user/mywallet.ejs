@@ -1,168 +1,386 @@
 <%-include("../partials/top.ejs")%>
-<%-include("../partials/userHeader.ejs")%>
 <style>
-    @import url("https://fonts.googleapis.com/css?family=Montserrat:400,600,700");
+  @import url("https://fonts.googleapis.com/css?family=Montserrat:400,600,700");
 * {
-  box-sizing: border-box; }
+box-sizing: border-box; }
 
 html, body {
-  background: #f9fafb;
-  height: 100vh;
-  position: relative;
-  z-index: -2; }
+background: #f9fafb;
+height: 100vh;
+position: relative;
+z-index: -2; }
 
 .layout {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  height: 90vh; }
+align-items: center;
+display: flex;
+justify-content: center;
+height: 90vh; }
 
 @keyframes popUp {
-  from {
-    transform: scale(0);
-    opacity: 0; }
-  to {
-    transform: scale(1);
-    opacity: 1; } }
+from {
+  transform: scale(0);
+  opacity: 0; }
+to {
+  transform: scale(1);
+  opacity: 1; } }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(5px);
-    opacity: 0; }
-  to {
-    transform: translateY(0px);
-    opacity: 1; } }
+from {
+  transform: translateY(5px);
+  opacity: 0; }
+to {
+  transform: translateY(0px);
+  opacity: 1; } }
 
 .profile {
-  animation: popUp ease-in-out 350ms;
+animation: popUp ease-in-out 350ms;
+background: #ffffff;
+border-radius: 25px;
+box-shadow: 0 0 40px 0px rgba(0, 0, 0, 0.17);
+margin-top: 40px;
+padding: 28px 30px 30px 35px;
+position: relative;
+width: 500px; }
+.profile__account {
+  align-self: center;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  padding-left: 135px; }
+.profile__button {
+  border-radius: 50px;
+  border: 1px solid #000000;
+  color: #000000;
+  display: block;
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  transition: ease-in-out 250ms background, ease-in-out 250ms color; }
+  .profile__button:hover {
+    background: #000000;
+    color: #ffffff; }
+.profile__edit {
+  flex: none;
+  margin-left: 30px;
+  width: 140px; }
+.profile__header {
+  display: flex;
+  margin-bottom: 20px; }
+.profile__icon {
+  flex: none;
+  font-size: 1.5em;
+  margin-right: 10px;
+  padding-top: 3px; }
+  .profile__icon--gold {
+    color: #eab100; }
+  .profile__icon--blue {
+    color: #8faae8; }
+  .profile__icon--pink {
+    color: #ff86af; }
+.profile__key {
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: center; }
+.profile__picture {
   background: #ffffff;
-  border-radius: 25px;
-  box-shadow: 0 0 40px 0px rgba(0, 0, 0, 0.17);
-  margin-top: 40px;
-  padding: 28px 30px 30px 35px;
-  position: relative;
-  width: 500px; }
-  .profile__account {
-    align-self: center;
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-    padding-left: 135px; }
-  .profile__button {
-    border-radius: 50px;
-    border: 1px solid #000000;
-    color: #000000;
-    display: block;
-    font-family: "Montserrat", sans-serif;
-    font-size: 13px;
-    padding: 10px;
-    text-align: center;
-    text-decoration: none;
-    transition: ease-in-out 250ms background, ease-in-out 250ms color; }
-    .profile__button:hover {
-      background: #000000;
-      color: #ffffff; }
-  .profile__edit {
-    flex: none;
-    margin-left: 30px;
-    width: 140px; }
-  .profile__header {
-    display: flex;
-    margin-bottom: 20px; }
-  .profile__icon {
-    flex: none;
-    font-size: 1.5em;
-    margin-right: 10px;
-    padding-top: 3px; }
-    .profile__icon--gold {
-      color: #eab100; }
-    .profile__icon--blue {
-      color: #8faae8; }
-    .profile__icon--pink {
-      color: #ff86af; }
-  .profile__key {
-    font-family: "Montserrat", sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    text-align: center; }
-  .profile__picture {
-    background: #ffffff;
+  border-radius: 100px;
+  border: 10px solid #ffffff;
+  height: 125px;
+  position: absolute;
+  top: -40px;
+  width: 125px; }
+  .profile__picture:before {
     border-radius: 100px;
-    border: 10px solid #ffffff;
-    height: 125px;
+    box-shadow: 0 0 40px 0px rgba(0, 0, 0, 0.17);
+    content: "";
+    height: calc(100% + 20px);
+    left: -10px;
     position: absolute;
-    top: -40px;
-    width: 125px; }
-    .profile__picture:before {
-      border-radius: 100px;
-      box-shadow: 0 0 40px 0px rgba(0, 0, 0, 0.17);
-      content: "";
-      height: calc(100% + 20px);
-      left: -10px;
-      position: absolute;
-      top: -10px;
-      width: calc(100% + 20px);
-      z-index: -1; }
-    .profile__picture img {
-      border-radius: 100px;
-      height: 100%;
-      width: 100%; }
-  .profile__stat {
-    animation: slideUp ease-in-out 350ms forwards;
-    border-right: 1px solid #e9e9e9;
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    opacity: 0;
-    padding: 10px 4px;
-    transform: translateY(5px); }
-    .profile__stat:last-of-type {
-      border-right: none; }
-    .profile__stat:nth-child(1) {
-      animation-delay: 400ms; }
-    .profile__stat:nth-child(2) {
-      animation-delay: 500ms; }
-    .profile__stat:nth-child(3) {
-      animation-delay: 600ms; }
-  .profile__stats {
-    display: flex; }
-  .profile__username {
-    font-family: "Montserrat", sans-serif;
-    font-weight: 600;
-    margin: 0;
-    text-align: right; }
-  .profile__value {
-    font-family: "Montserrat", sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    text-align: center; }
+    top: -10px;
+    width: calc(100% + 20px);
+    z-index: -1; }
+  .profile__picture img {
+    border-radius: 100px;
+    height: 100%;
+    width: 100%; }
+.profile__stat {
+  animation: slideUp ease-in-out 350ms forwards;
+  border-right: 1px solid #e9e9e9;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  opacity: 0;
+  padding: 10px 4px;
+  transform: translateY(5px); }
+  .profile__stat:last-of-type {
+    border-right: none; }
+  .profile__stat:nth-child(1) {
+    animation-delay: 400ms; }
+  .profile__stat:nth-child(2) {
+    animation-delay: 500ms; }
+  .profile__stat:nth-child(3) {
+    animation-delay: 600ms; }
+.profile__stats {
+  display: flex; }
+.profile__username {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  margin: 0;
+  text-align: right; }
+.profile__value {
+  font-family: "Montserrat", sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center; }
 
 </style>
-<div class="layout">
-    <div class="profile">
-        <div class="profile__picture"><img src="http://i.pravatar.cc/250?img=58" alt="ananddavis" /></div>
-        <div class="profile__header">
-            <div class="profile__account">
-                <h4 class="profile__username"><%=user.name%></h4>
+<style>
+    a{
+        text-decoration: none;
+        color: #050305;
+    }
+    ul{
+
+        display: flex;
+        flex-direction: column;
+        list-style:none;
+        margin: 0;
+        padding: 0;
+        margin-top: 60px;
+        cursor: pointer;
+        
+    }
+    li:hover{
+        background-color: #e7e7e7;
+    }
+li{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 5px;
+    margin-bottom: 5px;
+    background-color: #ecefff;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8
+}
+
+.profile-button {
+    
+    box-shadow: none;
+    border: none
+}
+
+.profile-button:hover {
+    background: #c1aac5
+}
+
+.profile-button:focus {
+    
+    box-shadow: none
+}
+
+.profile-button:active {
+   
+    box-shadow: none
+}
+
+.back:hover {
+    color: #050305;
+    cursor: pointer
+}
+
+.labels {
+    font-size: 11px
+}
+
+.add-experience:hover {
+    background: #BA68C8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #BA68C8
+}
+.address{
+    border-radius: 10px;
+    height: 150px;
+    border: 1px solid #3F51B5;
+    width: 90%;
+}
+.addressdiv::-webkit-scrollbar{
+    display: none;
+}
+
+
+</style>
+<body>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Add a new Address</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="profile__edit"><a class="profile__button" href="/home"><%=user.myreferal%></a></div>
+            <div class="modal-body">
+              <div class="mb-2">
+                <label for="exampleInputEmail1" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name"required>
+                
+              </div>
+              <div class="mb-2">
+                <label for="exampleInputEmail1" class="form-label">Mobile</label>
+                <input type="text" class="form-control" id="mob" name="name" required>
+                
+              </div>
+      
+              <div class="mb-1">
+                <label for="exampleInputEmail1" class="form-label">Address line1</label>
+                <input type="text" class="form-control" id="ad1"  name="address1" required>
+                
+              </div>
+      
+              <div class="mb-1">
+                <label for="exampleInputEmail1" class="form-label">Address line2</label>
+                <input type="text" class="form-control" id="ad2"  name="address2" required>
+                
+              </div>
+              <div class="mb-1">
+                <label for="exampleInputEmail1" class="form-label">post</label>
+                <input type="text" class="form-control" id="post"  name="post" required >
+                
+              </div>
+              <div class="mb-1">
+                <label for="exampleInputEmail1" class="form-label">pin</label>
+                <input type="number" class="form-control" id="pin"  name="pin" required>
+                
+              </div>
+              <div class="mb-1">
+                
+               
+                
+              </div>
+              <input type="button" onclick="addaddressbtn('<%user._id%>')" value="add"  class="form-control btn btn-primary">
+            <!-- </form> -->
+            </div>
+            <!-- <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Understood</button>
+            </div> -->
+          </div>
         </div>
-        <div class="profile__stats">
-            <div class="profile__stat">
-                <div class="profile__icon profile__icon--gold"><i class="fas fa-wallet"></i></div>
-                <div class="profile__value"><%=user.wallet%><div class="profile__key">Wallet</div>
+      </div>
+<%-include("../partials/userHeader.ejs")%>
+      <!-- Your content goes here -->
+            <div class="container rounded bg-white mt-5 mb-5">
+                <div class="row">
+                    <div class="col-md-3 border-right d-flex">
+                        <d class="d-flex flex-column  align-items-center text-center p-3 py-5">
+                            <img class="rounded-circle d-flex flex-column" width="50px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                            <span class="font-weight-bold"><%=user.name%></span>
+                        
+                            <span class="text-black-50"><%=user.email%>
+                            
+                            </span>
+                            <div class="div " style="width:250px ;">
+                            <ul>
+                                <a href="/home/profile" ><li >My Profile</li></a>
+                               <a href="/home/orders"> <li>My Orders</li></a>
+                               <a href="/home/getwallet" > <li style="background-color: rgb(206, 195, 255);" >My Wallet</li></a>
+                               <a href="/home/myaddress"><li>My Addresses</li></a>
+                                <a href="/logout"><li>Log out</li></a>
+                            </ul>
+                            </div>
+                            
+
+                    </div>
+                    
+                      <div class="profile">
+                          <div class="profile__picture"><img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" alt="ananddavis" /></div>
+                          <div class="profile__header">
+                              <div class="profile__account">
+                                  <h4 class="profile__username"><%=user.name%></h4>
+                              </div>
+                              <div class="profile__edit"><a class="profile__button" href="/home"><%=user.myreferal%></a></div>
+                          </div>
+                          <div class="profile__stats">
+                              <div class="profile__stat">
+                                  <div class="profile__icon profile__icon--gold"><i class="fas fa-wallet"></i></div>
+                                  <div class="profile__value"><%=user.wallet%><div class="profile__key">Wallet</div>
+                                  </div>
+                              </div>
+                              <div class="profile__stat">
+                                  <div class="profile__icon profile__icon--blue"><i class="fas fa-signal"></i></div>
+                                  <div class="profile__value"><%=user.referalusers.length%><div class="profile__key">referals</div>
+                                  </div>
+                              </div>
+                              <div class="profile__stat">
+                                  <div class="profile__icon profile__icon--pink"><i class="fas fa-heart"></i></div>
+                                  <div class="profile__value">4<div class="profile__key">Lives</div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  
+                   
                 </div>
             </div>
-            <div class="profile__stat">
-                <div class="profile__icon profile__icon--blue"><i class="fas fa-signal"></i></div>
-                <div class="profile__value"><%=user.referalusers.length%><div class="profile__key">referals</div>
-                </div>
             </div>
-            <div class="profile__stat">
-                <div class="profile__icon profile__icon--pink"><i class="fas fa-heart"></i></div>
-                <div class="profile__value">4<div class="profile__key">Lives</div>
-                </div>
             </div>
-        </div>
-    </div>
-</div>
+            
+          </div>
+        
+        
+          
+        </main>
+        
+      <script>
+        $(document).ready(()=>{
+           
+            $("#myWallet").css("display","none")
+            $("#myAddress").css("display","none")
+        
+        })
+
+     
+
+   
+
+
+        function addaddressbtn(id) {
+      
+      $.post("/home/addaddress/<%=user._id%>",
+      {name:$("#name").val(),
+       address1:$("#ad1").val(),
+       address1:$("#ad2").val(),
+       post:$("#post").val(),
+       pin:$("#pin").val(),
+       mobile:$("#mob").val()
+    },
+      (data)=>{
+        if(data.empty){
+          swal("all fields must filled.")
+        }
+        else{
+                  swal("address added!.")
+.then((value) => {
+  
+  location.reload()
+});
+        }
+
+      
+       
+
+      }
+      )
+      
+     }
+      </script>
+</body>

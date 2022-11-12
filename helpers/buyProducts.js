@@ -47,6 +47,7 @@ module.exports = {
         .collection("orders")
         .aggregate([
           { $match: { user: data.session.user.name } },
+          // {$unwind:"$product"},
           {
             $lookup: {
               from: "Products",
@@ -59,7 +60,7 @@ module.exports = {
         ])
         .toArray()
         .then((result) => {
-          console.log(result);
+          console.log("unwind result orders",result);
           resolve(result);
         });
     });
@@ -84,7 +85,7 @@ module.exports = {
   },
   addressAdd: (data) => {
     return new Promise((resolve, reject) => {
-    
+      
       if(data.body.name==""||data.body.address1==""||data.body.address1==""||data.body.post==""||data.body.pin==""||data.body.mobile==""){
         resolve({empty:true})
       }else{
@@ -140,7 +141,7 @@ module.exports = {
             console.log(parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100-order.product[0].total);
             order=order
             db.get().collection("coupons").updateOne({ID:data.body.ID},{$push:{users:data.session.user._id}}).then(()=>{
-              db.get().collection("user").updateOne({_id:ObjectId(data.session.user._id)},{$inc:{wallet:-parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100-order.product[0].total}}).then(()=>{
+              db.get().collection("user").updateOne({_id:ObjectId(data.session.user._id)},{$inc:{wallet:-(parseInt(product.offerprice)-parseInt(product.offerprice)*data.body.discount/100-order.product[0].total)}}).then(()=>{
                 console.log("coupon success and wallet minus  ");
               })
                 

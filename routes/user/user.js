@@ -210,16 +210,18 @@ route.get("/cart/checkout", (req, res) => {
         ])
         .toArray()
 
-        .then((result) => {
+        .then((result) => { 
           console.log("cartitems:", cartItems);
           globalcartTotal = cartItems;
           cartProducts = result;
-
+         con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)}).then(user=>{
           res.render("user/buynow2", {
             result,
-            user: req.session.user,
+            user,
             cartItems,
           });
+         })
+          
           console.log(req.session.user);
         });
     });
@@ -410,8 +412,10 @@ route.post("/addressadd/:id", (req, res) => {
   console.log("called");
 });
 
-route.post("/orderconfirmcart", (req, res) => {
-  // console.log(req);
+route.post("/orderconfirmcart",async (req, res) => {
+  var total= cartTotal[0].total - (cartTotal[0].total * req.body.discount) / 100
+  var user=await con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)})
+ var walletbalance=user.wallet;
   var products = [];
   con
     .get()
@@ -422,7 +426,11 @@ route.post("/orderconfirmcart", (req, res) => {
       products.map((s) => {
         s.status = "placed";
       });
-      // products[0].status="placed"
+     if(req.body.usewallet2){
+      walletbalance=walletbalance
+     }else{
+      walletbalance=0
+     }
       con
         .get()
         .collection("orders")
@@ -435,14 +443,16 @@ route.post("/orderconfirmcart", (req, res) => {
           address: JSON.parse(req.body.address),
           time: moment().format("L"),
           date: moment().toDate(),
-          coupon: req.body.code,
+          coupon: req.body.ID,
+          walletAmount:total- (total-walletbalance < 0 ? 0 :  total-walletbalance),
           discount: req.body.discount,
           quantity: 1,
-          total: Math.ceil(
-            cartTotal[0].total - (cartTotal[0].total * req.body.discount) / 100
-          ),
+          total: total-walletbalance < 0 ? 0 :  total-walletbalance
+            
+          
         })
-        .then(() => {
+        .then((inserted) => {
+          insId=inserted.insertedId
           con
             .get()
             .collection("cart")
@@ -450,7 +460,10 @@ route.post("/orderconfirmcart", (req, res) => {
               { user: ObjectId(req.session.user._id) },
               { $set: { products: [] } }
             )
-            .then(() => {
+            .then(async() => {
+              order=await con.get().collection("orders").findOne({_id:insId})
+              console.log("this is order");
+              con.get().collection("user").updateOne({_id:ObjectId(req.session.user._id)},{$inc:{wallet:-(total-order.total)}})
               console.log("cart is empty ");
               res.send({ status: "success" });
             });
@@ -462,14 +475,21 @@ route.post("/orderconfirmcart", (req, res) => {
   // })
 });
 
-route.post("/cartPayment", (req, res) => {
+route.post("/cartPayment",async (req, res) => {
+  var user=await con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)})
+ var walletbalanc=user.wallet;
+ if(req.body.useWalletonline){
+  walletbalanc=walletbalanc
+ }else{
+  walletbalanc=0
+ }
   address = JSON.parse(req.body.address);
   console.log();
-
+  total= cartTotal[0].total - (cartTotal[0].total * req.body.discount) / 100
   if (req.body.payment == "paypal") {
     console.log("bodyy:", req.body);
     console.log("this is carttotal", cartTotal[0].total);
-    cartProducts.map((s) => {});
+  
     console.log("you chose paypal");
     var create_payment_json = {
       intent: "sale",
@@ -485,8 +505,7 @@ route.post("/cartPayment", (req, res) => {
           amount: {
             currency: "USD",
             total: Math.ceil(
-              cartTotal[0].total -
-                (cartTotal[0].total * req.body.discount) / 100
+              total
             ),
           },
           description: "This is the payment description.",
@@ -511,7 +530,6 @@ route.post("/cartPayment", (req, res) => {
           .findOne({ user: ObjectId(req.session.user._id) })
           .then((re) => {
             products = re.products;
-            // product[0].status="pending"
             console.log(products);
 
             con
@@ -523,20 +541,17 @@ route.post("/cartPayment", (req, res) => {
                 method: "paypal",
                 status: "pending",
                 paymentstatus: "pending",
+                walletAmount:total- (total-walletbalanc < 0 ? 0 :  total-walletbalanc),
                 address: JSON.parse(req.body.address),
                 time: moment().format("L"),
                 date: moment().toDate(),
                 coupon: req.body.ID,
                 discount: req.body.discount,
-                total: Math.ceil(
-                  cartTotal[0].total -
-                    (cartTotal[0].total * req.body.discount) / 100
-                ),
+                total:  total-walletbalanc < 0 ? 0 :  total-walletbalanc
               })
               .then((r) => {
                 cartpaypalid = r.insertedId;
                 console.log("products inserted after paypal bu pending");
-                // items.push(r.insertedId)
                 console.log(r.insertedId);
               });
           });
@@ -847,14 +862,16 @@ route.get("/orderinfo/:id", (req, res) => {
     });
 });
 
-route.get("/getwallet", async (req, res) => {
-  let user = con
+route.get("/getwallet",  (req, res) => {
+  con
     .get()
     .collection("user")
-    .findOne({ _id: ObjectId(req.session.user._id) });
-  if (user) {
+    .findOne({ _id: ObjectId(req.session.user._id) }).then(user=>{
+       if (user) {
     res.render("user/mywallet", { user });
   }
+    })
+ 
 });
 
 route.get("/myaddress", (req, res) => {
@@ -911,20 +928,25 @@ route.post("/deletefrombulkorder", (req, res) => {
 });
 
 route.post("/returnproduct", (req, res) => {
-  con
-    .get()
-    .collection("orders")
-    .updateOne(
-      {
-        user: req.session.user.name,
-        _id: ObjectId(req.body.id),
-        "product.product": ObjectId(req.body.model),
-      },
-      { $set: { "product.$.return": true } }
-    )
-    .then((e) => {
-      res.send({ returnstatus: true });
-    });
+  console.log(req.body);
+  // con
+  //   .get()
+  //   .collection("orders")
+  //   .updateOne(
+  //     {
+  //       user: req.session.user.name,
+  //       _id: ObjectId(req.body.id),
+  //       "product.product": ObjectId(req.body.model),
+  //     },
+  //     { $set: { "product.$.return": true } }
+  //   )
+  //   .then((e) => {
+  //     res.send({ returnstatus: true });
+  //   });
+  con.get().collection("return").insertOne({order:ObjectId(req.body.id),model:ObjectId(req.body.model)}).then(r=>{
+    console.log(r);
+    res.send({return:true})
+  })
 });
 
 module.exports = route;
