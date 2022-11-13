@@ -47,7 +47,7 @@ module.exports = {
         .collection("orders")
         .aggregate([
           { $match: { user: data.session.user.name } },
-          // {$unwind:"$product"},
+          // {$unwind:"$product"}, 
           {
             $lookup: {
               from: "Products",
@@ -56,12 +56,16 @@ module.exports = {
               as: "p",
             },
           },
-          { $sort: { time: -1 } },
+         
+          { $sort: { date: -1 } },
         ])
         .toArray()
         .then((result) => {
-          console.log("unwind result orders",result);
-          resolve(result);
+          db.get().collection("orders").find({user: data.session.user.name}).toArray().then(orderResult=>{
+            console.log("unwind result orders",result);
+          resolve({result,orderResult});
+          })
+          
         });
     });
   },

@@ -18,8 +18,13 @@ const cartHelper = require("../../helpers/cartHelper");
 
 const couponHelper = require("../../helpers/couponHelpers");
 const profileHelper = require("../../helpers/profileHelpers");
-const { json } = require("body-parser");
-const { log } = require("console");
+const getWallet=require("../../helpers/getwalletUser")
+const searchProducts=require("../../helpers/productSearch")
+const cartCheckOut=require("../../helpers/cartCheckout")
+const addToWish=require("../../helpers/addToWish")
+const removeFromWish=require("../../helpers/removeFromWish")
+const getWishlist=require("../../helpers/getWishList")
+
 instance = new Razorpay({
   key_id: "rzp_test_kwZGFuI0hWeY2V",
   key_secret: "b4PuKMMLTh2w0HRjNrKe36Ax",
@@ -48,7 +53,6 @@ route.get("/", (req, res) => {
 });
 
 route.get("/products", (req, res) => {
-  // con.get().collection("wishlist").aggregate([{$match:{}},{$lookup:}])
   res.render("user/products", { user: req.session.user });
 });
 
@@ -63,40 +67,21 @@ route.get("/products/info", (req, res) => {
   });
 });
 
+//productsearch
+
 route.post("/products", (req, res) => {
-  con
-    .get()
-    .collection("Products")
-    .find({ model: { $regex: req.body.search, $options: "i" } })
-    .toArray()
-    .then((result) => {
-      con
-        .get()
-        .collection("wishlist")
-        .find({ user: ObjectId(req.session.user._id) })
-        .toArray()
-        .then((wish) => {
-          searcsh = req.body.search;
-          console.log("this is wishlist", wish);
-          res.render("user/products", {
-            result,
-            searcsh,
-            wish,
-            user: req.session.user,
-          });
-        });
+searchProducts.productSearchHelper(req).then(r=>{
+  if(r){
+    res.render("user/products", {
+      result:r.result,
+      srarcsh:r.searcsh,
+      user: req.session.user,
     });
+  
+  }
+})
 });
 
-// route.get("/cart", (req, res) => {
-//   //    console.log(req.session.user);
-//   // showCart.showCart(req).then((result) => {
-//   //   if (result.resultfound) {
-//   //     res.render("user/cart", { result: result.ress });
-//   //     console.log(result);
-//   //   }
-//   // });
-// });
 
 route.get("/cart/remove", (req, res) => {
   removeFromCart2.removeFromCart2(req).then(() => {
@@ -106,7 +91,9 @@ route.get("/cart/remove", (req, res) => {
 
 route.get("/orders", (req, res) => {
   helper.myOrders(req).then((result) => {
-    res.render("user/orders", { result, user: req.session.user });
+    console.log("result",result);
+    res.render("user/orders", {  user: req.session.user,result:result.result,orderresult:result.orderResult });
+    console.log("ooooooooooooooooooooooooooooooooooo",result.orderResult);
   });
 });
 
@@ -120,11 +107,8 @@ route.get("/checkout/:id", (req, res) => {
   });
 });
 
-// route.get("/checkout/:id", (req, res) => {
-//   helper.checkout(req).then((result) => {
-//     res.json( { result: result.result, user: result.user ,price:req.query.price});
-//   });
-// });
+
+
 route.post("/addaddress/:id", (req, res) => {
   console.log("add address called");
   helper.addressAdd(req).then((result) => {
@@ -156,77 +140,15 @@ route.post("/info/addtocart", (req, res) => {
 });
 
 route.get("/cart/checkout", (req, res) => {
-  con
-    .get()
-    .collection("cart")
-    .aggregate([
-      {
-        $match: { user: ObjectId(req.session.user._id) },
-      },
-      {
-        $unwind: "$products",
-      },
+cartCheckOut.cartCheckOut(req).then(r=>{
+  cartItems=r.cartItems
 
-      {
-        $lookup: {
-          from: "Products",
-          localField: "products.product",
-          foreignField: "_id",
-          as: "pro",
-        },
-      },
-      {
-        $project: {
-          "products.product": 1,
-          "products.count": 1,
-          pro: { $arrayElemAt: ["$pro", 0] },
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          total: {
-            $sum: { $multiply: ["$products.count", "$pro.offerprice"] },
-          },
-        },
-      },
-    ])
-    .toArray()
-    .then((cartItems) => {
-      con
-        .get()
-        .collection("cart")
-        .aggregate([
-          { $match: { $and: [{ user: ObjectId(req.session.user._id) }] } },
-          { $unwind: "$products" },
-          {
-            $lookup: {
-              from: "Products",
-              localField: "products.product",
-              foreignField: "_id",
-              as: "p",
-            },
-          },
-        ])
-        .toArray()
-
-        .then((result) => { 
-          console.log("cartitems:", cartItems);
-          globalcartTotal = cartItems;
-          cartProducts = result;
-         con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)}).then(user=>{
-          res.render("user/buynow2", {
-            result,
-            user,
-            cartItems,
-          });
-         })
-          
-          console.log(req.session.user);
-        });
-    });
-
-  // })
+  res.render("user/buynow2", {
+    result:r.result,
+    user:r.user,
+    cartItems:r.cartItems,
+  });
+})
 });
 
 route.get("/profile", (req, res) => {
@@ -265,57 +187,68 @@ route.get("/deleteaddress", (req, res) => {
 
 route.post("/addtowish", (req, res) => {
   console.log(req.body);
-  con
-    .get()
-    .collection("wishlist")
-    .updateOne(
-      { user: ObjectId(req.session.user._id) },
-      { $push: { products: { product: ObjectId(req.body.pid) } } }
-    )
-    .then((result) => {
-      console.log("inserted to wishlist");
-      res.send({ added: true });
-    });
+  // con
+  //   .get()
+  //   .collection("wishlist")
+  //   .updateOne(
+  //     { user: ObjectId(req.session.user._id) },
+  //     { $push: { products: { product: ObjectId(req.body.pid) } } }
+  //   )
+  //   .then((result) => {
+  //     console.log("inserted to wishlist");
+  //     res.send({ added: true });
+  //   });
+  addToWish.addToWishHelper(req).then(r=>{
+          res.send({ added: r.added });
+
+  })
+  
 });
 
 route.post("/removefromwish", (req, res) => {
   console.log("this is body", req.body);
-  con
-    .get()
-    .collection("wishlist")
-    .updateOne(
-      { user: ObjectId(req.session.user._id) },
-      { $pull: { products: { product: ObjectId(req.body.pid) } } }
-    )
-    .then((r) => {
-      // console.log(r);
-      res.send({ removed: true });
-    });
+  // con
+  //   .get()
+  //   .collection("wishlist")
+  //   .updateOne(
+  //     { user: ObjectId(req.session.user._id) },
+  //     { $pull: { products: { product: ObjectId(req.body.pid) } } }
+  //   )
+  //   .then((r) => {
+  //     // console.log(r);
+  //     res.send({ removed: true });
+  //   });
+  removeFromWish.removeFromWishHelper(req).then(r=>{
+    res.send({ removed: r.removed });
+  })
+
   console.log("called remove");
 });
 
-// })
 
 route.get("/wishlist", (req, res) => {
-  con
-    .get()
-    .collection("wishlist")
-    .aggregate([
-      { $match: { user: ObjectId(req.session.user._id) } },
-      {
-        $lookup: {
-          from: "Products",
-          localField: "products.product",
-          foreignField: "_id",
-          as: "p",
-        },
-      },
-    ])
-    .toArray()
-    .then((r) => {
-      console.log("this is wishlist", r);
-      res.render("user/wislist", { r, user: req.session.user });
-    });
+  // con
+  //   .get()
+  //   .collection("wishlist")
+  //   .aggregate([
+  //     { $match: { user: ObjectId(req.session.user._id) } },
+  //     {
+  //       $lookup: {
+  //         from: "Products",
+  //         localField: "products.product",
+  //         foreignField: "_id",
+  //         as: "p",
+  //       },
+  //     },
+  //   ])
+  //   .toArray()
+  //   .then((r) => {
+  //     console.log("this is wishlist", r);
+  //     res.render("user/wislist", { r, user: req.session.user });
+  //   });
+  getWishlist.getWishListHelper(req).then(r=>{
+    res.render("user/wislist", { r:r.r,user:req.session.user  });
+  })
 });
 
 route.get("/success", (req, res) => {
@@ -863,16 +796,13 @@ route.get("/orderinfo/:id", (req, res) => {
 });
 
 route.get("/getwallet",  (req, res) => {
-  con
-    .get()
-    .collection("user")
-    .findOne({ _id: ObjectId(req.session.user._id) }).then(user=>{
-       if (user) {
-    res.render("user/mywallet", { user });
-  }
-    })
- 
-});
+  getWallet.getWallet(req).then(user=>{
+    if(user){
+      res.render("user/mywallet", { user:user.user });
+
+    }
+  })
+ });
 
 route.get("/myaddress", (req, res) => {
   res.render("user/myaddress", { user: req.session.user });

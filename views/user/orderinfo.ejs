@@ -43,7 +43,9 @@
             </td>
             <%}else{%>
               <td>
-                <strike><h6>₹<%=order[i].product.count*order[i].pp[0].price%></h6></strike> 
+                <%if(order[i].pp[0].offerprice!=order[i].pp[0].price){%>
+                <strike><h6 class="">₹<%=order[i].product.count*order[i].pp[0].price%></h6></strike> 
+                <%}%>
                 <h4>₹<%=order[i].product.count*order[i].pp[0].offerprice%></h4>
               </td>
               <%if(order[i].product.status=="cancelled"){%>

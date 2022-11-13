@@ -231,15 +231,7 @@ body {
  .product .product-quantity input {
 	 width: 40px;
 }
- /* .product .remove-product {
-	 border: 0;
-	 padding: 4px 8px;
-	 background-color: #c66;
-	 color: #fff;
-	 font-family: 'HelveticaNeue-Medium', 'Helvetica Neue Medium';
-	 font-size: 12px;
-	 border-radius: 3px;
-} */
+
  .product .remove-product:hover {
 	 background-color: #a44;
 }
@@ -551,7 +543,7 @@ body {
 											<td><div class="product-title"><h5><%=result[i].method%></h5></div></td>
 											<td><div class="product-price"><h5>₹<%=Math.ceil(result[i].total)%></h5></div></td>
 											<td><div class="product-quantity"><h5>X<%=result[i].product.length%></h5></div></td>
-											<td> <p><a class="button" href="#popup1" id="st" onclick="stat('<%=result[i].status%>','<%=result[i]._id%>')">track your order</a></p></td>	
+											<td> <p><a class="button" href="#popup1" id="st" onclick="stat('<%=result[i].product.status%>','<%=result[i]._id%>')">track your order</a></p></td>	
 											
 												<td></td>	</td>
 						
@@ -658,6 +650,7 @@ $("#modalbd").text(orderid)
 
 	
 function stat(status,id){
+	alert(status)
 $("#orderid").html(`ORDER-ID <span id="orderd" class="text-primary font-weight-bold">${id}</span>`)
 if(status=="placed"){
 	$("#progressbar").html('<li class="active step0"></li><li class="step0"></li><li class="step0"></li><li class="step0"></li>')
