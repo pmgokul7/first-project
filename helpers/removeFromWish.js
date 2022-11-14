@@ -4,7 +4,7 @@ const { ObjectId } = require("mongodb");
 module.exports={
     removeFromWishHelper:(data)=>{
         return new Promise((resolve,reject)=>{
-            con
+            db
             .get()
             .collection("wishlist")
             .updateOne(

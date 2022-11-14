@@ -308,7 +308,9 @@ app.post(
         rating:parseInt(req.body.rating),
         color:req.body.color,
         highlights:req.body.highlights,
-        description:req.body.description
+        description:req.body.description,
+        isDeleted:false,
+        added:new Date()
 
       })
       .then((response) => {

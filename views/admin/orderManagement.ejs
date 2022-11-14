@@ -98,6 +98,7 @@
                        
                         <select id="cars" name="cars" onchange="statuschange('<%=result[i].product.product%>','<%=result[i].product.count%>','<%=result[i].date%>','<%=result[i]._id%>',this)">
                           <option value="shipped"><%=result[i].product.status%></option>
+                          <option value="placed">placed</option>
                           <option value="shipped">shipped</option>
                           <option value="on the way">on the way</option>
                           <option value="out for delivery">out for delivery</option>

@@ -48,8 +48,11 @@ route.get("/cart", (req, res) => {
     res.render("user/cart", { result, user: req.session.user });
   });
 });
-route.get("/", (req, res) => {
-  res.render("user/userHome", { user: req.session.user });
+route.get("/", async(req, res) => {
+ con.get().collection("Products").find().toArray().then(result=>{
+  res.render("user/userHome", { user: req.session.user,result });
+ })
+  
 });
 
 route.get("/products", (req, res) => {
@@ -871,6 +874,7 @@ route.post("/deletefrombulkorder", (req, res) => {
                   { $inc: { wallet: walletAmount } }
                 )
                 .then((d) => {
+                  con.get().collection("Products").updateOne({_id:ObjectId(req.body.model)},{$inc:{stock:parseInt(req.body.count)}})
                   console.log(d);
                 });
             }

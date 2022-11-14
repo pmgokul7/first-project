@@ -27,11 +27,9 @@
 	 width: 9%;
 }
  .product-line-price {
-  
-  /* align-items: center; */
 	 float: left;
 	 width: 12%;
-  
+	 text-align: right;
 }
 /* This is used as the traditional .clearfix class */
  .group:before, .shopping-cart:before, .column-labels:before, .product:before, .totals-item:before, .group:after, .shopping-cart:after, .column-labels:after, .product:after, .totals-item:after {
@@ -46,11 +44,15 @@
 }
 /* Apply clearfix in a few places */
 /* Apply dollar signs */
- .product, .product .product-line-price:before, .totals-value:before {
-	 content: '';
+ .product .product-price:before, .product .product-line-price:before, .totals-value:before {
+	 content: '$';
 }
 /* Body/Header stuff */
-
+ body {
+	 padding: 0px 30px 30px 20px;
+	 font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	 font-weight: 100;
+}
  h1 {
 	 font-weight: 100;
 }
@@ -74,8 +76,6 @@
 	 margin-bottom: 20px;
 	 padding-bottom: 10px;
 	 border-bottom: 1px solid #eee;
-   display: flex;
-   justify-content: space-around;
 }
  .product .product-image {
 	 text-align: center;
@@ -155,7 +155,7 @@
 		 width: auto;
 	}
 	 .product-image img {
-		 margin: 0 15px 10px 10px;
+		 margin: 0 0 10px 10px;
 	}
 	 .product-details {
 		 float: none;
@@ -179,9 +179,8 @@
 		 width: auto;
 	}
 	 .product-line-price {
-		 /* float: center; */
-		 /* width: 70px; */
-     /* background-color: #494; */
+		 float: right;
+		 width: 70px;
 	}
 }
 /* Make more adjustments for phone */
@@ -204,48 +203,78 @@
 	 .totals .totals-item .totals-value {
 		 width: 40%;
 	}
-  img{
-    margin-right: 20px;
-  }
 }
  
 </style>
-        <div class="container mt-5">
-          <h1> </h1>
+        <div class="container">
+          <h4 class="mt-4 mb-4"><%=result.length%> results for <%=searcsh%></h4>
 
-<div class="shopping-cart">
+          <%for(i=0;i<=result.length-1;i++){ %>
 
+          <div
+            class="cards d-flex"
+            style="
+              height: 240px;
+              box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+                rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+            "
+          >
+            <a
+              href="/home/products/info?id=<%=result[i]._id%>"
+              style="
+                text-decoration: none;
+                color: black;
+                display: flex;
+                justify-content: center;
+              "
+            >
+              <div
+                class="leftc d-flex justify-content-center align-items-center ms-2"
+            
+              >
+                <img src="<%=result[i].mainImage%>" alt="" width="60%" />
+              </div>
+            </a>
+            <div class="rightc w-100 ms-4">
+              <div
+                class="t d-flex justify-content-between align-items-center"
+                style="width: 100%"
+              >
+                <h1 class="mt-4" style="font-weight: 300; font-size: 25px">
+                  <%=result[i].model%>
+                </h1>
+                
+                  
+                
+                <!-- <i
+                  class="fa fa-heart fa-2xl me-4"
+                  onclick="colorchangetored(this,'<%=result[i]._id%>')"
+                ></i> -->
+                
+              </div>
+              <span class="mdl-chip bg-success">
+                <span class="mdl-chip__text text-light">4.1</span>
+              </span>
+              <div class="d-flex w-100 justify-content-between align-items-end">
+                <ul class="mt-3">
+                  <%for(h of result[i].highlights){%>
+                  <li><%=h%></li>
+                  <%}%>
+                </ul>
+                <div class="price">
+                  <%if(result[i].price!=result[i].offerprice){%>
+                  <strike><h5 class="text-secondary"><span>₹</span><%=result[i].price%></h5></strike>
+                <h2 class="mb-4 me-4"><span>₹</span><%=result[i].offerprice%></h2>
+                <%}else{%>
+                  <h2 class="me-4 mb-4"><span>₹</span><%=result[i].offerprice%></h2>
+                  <%}%>
+                </div>
+                
+              </div>
+            </div>
+          </div>
 
-  <%for(i=0;i<=result.length-1;i++){ %>
-
-  <div class="product mt-5 h-100">
-    <div class="product-image">
-      <a
-      href="/home/products/info?id=<%=result[i]._id%>"> <img src="<%=result[i].mainImage%>" alt="" width="60%" /></a>
-
-      
-    </div>
-    <div class="product-details">
-      <h4 class="product-title mb-3"><%=result[i].model%></h4>
-      <p class="product-description"><%for(j=0;j<=result[i].highlights.length-2;j++){%>
-      <span ><i class="fa-solid fa-circle-dot mb-2" style="color: rgb(143, 143, 143);"></i>    <%=result[i].highlights[j]%></span><br>
-      <%}%>
-      </p>
-    </div>
-    <div class="product-price "><span class="badge rounded-pill bg-success pt-2 pb-2    pe-3 ps-3"><%=result[i].rating%> <i class="fa-solid fa-star"></i></span></div>
-  
-   
-    <h3 class="product-line-price">₹<%=result[i].offerprice%></h3>
-      
-  </div>
-<%}%>
- 
-
-  
-      
-
-
-</div>
+          <%}%>
         </div>
       </div>
     </main>
