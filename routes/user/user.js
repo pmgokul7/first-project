@@ -227,25 +227,6 @@ route.post("/removefromwish", (req, res) => {
 
 
 route.get("/wishlist", (req, res) => {
-  // con
-  //   .get()
-  //   .collection("wishlist")
-  //   .aggregate([
-  //     { $match: { user: ObjectId(req.session.user._id) } },
-  //     {
-  //       $lookup: {
-  //         from: "Products",
-  //         localField: "products.product",
-  //         foreignField: "_id",
-  //         as: "p",
-  //       },
-  //     },
-  //   ])
-  //   .toArray()
-  //   .then((r) => {
-  //     console.log("this is wishlist", r);
-  //     res.render("user/wislist", { r, user: req.session.user });
-  //   });
   getWishlist.getWishListHelper(req).then(r=>{
     res.render("user/wislist", { r:r.r,user:req.session.user  });
   })
@@ -346,24 +327,30 @@ route.post("/addressadd/:id", (req, res) => {
 });
 
 route.post("/orderconfirmcart",async (req, res) => {
+  console.log("this is order cod body",req.body);
   var total= cartTotal[0].total - (cartTotal[0].total * req.body.discount) / 100
   var user=await con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)})
- var walletbalance=user.wallet;
+ 
   var products = [];
   con
     .get()
     .collection("cart")
     .findOne({ user: ObjectId(req.session.user._id) })
     .then((re) => {
+      console.log("current walletbalance is,",req.session.user.wallet);
+      var walletbalance=req.session.user.wallet;
       products = re.products;
       products.map((s) => {
         s.status = "placed";
       });
-     if(req.body.usewallet2){
-      walletbalance=walletbalance
+     if(req.body.usewallet2=="true"){
+      newwalletbalance=walletbalance
      }else{
-      walletbalance=0
+      newwalletbalance=0
      }
+     console.log("d",typeof(req.body.usewallet2));
+     console.log("d",walletbalance);
+     console.log("d",newwalletbalance);
       con
         .get()
         .collection("orders")
@@ -377,14 +364,20 @@ route.post("/orderconfirmcart",async (req, res) => {
           time: moment().format("L"),
           date: moment().toDate(),
           coupon: req.body.ID,
-          walletAmount:total- (total-walletbalance < 0 ? 0 :  total-walletbalance),
+          walletAmount:total- (total-newwalletbalance < 0 ? 0 :  total-newwalletbalance),
           discount: req.body.discount,
           quantity: 1,
-          total: total-walletbalance < 0 ? 0 :  total-walletbalance
+          total: total-newwalletbalance < 0 ? 0 :  total-newwalletbalance
             
           
         })
         .then((inserted) => {
+          // con.get().collection("cart").aggregate([{$match:{user:ObjectId(req.session.userId)}},{$unwind:$products}])
+          products.map(prod=>{
+            con.get().collection("Products").updateOne({_id:ObjectId(prod.product)},{$inc:{stock:-prod.count}}).then(()=>{
+              console.log("quantity changed");
+            })
+          })
           insId=inserted.insertedId
           con
             .get()
@@ -394,11 +387,23 @@ route.post("/orderconfirmcart",async (req, res) => {
               { $set: { products: [] } }
             )
             .then(async() => {
-              order=await con.get().collection("orders").findOne({_id:insId})
-              console.log("this is order");
-              con.get().collection("user").updateOne({_id:ObjectId(req.session.user._id)},{$inc:{wallet:-(total-order.total)}})
-              console.log("cart is empty ");
-              res.send({ status: "success" });
+              con.get().collection("coupons").findOne({ID:req.body.ID}).then(async(id)=>{
+                if(id){
+                  con.get().collection("coupons").updateOne({ID:req.body.ID},{$push:{users:req.session.user._id},$inc:{count:-1}}).then((idr)=>{
+                    console.log("here user is pushed to the coupon");
+
+                   
+                  })
+                }
+                order=await con.get().collection("orders").findOne({_id:insId})
+                console.log("this is order");
+                con.get().collection("user").updateOne({_id:ObjectId(req.session.user._id)},{$inc:{wallet:-(total-order.total)}})
+                // con.get().collection("Products").updateOne()
+              
+                console.log("cart is empty ");
+                res.send({ status: "success" });
+              })
+              
             });
         });
     });
@@ -409,9 +414,10 @@ route.post("/orderconfirmcart",async (req, res) => {
 });
 
 route.post("/cartPayment",async (req, res) => {
+  
   var user=await con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)})
  var walletbalanc=user.wallet;
- if(req.body.useWalletonline){
+ if(req.body.useWalletonline=="true"){
   walletbalanc=walletbalanc
  }else{
   walletbalanc=0
@@ -438,7 +444,7 @@ route.post("/cartPayment",async (req, res) => {
           amount: {
             currency: "USD",
             total: Math.ceil(
-              total
+              total-walletbalanc < 0 ? 0 :  total-walletbalanc
             ),
           },
           description: "This is the payment description.",
@@ -590,6 +596,12 @@ route.post("/varifypayment", (req, res) => {
       )
       .then((e) => {
         console.log("this is after razorpay success");
+        
+        products.map(prod=>{
+          con.get().collection("Products").updateOne({_id:ObjectId(prod.product)},{$inc:{stock:-prod.count}}).then(()=>{
+            console.log("quantity changed");
+          })
+        })
       });
 
     con
@@ -629,6 +641,11 @@ route.get("/cartSuccess", (req, res) => {
       { $set: { paymentstatus: "success", "product.$[].status": "placed" } }
     )
     .then((result) => {
+      products.map(prod=>{
+        con.get().collection("Products").updateOne({_id:ObjectId(prod.product)},{$inc:{stock:-prod.count}}).then(()=>{
+          console.log("quantity changed");
+        })
+      })
       console.log("done");
       console.log(result);
     });
@@ -758,9 +775,16 @@ route.post("/couponcheck", (req, res) => {
   console.log(req.body);
   codefromcart = req.body.ID;
   couponHelper.checkCode(req).then((result) => {
-    coupondis = result.result;
-    console.log(result);
+    if(result.couponFound==true){
+      console.log(result);
+       coupondis = result.result;
     res.send(result);
+    }
+    else if(result.couponFound==false){
+      console.log(result);
+      res.send(result);
+    }
+   
   });
 });
 
@@ -878,5 +902,90 @@ route.post("/returnproduct", (req, res) => {
     res.send({return:true})
   })
 });
+
+route.post("/payfromwallet",async(req,res)=>{
+
+  console.log("this is order cod body",req.body);
+  var total= cartTotal[0].total - (cartTotal[0].total * req.body.discount) / 100
+  var user=await con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)})
+ 
+  var products = [];
+  con
+    .get()
+    .collection("cart")
+    .findOne({ user: ObjectId(req.session.user._id) })
+    .then((re) => {
+      console.log("current walletbalance is,",req.session.user.wallet);
+      var walletbalance=req.session.user.wallet;
+      products = re.products;
+      products.map((s) => {
+        s.status = "placed";
+      });
+     if(req.body.usewallet3=="true"){
+      newwalletbalance=walletbalance
+     }else{
+      newwalletbalance=0
+     }
+     console.log("d",typeof(req.body.usewallet2));
+     console.log("d",walletbalance);
+     console.log("d",newwalletbalance);
+      con
+        .get()
+        .collection("orders")
+        .insertOne({
+          product: products,
+          user: req.session.user.name,
+          method: "wallet",
+          status: "placed",
+          paymentstatus: "success",
+          address: JSON.parse(req.body.address),
+          time: moment().format("L"),
+          date: moment().toDate(),
+          coupon: req.body.ID,
+          walletAmount:total- (total-newwalletbalance < 0 ? 0 :  total-newwalletbalance),
+          discount: req.body.discount,
+          quantity: 1,
+          total: total
+            
+          
+        })
+        .then((inserted) => {
+
+          insId=inserted.insertedId
+          con
+            .get()
+            .collection("cart")
+            .updateOne(
+              { user: ObjectId(req.session.user._id) },
+              { $set: { products: [] } }
+            )
+            .then(async() => {
+              con.get().collection("coupons").findOne({ID:req.body.ID}).then(async(id)=>{
+                if(id){
+                  con.get().collection("coupons").updateOne({ID:req.body.ID},{$push:{users:req.session.user._id},$inc:{count:-1}}).then((idr)=>{
+                    console.log("here user is pushed to the coupon");
+
+                   
+                  })
+                }
+                order=await con.get().collection("orders").findOne({_id:insId})
+                console.log("this is order");
+                console.log(total-order.total);
+                con.get().collection("user").updateOne({_id:ObjectId(req.session.user._id)},{$inc:{wallet:-total}})
+                // con.get().collection("Products").updateOne()
+                
+                console.log("cart is empty ");
+                res.send({ status: "success" });
+              })
+              
+            });
+        });
+    });
+    
+  console.log("this is cart products", cartProducts[0].p[0]);
+  var sumCount = 0;
+
+
+})
 
 module.exports = route;

@@ -14,17 +14,16 @@ module.exports = {
         if(result){
         
       
-          if(result.users.includes(data.session.user._id)){
+          if(result.users.includes(data.session.user._id)==true || result.count <= 0){
             console.log("user is in the coupon array");
-                resolve({ couponFound: false });
-                console.log("coupon failed");
+                resolve({ couponFound: false,result });
             }
             else{
-                resolve({ couponFound: true,result });
-               
-                
-                
+                resolve({ couponFound: true,result });  
             }
+        }
+        else{
+          resolve({ couponFound: false });  
         }
 
     });

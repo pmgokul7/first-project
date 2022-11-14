@@ -7,6 +7,7 @@ const helper = require("../../helpers/adminHelpers");
 const moment = require("moment");
 const adminHelpers = require("../../helpers/adminHelpers");
 const couponHelpers = require("../../helpers/couponHelpers");
+const flash = require("connect-flash");
 
 route.use(function (req, res, next) {
   if (req.session.adminlogged == true) {
@@ -18,10 +19,7 @@ route.use(function (req, res, next) {
 });
 
 route.get("/", (req, res) => {
-  // con.get().collection("orders").aggregate([{$match:{}},{$group:{_id:"$method",count:{$sum:1}}},]).toArray().then((orders)=>{
-  //   res.render("admin/adminDash",{orders});
-  //   console.log(orders);
-  // })
+  
   con
     .get()
     .collection("orders")
@@ -42,7 +40,7 @@ route.get("/", (req, res) => {
             .find({ method: "razorpay" })
             .toArray()
             .then((razor) => {
-              // console.log(razor.length);
+              console.log(razor.length);
               con
                 .get()
                 .collection("orders")
@@ -57,7 +55,7 @@ route.get("/", (req, res) => {
                 ])
                 .toArray()
                 .then((codd) => {
-                  // console.log(codd);
+                  console.log(codd);
                   con
                     .get()
                     .collection("orders")
@@ -72,7 +70,7 @@ route.get("/", (req, res) => {
                     ])
                     .toArray()
                     .then((paypall) => {
-                      // console.log("this is placed paypal",paypall);
+                      console.log(paypall);
                       con
                         .get()
                         .collection("orders")
@@ -87,7 +85,7 @@ route.get("/", (req, res) => {
                         ])
                         .toArray()
                         .then((razorr) => {
-                          console.log("razorr:", razorr);
+                          console.log(razorr);
 
                           res.render("admin/adminDash", {
                             paypal: paypal.length,
@@ -307,6 +305,7 @@ route.post("/user/status", (req, res) => {
 });
 
 route.get("/categories", (req, res) => {
+  var msg = req.flash("info");
   con
     .get()
     .collection("cat")
@@ -314,7 +313,7 @@ route.get("/categories", (req, res) => {
     .toArray()
     .then((result) => {
       // console.log(result);
-      res.render("admin/categories", { result });
+      res.render("admin/categories", { result,msg });
     });
 });
 
@@ -335,8 +334,9 @@ route.get("/editcat", (req, res) => {
     .collection("cat")
     .findOne({ _id: ObjectId(req.query.id) })
     .then((result) => {
+      var msg=req.flash('info')
       res.render("admin/editcategory", { result });
-      // console.log(result);
+     
     });
 });
 
@@ -344,22 +344,32 @@ route.post("/addcat", (req, res) => {
   con
     .get()
     .collection("cat")
-    .findOne({ name: req.body.newcat })
+    .findOne({ name: req.body.newcat.toUpperCase() })
     .then((category) => {
-      if (category || req.body.newcat == "") {
+      console.log(category);
+      if (category ) {
+        req.flash("info", "Category already exists!!");
+        res.redirect("/admin/categories");
+      }else if(req.body.newcat == ""){
+        req.flash("info", "Make sure you entered something!");
         res.redirect("/admin/categories");
       } else {
         con
           .get()
           .collection("cat")
-          .insertOne({ name: req.body.newcat, offer: 0 })
+          .insertOne({ name: req.body.newcat.toUpperCase(), offer: 0 })
           .then(() => {
+           
             res.redirect("/admin/categories");
           });
       }
     });
 });
 route.post("/editcat", (req, res) => {
+  if(req.body.newcat==""){
+    req.flash("info", "Make sure you entered something!");
+    res.redirect("/admin/categories")
+  }
   con
     .get()
     .collection("cat")

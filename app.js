@@ -313,7 +313,6 @@ app.post(
       })
       .then((response) => {
         console.log("details updated");
-        // console.log(response.insertedId);
         globalid = response.insertedId;
       });
     for (var i = 0; i < req.files.length; i++) {
@@ -446,7 +445,7 @@ app.post("/admin/products/edit", (req, res) => {
         category:req.body.category,
         stock:parseInt(req.body.stock),
         price:parseInt(req.body.price), 
-        offerprice:parseInt(req.body.price),
+        offerprice:parseInt(req.body.offerprice),
         rating:parseInt(req.body.rating),
         color:req.body.color,
         highlights:req.body.highlights,

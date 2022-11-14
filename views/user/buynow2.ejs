@@ -241,7 +241,8 @@
               ></p>
             <%if(locals.cartItems[0]){%>
               <h4 class="text-3xl">
-                Total amount:<span id="price" data-price="<%=cartItems[0].total%>"><%=cartItems[0].total%></span>
+                Total amount:
+                <span id="price" data-price="<%=cartItems[0].total%>"><%=cartItems[0].total%></span>
               </h4>
               <%}%>
             </div>
@@ -302,7 +303,12 @@
                       <%=result[i].products.count%>
                     </h1>
                     <h1 class="text-2xl text-gray-600 mb-2">
+                      <%if(result[i].p[0].price==result[i].p[0].offerprice){%>
                       ₹<%=result[i].p[0].price  %> 
+                      <%}else{%>
+                        <strike class="text-xl"> ₹<%=result[i].p[0].price  %> </strike><br>
+                        ₹<%=result[i].p[0].offerprice  %> 
+                        <%}%>
                     </h1>
                     <ul>
                       <!-- <%for (h of result[i].p[0].highlights){%>
@@ -368,8 +374,10 @@
                     +
                   </button>
                   <%}%>
-                  <input type="checkbox" id="wallet" class="mb-4 me-4 mt-3" onchange="checkboxchange(this,'<%=user.wallet%>')">
-                  <label for="wallet"><h6 class="user-select-none">use wallet balance ₹<%=user.wallet%> for this purchase</h6></label>
+                  <%if(cartItems[0].total > user.wallet) {%>
+                    <input type="checkbox" id="wallet" class="mb-4 me-4 mt-3" onchange="checkboxchange(this,'<%=user.wallet%>')">
+                    <label for="wallet"><h6 class="user-select-none">use wallet balance ₹<%=user.wallet%> for this purchase</h6></label>
+                  <%}%>
                 </div>
                 <div>
                   <button
@@ -449,13 +457,30 @@
                       />
 
                       <input
+                      
                         role="button"
                         id="paynowbtn"
                         onclick="placeorderonline('<%=result._id%>')"
                         type="button"
                         value="pay now"
-                        class="btn btn-primary"
+                        class="btn btn-primary w-100"
+
                       />
+                      <%if(cartItems[0].total <= user.wallet) {%>
+                      <input
+                      
+                      role="button"
+                      id="wallet"
+                      type="button"
+                      onclick="payFromWallet('<%=result._id%>')"
+                      value="use wallet for purchase ( ₹ <%=Math.ceil(user.wallet)%>)"
+                      class="btn btn-primary w-100 mt-2"
+                      
+
+                    />
+                    <%}else{%>
+
+                      <%}%>
                     </div>
                   </form>
                 </div>
@@ -477,7 +502,8 @@
   </main>
   <script>
      $(document).ready(()=>{
-    //  $("#coupon-success").css("visibility","hidden")
+     $("#paynowbtn").prop("disabled",true)
+     $("#wallet").prop("disabled",true)
      })
 
 
@@ -542,7 +568,8 @@ function applybtn(){
         }
     function codFromCart(user, cart) {
       address = $(`.form-check-input:checked`).val();
-      if($("#wallet").is(':checked')){
+  
+     if($('#wallet').is(":checked")==true){
         usewallet2=true
       }
       else{
@@ -577,8 +604,49 @@ function applybtn(){
       );
     }
 
+
+    function payFromWallet(id){
+      if($('#wallet').is(":checked")==true){
+        usewallet3=true
+      }
+      else{
+        usewallet3=false
+      }
+      address = $(`.form-check-input:checked`).val();
+      console.log("called143");
+      if(typeof(couponresponse)!="undefined"){
+            discount=couponresponse
+            ID=couponcode
+            
+          }
+          else{
+             discount=null
+             ID=null
+          }
+          console.log(discount,ID);
+      $.post(
+        "/home/payfromwallet",
+        {
+          address: address,
+          date: new Date().toLocaleString("en-US"),
+          discount,
+          ID,
+          usewallet3
+          
+        },
+        (data) => {
+          if (data.status == "success") {
+            // alert("placed")
+            swal("success!", "order placed successfully", "success");
+          }
+        }
+      );
+      }
+
     function addressChange() {
       $("#btncod").prop("disabled", false);
+      $("#paynowbtn").prop("disabled", false);
+      $("#wallet").prop('disabled',false)
     }
 
     function placeorderonline(id) {
@@ -619,6 +687,7 @@ function applybtn(){
           }
         }
       );
+      
       
       function razorpaypayment(order) {
         var options = {

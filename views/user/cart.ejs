@@ -43,6 +43,7 @@
 				<td class="g"><%=result[i].pro.offerprice%></td>
 				
 				<td>
+					
 					<button class="cart-item-count me-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',-1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')">-</button>
 					<span id="<%=result[i].pro._id%>"><%=result[i].products.count%></span>
 					<button class="cart-item-count ms-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')" >+</button>
@@ -57,30 +58,17 @@
 			</tbody>
 		  </table>
 		  <hr>
-
+		  <%if(result.length!=0){%>
 		  <div class="checkoutdiv float-end me-5 mt-5">
-			<div class="promo w-100 d-flex flex-column align-items-end">
-                <a id="codetext" href="#" class=" text-end">have a promo code..?</a>
-
-           <div class="input-container d-flex" id="codeinput">
-            <input type="text" name="code" placeholder="hai" maxlength="5" id="codeinput2" >
-            <button onclick="applybtn()" class="btn btn-success" id="applyBtn">apply</button>
-           
-           </div>
-           <span id="coupon-success">coupon applied successfully</span>
-             
-       
-           
-
-              
-               
-            </div>
-			Grand Total:<h1 id="totalp"></h1>
+			
+			Grand Total:₹<h1 id="totalp"></h1>
+			
 			<a href="/home/cart/checkout" >
 				
 			<button class="checkout btn-lg btn-success" style="height:50px ;padding: 5px 10px 5px 10px;">proceed to checkout</button>
 			</a>
 		  </div>
+		  <%}%>
 		</div>
 		 
 	

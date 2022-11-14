@@ -152,6 +152,8 @@
                                             <th>brand</th>			
                                             <th>Stock</th>
                                             <th>price</th>
+                                            <th>offerprice</th>
+
                                             <th>image</th>
                                             <th>Options</th>
                                         </tr>
@@ -165,6 +167,7 @@
                     <td><%= result[i].stock%></td>
                                         
                     <td><%= result[i].price%></td>
+                    <td><%= result[i].offerprice%></td>
                     <td><img src="<%=result[i].mainImage%>" alt="" height="100px"></td>
                     <td>
                        <a href="/admin/products/edit?id=<%=result[i]._id%>">

@@ -27,6 +27,8 @@
         <th scope="col">ID</th>
         <th scope="col">Discount(%)</th>
         <th scope="col">usage</th>
+        <th scope="col">count</th>
+
         <th scope="col">options</th>
 
       </tr>
@@ -40,6 +42,7 @@
         <td class=""><%=coupons[i].ID%></td>
         <td><%=coupons[i].discount%></td>
         <td><%=coupons[i].users.length%></td>
+        <td><%=coupons[i].count%></td>
         <td><a href="/admin/deletecoupon/<%=coupons[i]._id%>"><i class="text-danger fa-xl fa-solid fa-trash" style="cursor: pointer;"></i></a></td>
       </tr>
       <%}%>
