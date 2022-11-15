@@ -44,9 +44,9 @@
 				
 				<td>
 					
-					<button class="cart-item-count me-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',-1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')">-</button>
+					<button class="cart-item-count me-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',-1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')" id="plus">-</button>
 					<span id="<%=result[i].pro._id%>"><%=result[i].products.count%></span>
-					<button class="cart-item-count ms-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')" >+</button>
+					<button class="cart-item-count ms-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')" id="minus" >+</button>
 				</td>
 				<td id="<%=result[i].pro._id%>a">₹<%=result[i].pro.offerprice * result[i].products.count%></td>
 				<td>

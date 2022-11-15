@@ -2,12 +2,20 @@
 #searchInput{
     width: 100%;
     margin-right: 200px;
+    top: 50px;
+    
 }
 #demo-menu-lower-right{
     display: flex;
     justify-content: center;
     align-items: center; margin-left: 65px;
 }
+.nav{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 /*** basic styles ***/
 
@@ -19,23 +27,26 @@ form{
     <header class="mdl-layout__header">
       <div class="mdl-layout__header-row">
         <!-- Title -->
-      <a href="/home" style="text-decoration: none;color: #fff;"><span class="mdl-layout-title">Home</span></a>  
+      <a href="/home" style="text-decoration: none;color: #fff;"><span class="mdl-layout-title">Steller</span></a>  
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation. We hide it in small screens. -->
-        <nav class="mdl-navigation mdl-layout--large-screen-only text-center">
-          <form action="/home/products" method="post" >
+
+
+     
+        <nav class="mdl-navigation mdl-layout--large-screen-only  nav">
+          <form action="/home/products" method="post" class="form" >
             <input type="text" id="searchInput" name="search"  placeholder="search here">
             </form>
-            <button id="demo-menu-lower-right"
-          class="mdl-button mdl-js-button" >
-   <h6 class="" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
-          
-       </button>   
+             
           </nav>   
                 
   
- 
+          <button id="demo-menu-lower-right"
+          class="mdl-button mdl-js-button" >
+   <h6 class="" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
+          
+       </button>  
               
           
 

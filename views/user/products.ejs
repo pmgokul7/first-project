@@ -234,9 +234,11 @@
     </div>
     <div class="product-price "><span class="badge rounded-pill bg-success pt-2 pb-2    pe-3 ps-3"><%=result[i].rating%> <i class="fa-solid fa-star"></i></span></div>
   
-   
-    <h3 class="product-line-price">₹<%=result[i].offerprice%></h3>
-      
+   <%if(result[i].offerprice==result[i].price){%>
+	<h3 class="product-line-price">₹<%=result[i].offerprice%><br></h3>
+	<%}else{%>
+    <h3 class="product-line-price">₹<%=result[i].offerprice%><br><strike> <h5>₹<%=result[i].price%></h5></strike></h3>
+    <%}%>
   </div>
 <%}%>
  
