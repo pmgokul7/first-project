@@ -184,7 +184,7 @@ route.get("/deleteaddress", (req, res) => {
       },
     ])
     .then(() => {
-      res.redirect("/home/profile");
+      res.redirect("/home/myaddress");
     });
 });
 
@@ -825,14 +825,17 @@ route.get("/orderinfo/:id", (req, res) => {
 route.get("/getwallet",  (req, res) => {
   getWallet.getWallet(req).then(user=>{
     if(user){
-      res.render("user/mywallet", { user:user.user });
+      res.render("user/mywallet", { user:user.user,wallet:user.wallet });
 
     }
   })
  });
 
 route.get("/myaddress", (req, res) => {
-  res.render("user/myaddress", { user: req.session.user });
+  con.get().collection("user").findOne({_id:ObjectId(req.session.user._id)}).then(user=>{
+    res.render("user/myaddress", { user });
+
+  })
 });
 
 //delete from order
