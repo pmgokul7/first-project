@@ -520,15 +520,17 @@ route.post("/cartPayment",async (req, res) => {
             method: "razorpay",
             status: "pending",
             paymentstatus: "pending",
+            walletAmount:total- (total-walletbalanc < 0 ? 0 :  total-walletbalanc),
             address: JSON.parse(req.body.address),
             time: moment().format("L"),
             date: moment().toDate(),
             coupon: req.body.ID,
             discount: req.body.discount,
+
             // quantity:s.products.count,
             total: Math.ceil(
-              cartTotal[0].total -
-                (cartTotal[0].total * req.body.discount) / 100
+                          total-walletbalanc < 0 ? 0 :  total-walletbalanc
+
             ),
           })
           .then((r) => {
@@ -539,7 +541,8 @@ route.post("/cartPayment",async (req, res) => {
     var options = {
       amount:
         Math.ceil(
-          cartTotal[0].total - (cartTotal[0].total * req.body.discount) / 100
+          total-walletbalanc < 0 ? 0 :  total-walletbalanc
+
         ) * 100, // amount in the smallest currency unit
       currency: "INR",
       receipt: "order_rcptid_11",

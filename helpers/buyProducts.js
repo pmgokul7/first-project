@@ -46,7 +46,7 @@ module.exports = {
       db.get()
         .collection("orders")
         .aggregate([
-          { $match: { user: data.session.user.name } },
+          { $match: { user: data.session.user.name, paymentstatus:"success"} },
           // {$unwind:"$product"}, 
           {
             $lookup: {
@@ -56,6 +56,7 @@ module.exports = {
               as: "p",
             },
           },
+         
          
           { $sort: { date: -1 } },
         ])
@@ -118,7 +119,6 @@ module.exports = {
     }else{
       walletbalance=0
     }
-    console.log("body issssssssssssssssssssss",data.body);
     console.log("WALLETBALANCE issssssssssssssssssssss",walletbalance);
     return new Promise(async(resolve, reject) => {
       product=await db.get().collection("Products").findOne({_id:ObjectId(data.body.productid)})
