@@ -37,6 +37,14 @@
                         <%}%>
                     
                   </select>
+                  <select class="form-control" id="exampleFormControlSelect1" name="OS">
+                    <option>OS</option>
+                    <%for(i=0;i<=result.OS.length-1;i++){%>
+                        <option value="<%=result.OS[i].name%>"><%=result.OS[i].name%> </option>
+                        <%}%>
+                    
+                  </select>
+              
                 </div>
                 <div class="d-flex w-100 justify-content-between">
                     <div class="form-group me-3">

@@ -37,7 +37,11 @@
             <%=returns[i].o.address.pin%>
 
             </td>
-            <td><div class="btn btn-info">process return</div></td>
+            <%if(returns[i].pros.status=="return"){%>
+            <td><div class="btn btn-info" onclick="processReturn('<%=returns[i].o.total+returns[i].o.walletAmount%>')">process return</div></td>
+            <%}else{%>
+              <td><div class="btn btn-info" onclick="processReturn('<%=returns[i].o.total+returns[i].o.walletAmount%>')">returned</div></td>
+           <%}%>
         </td>
       </tr>
       <%}%>
@@ -46,3 +50,8 @@
     </tbody>
   </table>
 </div>
+<script>
+  function processReturn(total){
+alert(total)
+}
+</script>

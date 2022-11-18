@@ -1,6 +1,6 @@
 
 
-
+<%-include("../partials/top.ejs")%>
 <div class="modal fade " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
@@ -11,10 +11,12 @@
       <div class="modal-body">
        <%for(i=0;i<=wallet.length-1;i++){%>
         <%if(wallet[i].type=="credit"){%>
-          <h5 class="text-success"> + <%=wallet[i].amount%>  </h5><%=wallet[i].product%>
+          <h5 class="text-success"> + <%=wallet[i].amount%>  </h5>
+          <span class="pt-5"><%=wallet[i].date%> </span>
           <hr>
         <%}else{%>
           <h5 class="text-danger">  - <%=wallet[i].amount%></h5>
+          <span class="pt-5"><%=wallet[i].date%> </span>
           <hr>
         <%}%>
 <%}%>
@@ -23,7 +25,7 @@
     </div>
   </div>
 </div>
-<%-include("../partials/top.ejs")%>
+
 <style>
   @import url("https://fonts.googleapis.com/css?family=Montserrat:400,600,700");
 * {

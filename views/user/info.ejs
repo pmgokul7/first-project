@@ -409,6 +409,18 @@ embed{ /*for the damn thouder plugin*/
 }
 
 /*********************************************/
+@media only screen and (max-width: 600px) {
+#mainimg{
+    display: flex;
+}
+    #pim{
+    height: 100%;
+    width: 80%;
+    margin:auto;
+}
+#cont{
+visibility: visible !important;
+}
 
 
     </style>
@@ -500,7 +512,7 @@ window.addEventListener('resize', slideImage);
 
     
           <div class="picZoomer" id="mainimg">
-            <img src="<%=result.mainImage%>" height="320px" width="320px"/>
+            <img src="<%=result.mainImage%>" height="320px" width="320px" id="pim"/>
         </div>
         <div class="d-flex">
                                

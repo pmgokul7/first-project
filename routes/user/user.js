@@ -23,7 +23,8 @@ const searchProducts=require("../../helpers/productSearch")
 const cartCheckOut=require("../../helpers/cartCheckout")
 const addToWish=require("../../helpers/addToWish")
 const removeFromWish=require("../../helpers/removeFromWish")
-const getWishlist=require("../../helpers/getWishList")
+const getWishlist=require("../../helpers/getWishList");
+const { type } = require("os");
 
 instance = new Razorpay({
   key_id: "rzp_test_kwZGFuI0hWeY2V",
@@ -50,13 +51,23 @@ route.get("/cart", (req, res) => {
 });
 route.get("/", async(req, res) => {
  con.get().collection("Products").find().toArray().then(result=>{
-  res.render("user/userHome", { user: req.session.user,result });
+  con.get().collection("categories").find().toArray().then(categories=>{
+    res.render("user/userHome", { user: req.session.user,result,categories });
+  })
+  
  })
   
 });
 
 route.get("/products", (req, res) => {
   res.render("user/products", { user: req.session.user });
+});
+route.get("/products/:os", (req, res) => {
+  console.log(req.params);
+  con.get().collection("Products").find({OS:req.params.os}).toArray().then((result)=>{
+    res.render("user/products", { result,user: req.session.user });
+  })
+  
 });
 
 route.get("/products/info", (req, res) => {
@@ -84,6 +95,16 @@ searchProducts.productSearchHelper(req).then(r=>{
   }
 })
 });
+
+route.post("/productsfilter",(req,res)=>{
+  console.log(req.body);
+  con.get().collection("Products").find({OS:req.body.os,brand:"*",RAM:"*"}).toArray().then((result)=>{
+    res.render("user/products", { result,user: req.session.user });
+   
+  })
+
+  
+})
 
 
 route.get("/cart/remove", (req, res) => {
@@ -264,13 +285,13 @@ route.get("/success", (req, res) => {
     }
   );
 
-  res.render("user/paymentsuccess");
+  res.render("user/paymentsuccess",{user:req.session.user});
 });
 
 route.get("/changepassword", (req, res) => {
   msg = req.flash("msg");
 
-  res.render("user/changepassword", { msg });
+  res.render("user/changepassword", { msg,user:req.session.user });
 });
 
 route.post("/changepass", (req, res) => {
@@ -534,6 +555,7 @@ route.post("/cartPayment",async (req, res) => {
             ),
           })
           .then((r) => {
+            console.log("kjhgfdfghjkl;",r);
             razorid = r.insertedId;
           });
       });
@@ -586,12 +608,12 @@ route.post("/varifypayment", (req, res) => {
   hmac = hmac.digest("hex");
   if (hmac == req.body["payment[razorpay_signature]"]) {
     console.log("payment is success");
-
+ console.log("gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",razorid);
     con
       .get()
       .collection("orders")
       .updateOne(
-        { _id: ObjectId(razorid) },
+        { _id: razorid },
         {
           $set: {
             status: "placed",
@@ -601,7 +623,7 @@ route.post("/varifypayment", (req, res) => {
         }
       )
       .then((e) => {
-        console.log("this is after razorpay success");
+        console.log("lkjhgfdsdfghjklkjhgfd",e);
         
         products.map(prod=>{
           con.get().collection("Products").updateOne({_id:ObjectId(prod.product)},{$inc:{stock:-prod.count}}).then(()=>{
@@ -872,17 +894,22 @@ route.post("/deletefrombulkorder", (req, res) => {
                 Number(req.body.count) * parseInt(pro.offerprice) -
                 (parseInt(pro.offerprice) * parseInt(disc)) / 100;
               console.log("this is wallet amount", walletAmount);
-              con
+              if(req.body.method!="COD"){
+                con
                 .get()
                 .collection("user")
                 .updateOne(
                   { _id: ObjectId(req.session.user._id) },
-                  { $inc: { wallet: walletAmount } }
+                  { $inc: { wallet:Number(req.body.amounttoreturn) } }
                 )
-                .then((d) => {
-                  con.get().collection("Products").updateOne({_id:ObjectId(req.body.model)},{$inc:{stock:parseInt(req.body.count)}})
-                  console.log(d);
-                });
+                con.get().collection("wallet").insertOne({user:ObjectId(req.session.user._id),type:"credit",amount:Number(req.body.amounttoreturn),product:`cancellation of ${req.body.name}`,date:new Date().toLocaleString()})
+
+              }
+                  
+                  con.get().collection("Products").updateOne({_id:ObjectId(req.body.model)},{$inc:{stock:parseInt(req.body.count)}}).then(()=>{
+                  })
+                  
+               
             }
           });
       } else {
@@ -893,22 +920,10 @@ route.post("/deletefrombulkorder", (req, res) => {
 
 route.post("/returnproduct", (req, res) => {
   console.log(req.body);
-  // con
-  //   .get()
-  //   .collection("orders")
-  //   .updateOne(
-  //     {
-  //       user: req.session.user.name,
-  //       _id: ObjectId(req.body.id),
-  //       "product.product": ObjectId(req.body.model),
-  //     },
-  //     { $set: { "product.$.return": true } }
-  //   )
-  //   .then((e) => {
-  //     res.send({ returnstatus: true });
-  //   });
+
   con.get().collection("return").insertOne({order:ObjectId(req.body.id),model:ObjectId(req.body.model)}).then(r=>{
     console.log(r);
+    con.get().collection("orders").updateOne({user:req.session.user.name,"product.product":ObjectId(req.body.model)},{$push:{product:{status:"return"}}})
     res.send({return:true})
   })
 });
@@ -981,7 +996,9 @@ route.post("/payfromwallet",async(req,res)=>{
                 order=await con.get().collection("orders").findOne({_id:insId})
                 console.log("this is order");
                 console.log(total-order.total);
-                con.get().collection("user").updateOne({_id:ObjectId(req.session.user._id)},{$inc:{wallet:-total}})
+                con.get().collection("user").updateOne({_id:ObjectId(req.session.user._id)},{$inc:{wallet:-total}}).then(()=>{
+                  con.get().collection("wallet").insertOne({user:ObjectId(req.session.user._id),amount:total,type:"debit",date:new Date().toLocaleString()})
+                })
                 // con.get().collection("Products").updateOne()
                 
                 console.log("cart is empty ");

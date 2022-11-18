@@ -68,7 +68,10 @@ body { background-color:#ffffff }
 </style>
 <style type='text/css'>
 	
-
+	@media only screen and (max-width: 600px) {
+  .products {
+flex-direction: column;  }
+}
 
 </style>
 	
@@ -233,20 +236,20 @@ portrait : true,
 				<div class="span12" data-motopress-type="loop" data-motopress-loop-file="loop/loop-page.php">
 						<div id="post-203" class="post-203 page type-page status-publish hentry page">
 	<div class="custom_banners"><div class="custom_banners_wrap_inner">
-<a style="text-decoration: none;" href="product-category/sim-cards" title="Iphones" class="banner-wrap blue_light"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_1.png" title="Iphones" alt="" /></span></figure><h5>Iphones</h5><p></p></a><!-- .banner-wrap (end) -->
-<a style="text-decoration: none;" href="product-category/software" title="Windows Phones" class="banner-wrap banner_lilac"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_2.png" title="Windows Phones" alt="" /></span></figure><h5>Windows Phones</h5><p></p></a><!-- .banner-wrap (end) -->
-<a style="text-decoration: none;" href="product-category/vintage" title="Android Phones" class="banner-wrap green"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_3.png" title="Android Phones" alt="" /></span></figure><h5>Android Phones</h5><p></p></a><!-- .banner-wrap (end) -->
+<a style="text-decoration: none;" href="/home/products/IOS" title="Iphones" class="banner-wrap blue_light"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_1.png" title="Iphones" alt="" /></span></figure><h5>Iphones</h5><p></p></a><!-- .banner-wrap (end) -->
+<a style="text-decoration: none;" href="/home/products/windows" title="Windows Phones" class="banner-wrap banner_lilac"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_2.png" title="Windows Phones" alt="" /></span></figure><h5>Windows Phones</h5><p></p></a><!-- .banner-wrap (end) -->
+<a style="text-decoration: none;" href="/home/products/android" title="Android Phones" class="banner-wrap green"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_3.png" title="Android Phones" alt="" /></span></figure><h5>Android Phones</h5><p></p></a><!-- .banner-wrap (end) -->
 </div></div>
 <div class="featured_products"><div class="featured_products_wrap_inner">
 <h2>New products</h2>
 <div class="woocommerce columns-4 ">
 		<ul class="products">
 			
-		<%for(i=0;i<=result.length-1;i++){%>	
+		<%for(i=0;i<=3-1;i++){%>	
 			<li style="min-height:70px ;" class="post-1958 product type-product status-publish  featured shipping-taxable purchasable product-type-simple  ">
 
 
-<a href="https://livedemo00.template-help.com/woocommerce_49164/product/product-15/">
+<a href="/home/products/info?id=<%=result[i]._id%>">
 
 	<div class='prod-inner-wrap'>
 		<img height="200px" src="<%=result[i].mainImage%>"
@@ -272,64 +275,31 @@ portrait : true,
 <div class="custom_top_rated"><div class="custom_top_rated_wrap_inner">
 <h2>Best sellers</h2>
 <div class="woocommerce columns-3">
-		<ul class="products">
-			
+		<ul class="products  d-flex">
+			 <%for(i=0;i<=2;i++){%>
+				
 				<li class="post-1930 product type-product status-publish first shipping-taxable purchasable product-type-simple product-cat-cdmd-phones product-tag-lorem-ipsum product-tag-sed-blandit-massa product-tag-vel-mauris instock">
 
+					
 
-<a href="https://livedemo00.template-help.com/woocommerce_49164/product/product-8/">
+	<div class='prod-inner-wrap'><img width="120" height="200" src="<%=result[i].mainImage%>" class="attachment-shop_catalog wp-post-image" alt="Motorola Triumph 1" /></div>
+	<h3><%=result[i].model%></h3>
 
-	<div class='prod-inner-wrap'><img width="120" height="200" src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2013/09/Motorola-Triumph-1-120x200.png" class="attachment-shop_catalog wp-post-image" alt="Motorola Triumph 1" /></div>
-	<h3>Motorola Triumph</h3>
+<div class="star-rating" title="Rated 5.00 out of 5"><span style="width:100%"><strong class="rating"><%=result[i].rating%></strong> out of 5</span></div>
 
-	
-<div class="star-rating" title="Rated 5.00 out of 5"><span style="width:100%"><strong class="rating">5.00</strong> out of 5</span></div>
-</a>
 
-		<div class="short_desc">
-		We often provide different promos and you can save some money in our store.		</div>
 
-<span class="price"><span class="amount">&#36;99.50</span></span>
-<a href="/woocommerce_49164/?add-to-cart=1930" rel="nofollow" data-product_id="1930" data-product_sku="" class="button add_to_cart_button product_type_simple">Add to cart</a>
+
+<span class="price"><span class="amount">₹
+<%=result[i].price%></span></span>
+
+<a href="#" rel="nofollow" data-product_id="1930" data-product_sku="" class="button add_to_cart_button product_type_simple">Add to cart</a>
 </li>
+
 			
-				<li class="post-1934 product type-product status-publish shipping-taxable purchasable product-type-simple product-cat-mobile-chargers product-tag-lorem-ipsum instock">
-
-
-<a href="https://livedemo00.template-help.com/woocommerce_49164/product/product-9/">
-
-	<div class='prod-inner-wrap'><img width="120" height="200" src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2013/09/Motorola-Droid-X-1-copy-120x200.png" class="attachment-shop_catalog wp-post-image" alt="Motorola Droid X  1 copy" /></div>
-	<h3>Motorola Droid X</h3>
-
-	
-<div class="star-rating" title="Rated 4.50 out of 5"><span style="width:90%"><strong class="rating">4.50</strong> out of 5</span></div>
-</a>
-
-		<div class="short_desc">
-		We often provide different promos and you can save some money in our store.		</div>
-
-<span class="price"><span class="amount">&#36;85.00</span></span>
-<a href="/woocommerce_49164/?add-to-cart=1934" rel="nofollow" data-product_id="1934" data-product_sku="" class="button add_to_cart_button product_type_simple">Add to cart</a>
-</li>
+				<%}%>
 			
-				<li class="post-1950 product type-product status-publish last featured shipping-taxable purchasable product-type-simple product-cat-cdmd-phones product-cat-smartphones product-tag-etiam-dictum product-tag-mauris-posuere product-tag-sed-blandit-massa product-tag-vel-mauris instock">
-
-
-<a href="https://livedemo00.template-help.com/woocommerce_49164/product/product-13/">
-
-	<div class='prod-inner-wrap'><img width="120" height="200" src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2013/09/Nokia-E73-Mode-1-copy-120x200.png" class="attachment-shop_catalog wp-post-image" alt="Nokia E73 Mode  1 copy" /></div>
-	<h3>Nokia E73 Mode</h3>
-
-	
-<div class="star-rating" title="Rated 5.00 out of 5"><span style="width:100%"><strong class="rating">5.00</strong> out of 5</span></div>
-</a>
-
-		<div class="short_desc">
-		We often provide different promos and you can save some money in our store.		</div>
-
-<span class="price"><span class="amount">&#36;100.00</span></span>
-<a href="/woocommerce_49164/?add-to-cart=1950" rel="nofollow" data-product_id="1950" data-product_sku="" class="button add_to_cart_button product_type_simple">Add to cart</a>
-</li>
+			
 			
 		</ul>
 	</div>
@@ -433,5 +403,6 @@ var wc_cart_fragments_params = {"ajax_url":"\/woocommerce_49164\/wp-admin\/admin
 		 <!-- this is used by many Wordpress features and for plugins to work properly -->
 <!-- Google Tag Manager --><noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-P9FT69" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-P9FT69');</script><!-- End Google Tag Manager --></body>
 		</div>
+		<%-include("../partials/footer.ejs")%>
   </main>
 </div>

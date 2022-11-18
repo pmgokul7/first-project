@@ -307,6 +307,7 @@ app.post(
         offerprice:parseInt(req.body.price),
         rating:parseInt(req.body.rating),
         color:req.body.color,
+        OS:req.body.OS,
         highlights:req.body.highlights,
         description:req.body.description,
         isDeleted:false,
@@ -432,7 +433,7 @@ app.post("/register", (req, res) => {
       }
     });
 });
-app.post("/admin/products/edit", (req, res) => {
+app.post("/admin/products/edit", upload.any("myImage"), (req, res) => {
   con
     .get()
     .collection("Products")
@@ -455,9 +456,49 @@ app.post("/admin/products/edit", (req, res) => {
         },
       }
     )
-    .then(() => {
-      console.log("data updated");
-      res.redirect("/admin/products");
+    .then((ns) => {
+      insertedID=ns
+      console.log("ooo",ns);
+      // console.log("hai",req);
+      for (var i = 0; i < req.files.length; i++) {
+        var locaFilePath = req.files[i].path;
+  
+        if (req.files[i].fieldname == "mainImage") {
+          uploadToCloudinary(locaFilePath).then((img) => {
+            console.log("this is imagurl",img.url);
+            con
+              .get()
+              .collection("Products")
+              .updateOne({ _id:ObjectId(req.query.id) }, { $set: { mainImage: img.url } })
+              .then(( resa) => {
+                res.redirect("/admin/products");
+
+                console.log(resa);
+              });
+          });
+        }
+  
+        // var locaFilePath = req.files[i].path;
+        // uploadToCloudinary(locaFilePath)
+        //   .then((result) => {
+        //     con
+        //       .get()
+        //       .collection("Products")
+        //       .updateOne({ _id: globalid }, { $push: { images: result.url } })
+        //       .then(() => {
+        //         console.log("req url:" + result.url);
+        //         console.log("done");
+        //       });
+        //   })
+        //   .then(() => {
+        //     res.redirect("/admin/products");
+        //     console.log(req.body);
+        //   })
+  
+        //   .catch((er) => {
+        //     console.log(er);
+        //   });
+      }
     });
 });
 
