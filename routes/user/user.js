@@ -564,6 +564,15 @@ route.post("/cartPayment", async (req, res) => {
               })
               .then((r) => {
                 cartpaypalid = r.insertedId;
+                con.get().collection("orders") .updateOne(
+                  { _id: cartpaypalid },
+                  {
+                    $set: {
+                      status: "pending",
+                      paymentstatus: "pending",
+                      "product.$[].status": "pending",
+                    },
+                  })
                 console.log("products inserted after paypal bu pending");
                 console.log(r.insertedId);
               });
@@ -607,6 +616,15 @@ route.post("/cartPayment", async (req, res) => {
           .then((r) => {
             console.log("kjhgfdfghjkl;", r);
             razorid = r.insertedId;
+            con.get().collection("orders") .updateOne(
+              { _id: razorid },
+              {
+                $set: {
+                  status: "pending",
+                  paymentstatus: "pending",
+                  "product.$[].status": "pending",
+                },
+              })
           });
       });
 
@@ -723,7 +741,7 @@ route.get("/cartSuccess", (req, res) => {
     .collection("orders")
     .updateOne(
       { _id: ObjectId(cartpaypalid) },
-      { $set: { paymentstatus: "success", "product.$[].status": "placed" } }
+      { $set: { paymentstatus: "success", status: "placed", "product.$[].status": "placed" } }
     )
     .then((result) => {
       products.map((prod) => {
@@ -994,30 +1012,35 @@ route.post("/deletefrombulkorder", (req, res) => {
     });
 });
 
-route.post("/returnproduct", (req, res) => {
-  console.log(req.body);
-
-  con
-    .get()
-    .collection("return")
-    .insertOne({
-      order: ObjectId(req.body.id),
-      model: ObjectId(req.body.model),
-    })
-    .then((r) => {
-      console.log(r);
-      con
-        .get()
-        .collection("orders")
-        .updateOne(
-          {
-            user: req.session.user.name,
-            "product.product": ObjectId(req.body.model),
-          },
-          { $push: { product: { status: "return" } } }
-        );
-      res.send({ return: true });
-    });
+route.post("/returnproduct", async(req, res) => {
+  console.log("booomoooooooooooooooooooooooooom",req.body);
+  const order = await con.get().collection("orders").findOne({_id:ObjectId(req.body.id),"product.product":ObjectId(req.body.model)})
+  con.get().collection("orders").updateOne({_id:ObjectId(req.body.id),"product.product":ObjectId(req.body.model)},{$set:{"product.$.status":"returned"}})
+  console.log(order);
+  con.get().collection("user").updateOne({_id:ObjectId(req.session.user._id)},{$inc:{wallet:order.walletAmount+order.total}}).then(()=>{
+    res.send({return:true})
+  })
+  // con
+  //   .get()
+  //   .collection("return")
+  //   .insertOne({
+  //     order: ObjectId(req.body.id),
+  //     model: ObjectId(req.body.model),
+  //   })
+  //   .then((r) => {
+  //     console.log(r);
+  //     con
+  //       .get()
+  //       .collection("orders")
+  //       .updateOne(
+  //         {
+  //           user: req.session.user.name,
+  //           "product.product": ObjectId(req.body.model),
+  //         },
+  //         { $push: { product: { status: "return" } } }
+  //       );
+  //     res.send({ return: true });
+  //   });
 });
 
 route.post("/payfromwallet", async (req, res) => {

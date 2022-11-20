@@ -249,14 +249,18 @@
                             <h4>₹<%=order[i].product.count*order[i].pp[0].offerprice-order[i].walletAmount%></h4>
                         </td>
                         <%if(order[i].product.status=="cancelled"){%>
-                            <td>
+                            <td class="r">
                                 <h6 class="text-seondary">order cancelled</h6>
                             </td>
                         <%}else if(order[i].product.status=="delivered"){%>
-                            <td>
+                            <td  class="r">
                                 <button class="btn btn-info" onclick="returnProduct('<%=order[i].product.product%>','<%=order[i].product.count%>','<%=order[i].date%>','<%=order[i].product.status%>','<%=order[i]._id%>')">return
                                 </button>
                             </td>
+                            <%}else if(order[i].product.status=="returned"){%>
+                                <td  class="r">
+                                    <h6>product returned</h6>
+                                </td>
                         <%}else{%>
                             <td>
                                 <button onclick="cancelfromcart('<%=order[i].product.product%>','<%=order[i].product.count%>','<%=order[i].date%>','<%=order[i].product.status%>','<%=order[i]._id%>','<%=order[i].discount%>','<%=order[i].total + order[i].walletAmount%>','<%=order[i].pp[0].model%>','<%=order[i].method%>')" class="btn btn-danger">cancel order</button>
@@ -343,6 +347,8 @@
                 }, (res) => {
                     if (res.return == true) {
                         swal("return success", "Amount will credit to wallet once item is collected", "success");
+                        $(".r").html("<h6>product returned</h6>")
+
                     }
                 })
     }

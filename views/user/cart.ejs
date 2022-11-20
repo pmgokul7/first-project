@@ -44,9 +44,10 @@
 				
 				<td>
 					
-					<button class="cart-item-count me-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',-1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')" id="plus">-</button>
+					<button class="cart-item-count me-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',-1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>','<%=result[i].products.count%>','<%=result[i].pro._id%>A')" id='<%=result[i].pro._id%>A' >-</button>
+					
 					<span id="<%=result[i].pro._id%>"><%=result[i].products.count%></span>
-					<button class="cart-item-count ms-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>')" id="minus" >+</button>
+					<button class="cart-item-count ms-2 btn btn-info" onclick="changeQuantity('<%=result[i]._id%>','<%=result[i].pro._id%>',1,'<%=result[i].pro._id%>a','<%=result[i].pro.offerprice%>','<%=result[i].products.count%>','<%=result[i].pro._id%>A')" id='<%=result[i].pro._id%>B' >+</button>
 				</td>
 				<td id="<%=result[i].pro._id%>a">₹<%=result[i].pro.offerprice * result[i].products.count%></td>
 				<td>
@@ -75,7 +76,7 @@
 
 		</div>
 	</main>
-	<%-include("../partials/footer.ejs")%>
+
 
 	<script>
 		function applybtn(){
@@ -102,9 +103,10 @@
     
   })
 }
-		function changeQuantity(cartId,proId,count,carta,price){
-			//
+		function changeQuantity(cartId,proId,count,carta,price,quantity,btnid){
+			
 			quantity=parseInt($(`#${proId}`).text())
+			
 			
              $.post("/home/changeQuantity",{
                 cart:cartId,
@@ -117,11 +119,7 @@
 				if(response){
 					
 					$(`#${proId}`).text(quantity+parseInt(count	))
-					$(`#${carta}`).text(parseInt($(`#${proId}`).text()*parseInt(price)))
-				}
-			 })
-		
-			 $.post("/home/gettotal",{data:"hai"},(res)=>{
+					$.post("/home/gettotal",{data:"hai"},(res)=>{
 				// console.log(res[0].total);
 				if(res)
 				{
@@ -129,12 +127,25 @@
 				}
 				
 			})
+					
+					$(`#${carta}`).text(parseInt($(`#${proId}`).text()*parseInt(price)))
+					if(quantity+parseInt(count)==1){
+						$(`#${btnid}`).prop("disabled", true)
+                      
+					}else{
+						$(`#${btnid}`).prop("disabled", false)
+					}
+				}
+			 })
+		
+			 
 		}
 
 		$(document).ready(()=>{
 			
 
 			$.post("/home/gettotal",{data:"hai"},(res)=>{
+			
 				if(res)
 				{
 					$("#totalp").html(`${res[0].total}`)
