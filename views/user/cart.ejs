@@ -105,6 +105,7 @@
 		function changeQuantity(cartId,proId,count,carta,price){
 			//
 			quantity=parseInt($(`#${proId}`).text())
+			
              $.post("/home/changeQuantity",{
                 cart:cartId,
 				product:proId,

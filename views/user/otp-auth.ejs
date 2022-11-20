@@ -77,9 +77,9 @@
                   </a>    
                   <div id="wrapper" class="mt-4">
                    <a href="/login/otp-login">
-                    <button type="button" id="myBtn" class="btnDisable btn btn-info" disabled onclick="alert('Finally!')">
+                    <!-- <button type="button" id="myBtn" class="btnDisable btn btn-info" disabled onclick="alert('Finally!')">
                         <div id="myTimer"></div>
-                    </button>
+                    </button> -->
                 </a>
                 </div>
             </div>
@@ -93,21 +93,6 @@ var myTimer = document.getElementById('myTimer');
 var myBtn = document.getElementById('myBtn');
 window.onload = countDown;
 
-function countDown() {
-    if (sec < 10) {
-        myTimer.innerHTML = "0" + sec;
-    } else {
-        myTimer.innerHTML = sec;
-    }
-    if (sec <= 0) {
-        $("#myBtn").removeAttr("disabled");
-        $("#myBtn").removeClass().addClass("btnEnable");
-        $("#myTimer").fadeTo(2500, 0);
-        myBtn.innerHTML = "resend otp";
-        return;
-    }
-    sec -= 1;
-    window.setTimeout(countDown, 1000);
-}
+
        </script>
     </body>

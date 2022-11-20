@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const { ObjectId, Db } = require("mongodb");
 module.exports = {
   info: (data) => {
+    console.log("hahahahahhaha",data.query);
     return new Promise((resolve, reject) => {
       db.get()
         .collection("Products")
@@ -23,7 +24,7 @@ module.exports = {
                 {"products.product":ObjectId(data.query.id)},
                 { user:  ObjectId(data.session.user._id)}
               ]}).then(wishlistp=>{
-
+               
                if (ifres&&wishlistp) {
                 resolve({ result, ifres,wishlistp });
               } else if(ifres){

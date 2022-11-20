@@ -112,7 +112,7 @@ route.get("/products", (req, res) => {
   con
     .get()
     .collection("Products")
-    .find({})
+    .find({isDeleted:false})
     .toArray()
     .then((result) => {
       res.render("admin/productslist", { result });

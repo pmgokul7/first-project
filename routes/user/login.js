@@ -6,7 +6,8 @@ const otpgen = require("otp-generators");
 const { ObjectId } = require("mongodb");
 const client = require("twilio")(
   "AC310ba1f6e25df76fe77562d899355658",
-  "f181af19d88019bab6b437c2aaa7ef68"
+  // "f181af19d88019bab6b437c2aaa7ef68"
+  "0b125efe35b3a2d1ddebf1f7e3d620d6"
 );
 
 route.get("/", (req, res) => {
@@ -65,7 +66,7 @@ route.post("/", (req, res) => {
 });
 
 route.get("/otp-login", (req, res) => {
-  msg = req.flash("info");
+ var msg = req.flash("info");
   res.render("user/otpLogin", { msg });
 });
 
@@ -75,6 +76,7 @@ route.post("/otp-login", (req, res) => {
     .collection("user")
     .findOne({ mobile: req.body.mobile })
     .then((result) => {
+      if(result){
       if (req.body.mobile == "") {
         req.flash("info", "please enter your mobile number");
         res.redirect("/login/otp-login");
@@ -103,19 +105,24 @@ route.post("/otp-login", (req, res) => {
           .catch((err) => {
             console.log("twilio er", err);
           });
-      } else {
-        req.flash("info", "user not found");
-        res.redirect("/login/otp-login");
-      }
+      } 
+    }else{
+      req.flash("info", "ivalid Mobile number!retry");
+      res.redirect("/login/otp-login");
+    }
     });
 });
-route.post("/otp-auth", (req, res) => {
+route.post("/otp-auth", async(req, res) => {
+  const result=await con.get().collection("Products").find({}).toArray()
   if (req.body.mobile === otp) {
+    console.log("in this");
     req.session.user = ress;
+    req.session.userLogged = true;
+    req.session.admin = false
     res.redirect("/home");
   } else {
     req.flash("info", "ivalid otp!retry");
-    res.redirect("/otp-login");
+    res.redirect("/login/otp-login");
   }
 });
 

@@ -326,7 +326,15 @@
 
 
             function returnProduct(model, count, date, status, id) {
-                $.post("/home/returnproduct", {
+                swal({
+  title: "Are you sure want to return?",
+ 
+ 
+  buttons: true,
+  dangerMode: true,
+}).then(btn=>{
+    if(btn){
+        $.post("/home/returnproduct", {
                     model,
                     count,
                     date,
@@ -337,6 +345,9 @@
                         swal("return success", "Amount will credit to wallet once item is collected", "success");
                     }
                 })
+    }
+})
+              
             }
             function cancelfromcart(model, count, date, status, id, discount,amounttoreturn,name,method) {
             console.log(method);

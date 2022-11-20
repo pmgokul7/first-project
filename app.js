@@ -390,10 +390,11 @@ app.get("/", (req, res) => {
 app.post("/otp-auth", (req, res) => {
   if (req.body.mobile === otp) {
     req.session.user = ress;
-    res.redirect("/home");
+    console.log("this workrd");
+    res.redirect("/");
   } else {
     req.flash("info", "ivalid otp!retry");
-    res.redirect("/otp-login");
+    res.redirect("/login/otp-login");
   }
 });
 

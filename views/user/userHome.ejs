@@ -64,7 +64,10 @@
 <style type='text/css'>
 body { background-color:#ffffff }
 .header { background-color:#ffffff }
-
+#searchinput{
+	height: 20px !important;
+	margin: 0;
+}
 </style>
 <style type='text/css'>
 	
@@ -236,9 +239,9 @@ portrait : true,
 				<div class="span12" data-motopress-type="loop" data-motopress-loop-file="loop/loop-page.php">
 						<div id="post-203" class="post-203 page type-page status-publish hentry page">
 	<div class="custom_banners"><div class="custom_banners_wrap_inner">
-<a style="text-decoration: none;" href="/home/products/IOS" title="Iphones" class="banner-wrap blue_light"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_1.png" title="Iphones" alt="" /></span></figure><h5>Iphones</h5><p></p></a><!-- .banner-wrap (end) -->
-<a style="text-decoration: none;" href="/home/products/windows" title="Windows Phones" class="banner-wrap banner_lilac"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_2.png" title="Windows Phones" alt="" /></span></figure><h5>Windows Phones</h5><p></p></a><!-- .banner-wrap (end) -->
-<a style="text-decoration: none;" href="/home/products/android" title="Android Phones" class="banner-wrap green"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_3.png" title="Android Phones" alt="" /></span></figure><h5>Android Phones</h5><p></p></a><!-- .banner-wrap (end) -->
+<a style="text-decoration: none;" href="/home/productss/?os=IOS" title="Iphones" class="banner-wrap blue_light"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_1.png" title="Iphones" alt="" /></span></figure><h5>Iphones</h5><p></p></a><!-- .banner-wrap (end) -->
+<a style="text-decoration: none;" href="/home/productss/?os=windows" title="Windows Phones" class="banner-wrap banner_lilac"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_2.png" title="Windows Phones" alt="" /></span></figure><h5>Windows Phones</h5><p></p></a><!-- .banner-wrap (end) -->
+<a style="text-decoration: none;" href="/home/productss/?os=android" title="Android Phones" class="banner-wrap green"><figure class="featured-thumbnail"><span><img src="https://livedemo00.template-help.com/woocommerce_49164/wp-content/uploads/2014/04/icon_3.png" title="Android Phones" alt="" /></span></figure><h5>Android Phones</h5><p></p></a><!-- .banner-wrap (end) -->
 </div></div>
 <div class="featured_products"><div class="featured_products_wrap_inner">
 <h2>New products</h2>
@@ -264,7 +267,6 @@ portrait : true,
 
 <span class="price"><span class="amount">₹
 <%=result[i].offerprice%></span></span>
-<a href="/woocommerce_49164/?add-to-cart=1958" rel="nofollow" data-product_id="1958" data-product_sku="" class="button add_to_cart_button product_type_simple">Add to cart</a>
 		   </li>
 		<%}%>	
 				
@@ -293,7 +295,6 @@ portrait : true,
 <span class="price"><span class="amount">₹
 <%=result[i].price%></span></span>
 
-<a href="#" rel="nofollow" data-product_id="1930" data-product_sku="" class="button add_to_cart_button product_type_simple">Add to cart</a>
 </li>
 
 			
