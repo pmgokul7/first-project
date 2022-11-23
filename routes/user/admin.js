@@ -9,6 +9,10 @@ const adminHelpers = require("../../helpers/adminHelpers");
 const couponHelpers = require("../../helpers/couponHelpers");
 const flash = require("connect-flash");
 
+const productHelpers=require("../../helpers/admin/productHelpers");
+
+const userHelpers = require("../../helpers/admin/userHelpers");
+
 route.use(function (req, res, next) {
   if (req.session.adminlogged == true) {
     next();
@@ -108,24 +112,22 @@ route.get("/", (req, res) => {
     });
 });
 
-route.get("/products", (req, res) => {
-  con
-    .get()
-    .collection("Products")
-    .find({isDeleted:false})
-    .toArray()
-    .then((result) => {
-      res.render("admin/productslist", { result });
-    });
+route.get("/products", async(req, res) => {
+const result=await productHelpers.getAllProducts()   
+// console.log(result);
+res.render("admin/productslist", { result:result });
+  
 });
 
 route.get("/products/delete", (req, res) => {
-  helper.productDelete(req.query).then((result) => {
+  productHelpers.deleteProduct(req).then((result) => {
     if (result.productDeleted == true) {
       res.redirect("/admin/products");
     }
   });
 });
+
+
 
 route.get("/products/add", (req, res) => {
   con
@@ -145,26 +147,28 @@ route.get("/products/add", (req, res) => {
     });
 });
 
-route.get("/users", (req, res) => {
-  const page = req.query.p || 0;
-  const dataperpage = 10;
-  con
-    .get()
-    .collection("user")
-    .aggregate([
-      { $match: {} },
-      { $skip: page * dataperpage },
-      { $limit: dataperpage },
-    ])
-    .toArray()
-    .then((result) => {
-      con
-        .get()
-        .collection("user")
-        .countDocuments((count) => {
-          res.render("admin/userlist", { result, count });
-        });
-    });
+route.get("/users", async(req, res) => {
+const result=userHelpers.getAllUsers(req)
+res.render("admin/userlist", {users:result.users,count:result.count});
+  // const page = req.query.p || 0;
+  // const dataperpage = 10;
+  // con
+  //   .get()
+  //   .collection("user")
+  //   .aggregate([
+  //     { $match: {} },
+  //     { $skip: page * dataperpage },
+  //     { $limit: dataperpage },
+  //   ])
+  //   .toArray()
+  //   .then((result) => {
+  //     con
+  //       .get()
+  //       .collection("user")
+  //       .countDocuments((count) => {
+  //         res.render("admin/userlist", { result, count });
+  //       });
+  //   });
 });
 
 route.get("/users/edit", (req, res) => {
@@ -177,14 +181,16 @@ route.get("/users/edit", (req, res) => {
     });
 });
 
-route.get("/users/delete", (req, res) => {
-  con
-    .get()
-    .collection("user")
-    .deleteOne({ _id: ObjectId(req.query.id) })
-    .then(() => {
-      res.redirect("/admin/users");
-    });
+route.get("/users/delete",async (req, res) => {
+ await userHelpers.userDelete(req)
+  res.redirect("/admin/users");
+  // con
+  //   .get()
+  //   .collection("user")
+  //   .deleteOne({ _id: ObjectId(req.query.id) })
+  //   .then(() => {
+  //     res.redirect("/admin/users");
+  //   });
 });
 
 route.get("/products/edit", (req, res) => {
@@ -668,4 +674,9 @@ route.get("/returns", (req, res) => {
     });
  
 });
+
+
+
+
+
 module.exports = route;

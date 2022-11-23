@@ -503,18 +503,7 @@
      })
 
 
-// function codeinput(){
-//   const codevalue=$("#codeinput").val()
-//   // console.log(codevalue);
-//   $.post("/home/couponcheck",{
-//     code:codevalue
-//   },(res)=>{
-//     if(res.couponFound==true){
-//       $("#codeinput").css("border","2px solid green")
-//     }
-//     console.log(res);
-//   })
-// }
+
 
 function applybtn(){
   const codevalue=$("#codeinput2").val()
@@ -674,12 +663,12 @@ function applybtn(){
           payment: $(".paymentcart:checked").val(),
         },
         (res) => {
-          console.log(res);
-          if (res.paypal) {
+          console.log("cccccccccccco",res.result.razor);
+          if (res.result.paypal) {
             console.log(res);
-            location.href = res.paypal;
+            location.href = res.result.paypal;
           } else {
-            razorpaypayment(res)
+            razorpaypayment(res.result.razor)
           }
         }
       );

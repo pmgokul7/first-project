@@ -27,14 +27,14 @@ module.exports = {
     });
   },
   productDelete: (data) => {
-    return new Promise((resolve, reject) => {
-      db.get()
-        .collection("Products")
-        .updateOne({ _id:  ObjectId(data.id) },{$set:{isDeleted:true}})
-        .then(() => {
-          resolve({ productDeleted: true });
-        });
-    });
+    // return new Promise((resolve, reject) => {
+    //   db.get()
+    //     .collection("Products")
+    //     .updateOne({ _id:  ObjectId(data.id) },{$set:{isDeleted:true}})
+    //     .then(() => {
+    //       resolve({ productDeleted: true });
+    //     });
+    // });
   },
   productManagement: () => {
     return new Promise((resolve, reject) => {

@@ -1,76 +1,74 @@
 const db = require("../config/connection");
 const moment=require("moment")
 
-const bcrypt = require("bcrypt");
 const { ObjectId, Db } = require("mongodb");
 module.exports = {
-  info: (data) => {
-    console.log("hahahahahhaha",data.query);
-    return new Promise((resolve, reject) => {
-      db.get()
-        .collection("Products")
-        .findOne({ _id:  ObjectId(data.query.id) })
-        .then((result) => {
-          db.get()
-            .collection("cart")
-            .findOne({
-              $and: [
-                { "products.product":  ObjectId(data.query.id) },
-                { user:  ObjectId(data.session.user._id) },
-              ],
-            })
-            .then((ifres) => {
-              db.get().collection("wishlist").findOne({$and:[
-                {"products.product":ObjectId(data.query.id)},
-                { user:  ObjectId(data.session.user._id)}
-              ]}).then(wishlistp=>{
+  // info: (data) => {
+  //   return new Promise((resolve, reject) => {
+  //     db.get()
+  //       .collection("Products")
+  //       .findOne({ _id:  ObjectId(data.query.id) })
+  //       .then((result) => {
+  //         db.get()
+  //           .collection("cart")
+  //           .findOne({
+  //             $and: [
+  //               { "products.product":  ObjectId(data.query.id) },
+  //               { user:  ObjectId(data.session.user._id) },
+  //             ],
+  //           })
+  //           .then((ifres) => {
+  //             db.get().collection("wishlist").findOne({$and:[
+  //               {"products.product":ObjectId(data.query.id)},
+  //               { user:  ObjectId(data.session.user._id)}
+  //             ]}).then(wishlistp=>{
                
-               if (ifres&&wishlistp) {
-                resolve({ result, ifres,wishlistp });
-              } else if(ifres){
-                resolve({ result,ifres });
-              }else if(wishlistp){
-                resolve({ result,wishlistp });
-              }
-              else{
-                resolve({ result });
-              }
+  //              if (ifres&&wishlistp) {
+  //               resolve({ result, ifres,wishlistp });
+  //             } else if(ifres){
+  //               resolve({ result,ifres });
+  //             }else if(wishlistp){
+  //               resolve({ result,wishlistp });
+  //             }
+  //             else{
+  //               resolve({ result });
+  //             }
 
-              })
+  //             })
              
-            });
-        });
-    });
-  },
-  myOrders: (data) => {
-    return new Promise((resolve, reject) => {
-      db.get()
-        .collection("orders")
-        .aggregate([
-          { $match: { user: data.session.user.name, paymentstatus:"success"} },
-          // {$unwind:"$product"}, 
-          {
-            $lookup: {
-              from: "Products",
-              localField: "product.product",
-              foreignField: "_id",
-              as: "p",
-            },
-          },
+  //           });
+  //       });
+  //   });
+  // },
+  // myOrders: (data) => {
+  //   return new Promise((resolve, reject) => {
+  //     db.get()
+  //       .collection("orders")
+  //       .aggregate([
+  //         { $match: { user: data.session.user.name, paymentstatus:"success"} },
+  //         // {$unwind:"$product"}, 
+  //         {
+  //           $lookup: {
+  //             from: "Products",
+  //             localField: "product.product",
+  //             foreignField: "_id",
+  //             as: "p",
+  //           },
+  //         },
          
          
-          { $sort: { date: -1 } },
-        ])
-        .toArray()
-        .then((result) => {
-          db.get().collection("orders").find({user: data.session.user.name}).toArray().then(orderResult=>{
-            console.log("unwind result orders",result);
-          resolve({result,orderResult});
-          })
+  //         { $sort: { date: -1 } },
+  //       ])
+  //       .toArray()
+  //       .then((result) => {
+  //         db.get().collection("orders").find({user: data.session.user.name}).toArray().then(orderResult=>{
+  //           console.log("unwind result orders",result);
+  //         resolve({result,orderResult});
+  //         })
           
-        });
-    });
-  },
+  //       });
+  //   });
+  // },
   checkout: (data) => {
     return new Promise((resolve, reject) => {
       db.get()

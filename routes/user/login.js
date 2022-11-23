@@ -4,24 +4,28 @@ const helper = require("../../helpers/LoginHelpers");
 const con = require("../../config/connection");
 const otpgen = require("otp-generators");
 const { ObjectId } = require("mongodb");
+const {AsyncLocalStorage}=require("async_hooks")
 const client = require("twilio")(
   "AC310ba1f6e25df76fe77562d899355658",
   // "f181af19d88019bab6b437c2aaa7ef68"
   "0b125efe35b3a2d1ddebf1f7e3d620d6"
 );
 
+const asyncLocalStorage=new AsyncLocalStorage()
+
 route.get("/", (req, res) => {
-  if (req.session.user) {
-    res.redirect("/home");
-  } else {
-    var msg = req.flash("info");
+  var msg = req.flash("info");
     var msg2 = req.flash("info2");
+    // res.redirect("/home");
     res.render("user/userLogin", { msg, msg2 });
-  }
+  // asyncLocalStorage.run({last:"google.com"},()=>{})
+  
+
 });
 
 route.post("/", (req, res) => {
   console.log(req.body);
+  asyncLocalStorage.run({last:"google.com"},()=>{})
   helper.userloginValidator(req.body).then((result) => {
     if (req.body.mobile == "" || req.body.password == "") {
       req.flash("info", "please fill all the fields");
@@ -31,6 +35,8 @@ route.post("/", (req, res) => {
       req.session.user = result.result;
       req.session.userLogged = true;
       req.session.admin=result.admin
+      
+        res.redirect("/home");
       con
         .get()
         .collection("cart")
@@ -50,8 +56,9 @@ route.post("/", (req, res) => {
               });
           }
         });
-
-      res.redirect("/home");
+        console.log(req.session);
+    
+      
     } else if (result.loginstatus == false) {
       req.flash("info", "invalid username or password");
       res.redirect("/login");

@@ -30,119 +30,15 @@ li{
     background-color: #ecefff;
 }
 
-.form-control:focus {
-    box-shadow: none;
-    border-color: #BA68C8
-}
 
-.profile-button {
-    background: rgb(99, 39, 120);
-    box-shadow: none;
-    border: none
-}
-
-.profile-button:hover {
-    background: #c1aac5
-}
-
-.profile-button:focus {
-    background: #682773;
-    box-shadow: none
-}
-
-.profile-button:active {
-    background: #682773;
-    box-shadow: none
-}
-
-.back:hover {
-    color: #050305;
-    cursor: pointer
-}
-
-.labels {
-    font-size: 11px
-}
-
-.add-experience:hover {
-    background: #BA68C8;
-    color: #fff;
-    cursor: pointer;
-    border: solid 1px #BA68C8
-}
-.address{
-    border-radius: 10px;
-    height: 150px;
-    border: 1px solid #3F51B5;
-    width: 90%;
-}
-.addressdiv::-webkit-scrollbar{
-    display: none;
-}
 
 
 </style>
 <body>
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Add a new Address</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            <!-- <form action="/home/addaddress/<%=result._id%>" method="post"> -->
-              <div class="mb-2">
-                <label for="exampleInputEmail1" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name"required>
-                
-              </div>
-              <div class="mb-2">
-                <label for="exampleInputEmail1" class="form-label">Mobile</label>
-                <input type="text" class="form-control" id="mob" name="name" required>
-                
-              </div>
-      
-              <div class="mb-1">
-                <label for="exampleInputEmail1" class="form-label">Address line1</label>
-                <input type="text" class="form-control" id="ad1"  name="address1" required>
-                
-              </div>
-      
-              <div class="mb-1">
-                <label for="exampleInputEmail1" class="form-label">Address line2</label>
-                <input type="text" class="form-control" id="ad2"  name="address2" required>
-                
-              </div>
-              <div class="mb-1">
-                <label for="exampleInputEmail1" class="form-label">post</label>
-                <input type="text" class="form-control" id="post"  name="post" required >
-                
-              </div>
-              <div class="mb-1">
-                <label for="exampleInputEmail1" class="form-label">pin</label>
-                <input type="number" class="form-control" id="pin"  name="pin" required>
-                
-              </div>
-              <div class="mb-1">
-                
-               
-                
-              </div>
-              <input type="button" onclick="addaddressbtn('<%user._id%>')" value="add"  class="form-control btn btn-primary">
-            <!-- </form> -->
-            </div>
-            <!-- <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Understood</button>
-            </div> -->
-          </div>
-        </div>
-      </div>
+    
 <%-include("../partials/userHeader.ejs")%>
       <!-- Your content goes here -->
-            <div class="container rounded bg-white mt-5 mb-5">
-                <div class="row">
+            <div class="container  mt-5" style="display: flex;align-items: center;justify-content:space-around ;border:2px solid grey">
                     <div class="col-md-3 border-right d-flex">
                         <d class="d-flex flex-column  align-items-center text-center p-3 py-5">
                             <img class="rounded-circle d-flex flex-column" width="50px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
@@ -163,7 +59,8 @@ li{
                             
 
                     </div>
-                    <div class="col-md-5 border-right0" style="margin-top: 200px;">
+                    
+                    <div class="col-md-5 border-right0">
                         <div class="p-3 py-5" id="myProfile" style="border-radius:10px;border: 1px solid rgb(134, 134, 134);">
                             <h3 class="text-secondary">Name:<%=user.name%></h3>
                             <h3 class="text-secondary">email:<%=user.email%></h3>
@@ -171,16 +68,16 @@ li{
                              <a href="/home/changepassword" class="btn btn-outline-secondary w-100 mt-4">change password</a>
                            
                         </div>
+                      </div>
                        
                        
-                    </div>
+                  
                    
                 </div>
-            </div>
-            </div>
-            </div>
+          
             
-          </div>
+            
+          
         
          
 

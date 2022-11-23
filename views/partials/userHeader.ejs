@@ -1,6 +1,8 @@
 <%-include("./top.ejs")%>
 <style>
-
+a{
+  text-decoration: none;
+}
   #demo-menu-lower-right{
       display: flex;
       justify-content: center;
@@ -63,43 +65,45 @@ margin: 0;
             <form action="/home/products" method="post" class="form" id="searchform" style="margin-bottom: 25px;">
               <input type="text"  name="search"  placeholder="search here" id="searchinput" style="width: 120%;height: 25px;">
               </form>
-              
+              <%if(locals.user){%>
     
             <button id="demo-menu-lower-right"
             class="mdl-button mdl-js-button" >
-     <h6 class="" style="color: #fff;font-weight: 600;"><%=user.name%></h6>
+     <h5 class="" style="color: #fff;font-weight: 600;"><span style="font-size: 15px;margin-right: 10px;"><%=user.name%></span><i class="fa fa-user fa-xl" aria-hidden="true"></i></h5>
             
          </button>  
-                
+         <%}else{%>
+         <!-- Accent-colored raised button with ripple -->
+<!-- Colored raised button -->
+<button onclick="loginclick()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="loginbtn">
+  login
+</button>
+
+       <%}%>
             
   
     
     <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
         for="demo-menu-lower-right">
-        <a href="/home/cart">  <li class="mdl-menu__item">Cart</li></a>
-          <a href="/home/orders"><li class="mdl-menu__item">Orders</li></a>  
-          <a href="/home/wishlist"><li class="mdl-menu__item">wishlist</li></a>  
+        <a href="/home/cart">  <li class="mdl-menu__item">Cart </i></li></a>
+          <a href="/home/orders"><li class="mdl-menu__item">Orders   </li></a>  
+          <a href="/home/wishlist"><li class="mdl-menu__item" >wishlist</li></a>  
           <a href="/home/profile"><li class="mdl-menu__item">My profile</li></a> 
-           <a href="/logout"><li class="mdl-menu__item">log out</li></a>
+           <a href="/logout"><li class="mdl-menu__item">log out </li></a>
     </ul>
           </nav>
         </div>
       </header>
-      <!-- <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Title</span>
-        <div>
-          <input id="box1" type="checkbox" />
-          <label for="box1">Checkbox 1</label>
-          <input id="box2" type="checkbox" />
-          <label for="box2">Checkbox 2</label>
-          <input id="box3" type="checkbox" />
-          <label for="box3">Checkbox 3</label>
-        </div>
-      </div> -->
+     
       <form action="/home/products" method="post"  id="smallform" class="container"> <input type="text" name="search" placeholder="search here" id="smallinput"></form>
 
       <main class="mdl-layout__content">
         
        
         <div class="page-content">
+          <script>
+            function loginclick(){
+              location.href=`/login`
+            }
+          </script>
           
