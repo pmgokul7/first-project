@@ -35,8 +35,14 @@ route.post("/", (req, res) => {
       req.session.user = result.result;
       req.session.userLogged = true;
       req.session.admin=result.admin
-      
+      console.log(req.body.hidden);
+      if(req.body.hidden!=""){
+        res.redirect(req.body.hidden);
+      }
+      else{
         res.redirect("/home");
+      }
+        
       con
         .get()
         .collection("cart")

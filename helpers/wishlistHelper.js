@@ -38,6 +38,7 @@ module.exports = {
 
     getWishListHelper: (data) => {
         return new Promise(async (resolve, reject) => {
+            if(data.session.user){
             var wish = await db.get().collection(collectionNames.WISHLIST_COLLECTION).findOne({
                 user: ObjectId(data.session.user._id)
             })
@@ -71,7 +72,9 @@ module.exports = {
 
             }
 
-
+        }else{
+            resolve("k")
+        }
         })
     }
 }

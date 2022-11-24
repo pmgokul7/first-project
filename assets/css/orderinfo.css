@@ -1,0 +1,108 @@
+
+        #model {
+            font-size: 15px
+        }
+        @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600 &display=swap');
+        *,
+        *::after,
+        *::before {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+
+        h2,
+        h4,
+        h6 {
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+        }
+        .root {
+            padding: 3rem 1.5rem;
+            border-radius: 5px;
+            box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.3);
+        }
+        figure {
+            display: flex;
+        }
+        figure img {
+            height: 8rem;
+            margin-right: 1.5rem;
+        }
+        figure figcaption {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+        figure figcaption h4 {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+        figure figcaption h6 {
+            font-size: 1rem;
+            font-weight: 300;
+        }
+        figure figcaption h2 {
+            font-size: 1.6rem;
+            font-weight: 500;
+        }
+        .order-track {
+            margin-top: 2rem;
+            padding: 2.5rem 1rem 0;
+            border-top: 1px dashed #2c3e50;
+            display: flex;
+            flex-direction: column;
+        }
+        .order-track-step {
+            display: flex;
+            height: 7rem;
+        }
+        .order-track-step:last-child {
+            overflow: hidden;
+            height: 4rem;
+        }
+        .order-track-step:last-child .order-track-status span:last-of-type {
+            display: none;
+        }
+        .order-track-status {
+            margin-right: 1.5rem;
+            position: relative;
+        }
+        .order-track-status-dot1,
+        .order-track-status-dot2,
+        .order-track-status-dot3,
+        .order-track-status-dot4,
+        .order-track-status-dot5 {
+            display: block;
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 50%;
+            background-color: grey;
+        }
+        .order-track-status-line1,
+        .order-track-status-line2,
+        .order-track-status-line3,
+        .order-track-status-line4,
+        .order-track-status-line5 {
+            display: block;
+            margin: 0 auto;
+            width: 2px;
+            height: 7rem;
+            background: grey;
+        }
+        .order-track-text-stat {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        .order-track-text-sub {
+            font-size: 1rem;
+            font-weight: 300;
+        }
+        .order-track {
+            transition: all 0.3s height 0.3s;
+            transform-origin: top center;
+        }
+

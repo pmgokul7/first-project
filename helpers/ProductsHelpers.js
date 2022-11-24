@@ -62,6 +62,7 @@ module.exports = {
     productSearchHelper: (data) => {
         return new Promise(async (resolve, reject) => {
             var result = await db.get().collection(collectionNames.PRODUCT_COLLECTION).find({
+                isDeleted:false,
                 model: {
                     $regex: data.body.search,
                     $options: "i"

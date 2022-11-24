@@ -21,7 +21,8 @@ module.exports={
                 db
                   .get()
                   .collection("user")
-                  .countDocuments((count) => {
+                  .countDocuments().then((count) => {
+                   
                     resolve({ users, count })
                     
                   });

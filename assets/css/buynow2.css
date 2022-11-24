@@ -1,0 +1,58 @@
+
+#coupon-success{
+  color: #4BB543;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  visibility: hidden;
+}
+#codeinput2{
+  
+  border: 1px solid rgba(173, 167, 167, 0.603);
+  outline: none;
+  width: 100px;
+  text-align: center;
+  margin-right: 3px;
+}
+  #codetext{
+    width: 300px;
+    padding: 10px;
+  }
+
+  .v::-webkit-scrollbar {
+    display: none;
+  }
+  * {
+    padding: 0;
+    margin: 0;
+    font-family: "IBM Plex Sans", sans-serif;
+  }
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .counter {
+    width: 150px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .counter .up {
+    width: 5px;
+  }
+  .counter input {
+    width: 50px;
+    border: 1px solid black;
+    line-height: 30px;
+    font-size: 20px;
+    text-align: center;
+    /* background: #0052cc; */
+    /* color: #fff; */
+    appearance: none;
+    outline: 0;
+  }
+ 

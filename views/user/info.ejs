@@ -9,7 +9,7 @@
         <div class="modal-body">
           <center> <h4> you are not logged in </h4>
             <h6> please login for continue shopping</h6>
-         <a href="/login"><button class="btn btn-lg btn-warning mt-5 mb-4">Login</button></a> 
+         <a href="/login"><button class="btn btn-lg btn-warning mt-5 mb-4" id="infologin">Login</button></a> 
         </div></center>
        
       </div>
@@ -20,7 +20,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css'>
 <script src="https://unpkg.com/js-image-zoom@0.7.0/js-image-zoom.js" type="application/javascript"></script>
+
 <style>
+
     /* search
     */
 #searchinput{
@@ -41,416 +43,417 @@
     font-weight: 600;
     opacity: 0.9;
 }
-</style>
-    <style type="text/css">
-        #det::-webkit-scrollbar{
-            display: none;
-        }
-    html {
-        background-color: #D3CEC0;
-    }
 
-    body{
-        margin: 0 auto;
-    }
+#det::-webkit-scrollbar{
+    display: none;
+}
+html {
+background-color: #D3CEC0;
+}
 
-    .piclist{
-        margin-top: 30px;
-    }
-    .piclist li{
-        display: inline-block;
-        width: 70px !important;
-        height: 70px !important;
-    }
-    .piclist li img{
-        width: 100%;
-        height: auto;
-    }
+body{
+margin: 0 auto;
+}
 
-    /* custom style */
-    .picZoomer-pic-wp,
-    .picZoomer-zoom-wp{
-        border: 1px solid #fff;
-    }
+.piclist{
+margin-top: 30px;
+}
+.piclist li{
+display: inline-block;
+width: 70px !important;
+height: 70px !important;
+}
+.piclist li img{
+width: 100%;
+height: auto;
+}
 
+/* custom style */
+.picZoomer-pic-wp,
+.picZoomer-zoom-wp{
+border: 1px solid #fff;
+}
 
 
-    .picZoomer{
-	position: relative;
+
+.picZoomer{
+position: relative;
 }
 .picZoomer-pic-wp{
-	position: relative;
-	overflow: hidden;
+position: relative;
+overflow: hidden;
 }
 .picZoomer-pic-wp:hover .picZoomer-cursor{
-	display: block;
+display: block;
 }
 .picZoomer-zoom-pic{
-	position: absolute;
-	top: 0;
-	left: 0;
+position: absolute;
+top: 0;
+left: 0;
 }
 .picZoomer-pic{
-	width: 100%;
-	height: 100%;
+width: 100%;
+height: 100%;
 }
 .picZoomer-zoom-wp{
-	display: none;
-	position: absolute;
-	z-index: 999;
-	overflow: hidden;
+display: none;
+position: absolute;
+z-index: 999;
+overflow: hidden;
 }
 .picZoomer-cursor{
-	display: none;
-	cursor: crosshair;
-	width: 100px;
-	height: 100px;
-	position: absolute;
-	top: 0;
-	left: 0;
-	border-radius: 50%;
-	border: 1px solid #eee;
-	background-color: rgba(0,0,0,.1);
+display: none;
+cursor: crosshair;
+width: 100px;
+height: 100px;
+position: absolute;
+top: 0;
+left: 0;
+border-radius: 50%;
+border: 1px solid #eee;
+background-color: rgba(0,0,0,.1);
 }
 .picZoomCursor-ico{
-	width: 23px;
-	height: 23px;
-	position: absolute;
-	top: 40px;
-	left: 40px;
-	background: url(images/zoom-ico.png) left top no-repeat;
+width: 23px;
+height: 23px;
+position: absolute;
+top: 40px;
+left: 40px;
+background: url(images/zoom-ico.png) left top no-repeat;
 }
 
 html,body,div,span,object,iframe,p,blockquote,pre,a,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video,button,textarea,h1,h2,h3,h4,h5,h6 {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    font-size: 100%;
-    vertical-align: baseline;
-    background: transparent;
+margin: 0;
+padding: 0;
+border: 0;
+outline: 0;
+font-size: 100%;
+vertical-align: baseline;
+background: transparent;
 }
 html {
-    -webkit-font-smoothing: subpixel-antialiased;
-    /*-webkit-text-stroke-width: 0.2px;*/
-    -webkit-tap-highlight-color: transparent;
+-webkit-font-smoothing: subpixel-antialiased;
+/*-webkit-text-stroke-width: 0.2px;*/
+-webkit-tap-highlight-color: transparent;
 }
 
 body {
-    line-height: 1;
-    -webkit-text-size-adjust: none;
+line-height: 1;
+-webkit-text-size-adjust: none;
 }
 
 button,textarea {
-    -webkit-appearance: none;
-    font-family: "Microsoft YaHei",微软雅黑,Helvetica, Arial, sans-serif;
-    /*font-family: tahoma,arial,\5b8b\4f53,sans-serif;*/
+-webkit-appearance: none;
+font-family: "Microsoft YaHei",微软雅黑,Helvetica, Arial, sans-serif;
+/*font-family: tahoma,arial,\5b8b\4f53,sans-serif;*/
 }
 input:required, input:invalid{
-    border:0 none; 
-    outline: 0 none; 
-    -webkit-box-shadow:none; 
-    -moz-box-shadow:none; 
-    -ms-box-shadow:none; 
-    -o-box-shadow:none; 
-    box-shadow: none;
+border:0 none; 
+outline: 0 none; 
+-webkit-box-shadow:none; 
+-moz-box-shadow:none; 
+-ms-box-shadow:none; 
+-o-box-shadow:none; 
+box-shadow: none;
 }
 a{
-	text-decoration: none;
+text-decoration: none;
 }
 img {
-    vertical-align: middle;
+vertical-align: middle;
 }
 
 ul,ol {
-    list-style: none;
+list-style: none;
 }
 
 address,cite,dfn,em,var {
-    font-style: normal;
+font-style: normal;
 }
 
 sup {
-    vertical-align: text-top;
+vertical-align: text-top;
 }
 
 sub {
-    vertical-align: text-bottom;
+vertical-align: text-bottom;
 }
 
 article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
-    display: block;
+display: block;
 }
 
 blockquote,q {
-    quotes: none;
+quotes: none;
 }
 
 blockquote:before,blockquote:after,q:before,q:after {
-    content: '';
-    content: none;
+content: '';
+content: none;
 }
 
 table {
-    border-collapse: collapse;
-    border-spacing: 0;
+border-collapse: collapse;
+border-spacing: 0;
 }
 /* 
 input {
-    vertical-align: top;
+vertical-align: top;
 } */
 
 .clearfix {
-    zoom: 1;
+zoom: 1;
 }
 
 *html.clearfix {
-    height: 1%;
+height: 1%;
 }
 
 .clearfix:after {
-    clear: both;
-    content: '/0821';
-    display: block;
-    font-size: 0;
-    line-height: 0;
-    visibility: hidden;
-    width: 0;
-    height: 0;
+clear: both;
+content: '/0821';
+display: block;
+font-size: 0;
+line-height: 0;
+visibility: hidden;
+width: 0;
+height: 0;
 }
 
 .clear {
-    clear: both;
-    display: block;
-    overflow: hidden;
-    visibility: hidden;
-    width: 0;
-    height: 0
+clear: both;
+display: block;
+overflow: hidden;
+visibility: hidden;
+width: 0;
+height: 0
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
 
 *{
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    font-family: 'Open Sans', sans-serif;
+box-sizing: border-box;
+padding: 0;
+margin: 0;
+font-family: 'Open Sans', sans-serif;
 }
 body{
-    line-height: 1.5;
+line-height: 1.5;
 }
 .card-wrapper{
-    max-width: 1100px;
-    margin: 0 auto;
+max-width: 1100px;
+margin: 0 auto;
 }
 img{
-    width: 100%;
-    display: block;
+width: 100%;
+display: block;
 }
 .img-display{
-    overflow: hidden;
+overflow: hidden;
 }
 .img-showcase{
-    display: flex;
-    width: 100%;
-    transition: all 0.5s ease;
+display: flex;
+width: 100%;
+transition: all 0.5s ease;
 }
 .img-showcase img{
-    min-width: 100%;
+min-width: 100%;
 }
 .img-select{
-    display: flex;
+display: flex;
 }
 .img-item{
-    margin: 0.3rem;
+margin: 0.3rem;
 }
 .img-item:nth-child(1),
 .img-item:nth-child(2),
 .img-item:nth-child(3){
-    margin-right: 0;
+margin-right: 0;
 }
 .img-item:hover{
-    opacity: 0.8;
+opacity: 0.8;
 }
 .product-content{
-    /* padding: 2rem 1rem; */
+/* padding: 2rem 1rem; */
 }
 .product-title{
-    font-size: 2rem;
-    text-transform: capitalize;
-    font-weight: 600;
-    position: relative;
-    color: #12263a;
-    margin: 1rem 0;
+font-size: 2rem;
+text-transform: capitalize;
+font-weight: 600;
+position: relative;
+color: #12263a;
+margin: 1rem 0;
 }
 .product-title::after{
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 4px;
-    width: 80px;
-    background: #12263a;
+content: "";
+position: absolute;
+left: 0;
+bottom: 0;
+height: 4px;
+width: 80px;
+background: #12263a;
 }
 .product-link{
-    text-decoration: none;
-    text-transform: uppercase;
-    font-weight: 400;
-    font-size: 0.9rem;
-    display: inline-block;
-    margin-bottom: 0.5rem;
-    background: #256eff;
-    color: #fff;
-    padding: 0 0.3rem;
-    transition: all 0.5s ease;
+text-decoration: none;
+text-transform: uppercase;
+font-weight: 400;
+font-size: 0.9rem;
+display: inline-block;
+margin-bottom: 0.5rem;
+background: #256eff;
+color: #fff;
+padding: 0 0.3rem;
+transition: all 0.5s ease;
 }
 .product-link:hover{
-    opacity: 0.9;
+opacity: 0.9;
 }
 .product-rating{
-    color: #ffc107;
+color: #ffc107;
 }
 .product-rating span{
-    font-weight: 600;
-    color: #252525;
+font-weight: 600;
+color: #252525;
 }
 .product-price{
-    margin: 1rem 0;
-    font-size: 1rem;
-    font-weight: 700;
+margin: 1rem 0;
+font-size: 1rem;
+font-weight: 700;
 }
 .product-price span{
-    font-weight: 400;
+font-weight: 400;
 }
 .last-price span{
-    color: #f64749;
-    text-decoration: line-through;
+color: #f64749;
+text-decoration: line-through;
 }
 .new-price span{
-    color: #256eff;
+color: #256eff;
 }
 .product-detail h2{
-    text-transform: capitalize;
-    color: #12263a;
-    padding-bottom: 0.6rem;
+text-transform: capitalize;
+color: #12263a;
+padding-bottom: 0.6rem;
 }
 .product-detail p{
-    font-size: 0.9rem;
-    padding: 0.3rem;
-    opacity: 0.8;
+font-size: 0.9rem;
+padding: 0.3rem;
+opacity: 0.8;
 }
 .product-detail ul{
-    margin: 1rem 0;
-    font-size: 0.9rem;
+margin: 1rem 0;
+font-size: 0.9rem;
 }
 .product-detail ul li{
-    margin: 0;
-    list-style: none;
-    background: url(https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/checked.png) left center no-repeat;
-    background-size: 18px;
-    padding-left: 1.7rem;
-    margin: 0.4rem 0;
-    font-weight: 600;
-    opacity: 0.9;
+margin: 0;
+list-style: none;
+background: url(https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/checked.png) left center no-repeat;
+background-size: 18px;
+padding-left: 1.7rem;
+margin: 0.4rem 0;
+font-weight: 600;
+opacity: 0.9;
 }
 .product-detail ul li span{
-    font-weight: 400;
+font-weight: 400;
 }
 .purchase-info{
-    margin: 1.5rem 0;
+margin: 1.5rem 0;
 }
 .purchase-info input,
 .purchase-info .btn{
-    border: 1.5px solid #ddd;
-    border-radius: 25px;
-    text-align: center;
-    padding: 0.45rem 0.8rem;
-    outline: 0;
-    margin-right: 0.2rem;
-    /* margin-bottom: 1rem; */
+border: 1.5px solid #ddd;
+border-radius: 25px;
+text-align: center;
+padding: 0.45rem 0.8rem;
+outline: 0;
+margin-right: 0.2rem;
+/* margin-bottom: 1rem; */
 }
 .purchase-info input{
-    width: 60px;
+width: 60px;
 }
 .purchase-info .btn{
-    cursor: pointer;
-    color: #fff;
+cursor: pointer;
+color: #fff;
 }
 .purchase-info .btn:first-of-type{
-    background: #256eff;
+background: #256eff;
 }
 .purchase-info .btn:last-of-type{
-    background: #f64749;
+background: #f64749;
 }
 .purchase-info .btn:hover{
-    opacity: 0.9;
+opacity: 0.9;
 }
 .social-links{
-    display: flex;
-    align-items: center;
+display: flex;
+align-items: center;
 }
 .social-links a{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    color: #000;
-    border: 1px solid #000;
-    margin: 0 0.2rem;
-    border-radius: 50%;
-    text-decoration: none;
-    font-size: 0.8rem;
-    transition: all 0.5s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 32px;
+height: 32px;
+color: #000;
+border: 1px solid #000;
+margin: 0 0.2rem;
+border-radius: 50%;
+text-decoration: none;
+font-size: 0.8rem;
+transition: all 0.5s ease;
 }
 .social-links a:hover{
-    background: #000;
-    border-color: transparent;
-    color: #fff;
+background: #000;
+border-color: transparent;
+color: #fff;
 }
 
 @media screen and (min-width: 992px){
-    .card{
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 1.5rem;
-    }
-    .card-wrapper{
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .product-imgs{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .product-content{
-        padding-top: 0;
-    }
+.card{
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+grid-gap: 1.5rem;
+}
+.card-wrapper{
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+.product-imgs{
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.product-content{
+padding-top: 0;
+}
 }
 
 embed{ /*for the damn thouder plugin*/
-    display: none;
+display: none;
 }
 
 /*********************************************/
 @media only screen and (max-width: 600px) {
 #mainimg{
-    display: flex;
+display: flex;
 }
-    #pim{
-    height: 100%;
-    width: 80%;
-    margin:auto;
+#pim{
+height: 100%;
+width: 80%;
+margin:auto;
 }
 #cont{
 visibility: visible !important;
 }
 
 
-    </style>
+
+</style>
+       
     
    
     <script type="text/javascript" src="src/jquery.picZoomer.js"></script>
@@ -549,18 +552,20 @@ window.addEventListener('resize', slideImage);
                                         <span class="mt-2" style="font-size: 15px;color:#4BB543 ;">product offer applied successfully</span>
                                         <%}%> 
                               </div>
-        <div class="images" style="display: flex;flex-direction: column;justify-content:center ;align-items: center;">
+        <div class="images border" style="display: flex;flex-direction: column;justify-content:center ;align-items: center;">
          
-          <div class="picZoomer" id="mainimg">
+          <div class="picZoomer  d-flex justify-content-center" id="mainimg">
            
-         <img  src="<%=result.mainImage%>" height="320px" width="320px" id="pim"/>
+         <img style="width:500px ;"  src="<%=result.mainImage%>"  id="pim"/>
          
         </div>
         <div class="subImages mt-3 border " style="display: flex;justify-content: center;align-items: center;width: 60%;" >
-            <img class="me-3" src="<%=result.mainImage%>" style="width: 15%;"" onclick="imageSelect(this)"/>
-            <%for(i of result.images){%>
-            <img class="me-3" src="<%=i%>" style="width: 15%;"" onclick="imageSelect(this)"/>
-            <%}%> </div>
+            <img class="me-3" src="<%=result.mainImage%>" style="width: 20%;" onclick="imageSelect(this)"/>
+            
+            <img class="me-3" src="<%=result.image1%>" style="width: 20%;"" onclick="imageSelect(this)"/>
+            <img class="me-3" src="<%=result.image2%>" style="width: 20%;"" onclick="imageSelect(this)"/>
+            <img class="me-3" src="<%=result.image3%>" style="width: 20%;"" onclick="imageSelect(this)"/>
+             </div>
     </div>
         <div class="d-flex">
                                
@@ -814,15 +819,20 @@ pid:id
   
       };
       $.fn.picZoomer.defaults = {
-          picWidth: 450,
-          picHeight: 550,
+          picWidth: "100%",
+          picHeight: "100%",
           scale:1.5,
           zoomerPosition: {top: '-10px', left: '735px'},
           
-          zoomWidth: 505,
-          zoomHeight: 600
+          zoomWidth:800,
+          zoomHeight:800
       };
   })(jQuery);
+  $("#infologin").click(()=>{
+    localStorage.setItem("url",location.href)
+    /* localStorage.setItem("pid",location.pathname) */
+  })
+
   $("#mainimg").mouseenter(()=>{
       $("#cont").css("visibility", "hidden");
   })
@@ -866,6 +876,6 @@ pid:id
     openIcon.classList.toggle("hidden");
     dropdown.classList.toggle("hidden");
     };
-    
+
     </script>
   

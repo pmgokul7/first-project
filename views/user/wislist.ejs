@@ -203,6 +203,7 @@
 <body>
 	
 	<%-include("../partials/userHeader.ejs")%><!-- Your content goes here -->
+	<%if(locals.r){%>
         <div class="container">
 
        
@@ -242,6 +243,13 @@
        
       </div>
 	  <%}%>
+	  <%}else{%>
+		<div class="logindiv container border d-flex flex-column justify-content-center align-items-center p-5 mt-5">
+			<h3>You should login to visit this page</h3>
+			
+
+		</div>
+		<%}%>
         </main>
 <script>
   /* Set rates + misc */

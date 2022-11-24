@@ -65,21 +65,25 @@ display: none;  }
                 </div>
                 <form action="/login" id="loginform" method="post">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                      <input class="mdl-textfield__input" type="text" id="sample3" name="mobile">
+                      <input  class="mdl-textfield__input" type="text" id="mob" name="mobile">
                       <label class="mdl-textfield__label" for="sample3">Mobile</label>
                     </div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input class="mdl-textfield__input" type="password" id="sample3" name="password">
                         <label class="mdl-textfield__label" for="sample3">Password</label>
                       </div>
+                      <input class="mdl-textfield__input" type="hidden" value="" id="hidden" name="hidden">
                       <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" value="login" id="loginbtn">
                   </form>
                   <h6 class="mt-2">or</h6> 
                   <a href="/login/otp-login">
                        <button class="btn btn-primary mt-2">Login using otp</button>
                   </a>    
-                  <a href="/register" class="mt-4">
+                  <a href="/user/register" class="mt-4">
                     New to steller? Create an account
+                  </a>
+                  <a href="/" class="mt-4">
+                   continue without login
                   </a>
                   <h6 class="mt-4 text-danger" ><%=msg%></h6>
                   <h6 class="mt-4 text-success"><%=msg2%></h6>
@@ -87,3 +91,9 @@ display: none;  }
             </div>
         </div>
     </body>
+    <script>
+        $(document).ready(()=>{
+           $("#hidden").val(localStorage.getItem("url"))
+           $('#mob').focus()
+        })
+    </script>

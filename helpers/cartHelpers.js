@@ -63,35 +63,43 @@ module.exports = {
     getCartProducts: (data) => {
 
         return new Promise(async (resolve, reject) => {
-            var cartItems = await db.get().collection(collectionNames.USER_CART).aggregate([
+            if(data.session.user){
+                var cartItems = await db.get().collection(collectionNames.USER_CART).aggregate([
 
-                {
-                    $match: {
-                        user: ObjectId(data.session.user._id)
-                    }
-                }, {
-                    $unwind: '$products'
-                }, {
-                    $lookup: {
-                        from: "Products",
-                        localField: "products.product",
-                        foreignField: "_id",
-                        as: "pro"
-                    }
-                }, {
-                    $project: {
-                        "products.product": 1,
-                        "products.count": 1,
-                        pro: {
-                            $arrayElemAt: ['$pro', 0]
+                    {
+                        $match: {
+                            user: ObjectId(data.session.user._id)
                         }
-
-
+                    }, {
+                        $unwind: '$products'
+                    }, {
+                        $lookup: {
+                            from: "Products",
+                            localField: "products.product",
+                            foreignField: "_id",
+                            as: "pro"
+                        }
+                    }, {
+                        $project: {
+                            "products.product": 1,
+                            "products.count": 1,
+                            pro: {
+                                $arrayElemAt: ['$pro', 0]
+                            }
+    
+    
+                        }
                     }
-                }
-            ]).toArray()
+                ]).toArray()
+                resolve(cartItems)
+                console.log("this");
+            }else{
+                resolve(null)
+             console.log("that");
+            }
+           
 
-            resolve(cartItems)
+            
 
         })
     },
@@ -197,86 +205,91 @@ module.exports = {
 
     getCartTotal:(data)=>{
         return new Promise(async(resolve,reject)=>{
-        db.get().collection("cart").aggregate([
-        {
-            $match: {
-                user: ObjectId(data.session.user._id)
-            }
-        },
-        {
-            $unwind: "$products"
-        },
-
-        {
-            $lookup: {
-                from: "Products",
-                localField: "products.product",
-                foreignField: "_id",
-                as: "pro"
-            }
-        },
-        {
-            $project: {
-                "products.product": 1,
-                "products.count": 1,
-                pro: {
-                    $arrayElemAt: ["$pro", 0]
-                }
-            }
-        }, {
-            $group: {
-                _id: null,
-                total: {
-                    $sum: {
-                        $multiply: ["$products.count", "$pro.offerprice"]
-                    }
-                }
-            }
-        },
-    ]).toArray().then((total) => {
-        db.get().collection("cart").aggregate([
-            {
-                $match: {
-                    user: ObjectId(data.session.user._id)
-                }
-            },
-            {
-                $unwind: "$products"
-            },
-
-            {
-                $lookup: {
-                    from: "Products",
-                    localField: "products.product",
-                    foreignField: "_id",
-                    as: "pro"
-                }
-            },
-            {
-                $project: {
-                    "products.product": 1,
-                    "products.count": 1,
-                    pro: {
-                        $arrayElemAt: ["$pro", 0]
-                    }
-                }
-            }, {
-                $project: {
-                    total: {
-                        $sum: {
-                            $multiply: ["$products.count", "$pro.offerprice"]
+            if(data.session.user){
+                db.get().collection("cart").aggregate([
+                    {
+                        $match: {
+                            user: ObjectId(data.session.user._id)
                         }
-                    }
-                }
-            },
-        ]).toArray().then((eachsum) => {
-            cartTotal = total;
-            console.log("this is total",total);
-            // res.send(total);
-            resolve({total})
-            console.log(eachsum);
-        });
-    });
+                    },
+                    {
+                        $unwind: "$products"
+                    },
+            
+                    {
+                        $lookup: {
+                            from: "Products",
+                            localField: "products.product",
+                            foreignField: "_id",
+                            as: "pro"
+                        }
+                    },
+                    {
+                        $project: {
+                            "products.product": 1,
+                            "products.count": 1,
+                            pro: {
+                                $arrayElemAt: ["$pro", 0]
+                            }
+                        }
+                    }, {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $sum: {
+                                    $multiply: ["$products.count", "$pro.offerprice"]
+                                }
+                            }
+                        }
+                    },
+                ]).toArray().then((total) => {
+                    db.get().collection("cart").aggregate([
+                        {
+                            $match: {
+                                user: ObjectId(data.session.user._id)
+                            }
+                        },
+                        {
+                            $unwind: "$products"
+                        },
+            
+                        {
+                            $lookup: {
+                                from: "Products",
+                                localField: "products.product",
+                                foreignField: "_id",
+                                as: "pro"
+                            }
+                        },
+                        {
+                            $project: {
+                                "products.product": 1,
+                                "products.count": 1,
+                                pro: {
+                                    $arrayElemAt: ["$pro", 0]
+                                }
+                            }
+                        }, {
+                            $project: {
+                                total: {
+                                    $sum: {
+                                        $multiply: ["$products.count", "$pro.offerprice"]
+                                    }
+                                }
+                            }
+                        },
+                    ]).toArray().then((eachsum) => {
+                        cartTotal = total;
+                        console.log("this is total",total);
+                        // res.send(total);
+                        resolve({total})
+                        console.log(eachsum);
+                    });
+                });
+            }
+                // resolve({status:false})
+            
+        
         })
     }
 

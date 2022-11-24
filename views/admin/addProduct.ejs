@@ -123,7 +123,7 @@
                                  Image
                               </label>
                                   
-                                  <input type="file" required id="id_image2" name="image" accept="image/*" class="" onchange="viewImage2(event)"
+                                  <input type="file" required id="id_image2" name="image1" accept="image/*" class="" onchange="viewImage2(event)"
                                   style="width:100%;"><br>
                                 <img src="" id="imgView2" alt="" class="clr" style="height:100px">
                                
@@ -140,7 +140,7 @@
                                 <label for="productimage" class="">
                                   Image
                                 </label>
-                                <input type="file" id="id_image3" required name="image" accept="image/*"  onchange="viewImage3(event)"
+                                <input type="file" id="id_image3" required name="image2" accept="image/*"  onchange="viewImage3(event)"
                                 style="width:100%;"><br>
                               <img src="" id="imgView3" class="clr" alt="" style="height:100px">
                              
@@ -157,7 +157,7 @@
                               <label for="productimage" class="">
                                 Image
                               </label>
-                              <input type="file" id="id_image4" required name="image" accept="image/*"  onchange="viewImage4(event)"
+                              <input type="file" id="id_image4" required name="image3" accept="image/*"  onchange="viewImage4(event)"
                               style="width:100%;"><br>
                             <img src="" id="imgView4" class="clr" alt="" style="height:100px">
                            
@@ -240,12 +240,12 @@ document.getElementById('imgView1').style.display = 'block'
 const cropper1 = new Cropper(image1, {
   autoCropArea: 1,
   viewMode: 1,
-  scalable: false,
-  zoomable: false,
+  scalable: true,
+  zoomable: true,
   movable: false,
   minCropBoxWidth: 50,
   minCropBoxHeight: 50,
-  aspectRatio: 1 / 1,
+  // aspectRatio: 1 / 2 ,
 
 })
 // When crop button is clicked this event will get triggered

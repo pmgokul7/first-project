@@ -8,7 +8,7 @@ const moment = require("moment");
 const adminHelpers = require("../../helpers/adminHelpers");
 const couponHelpers = require("../../helpers/couponHelpers");
 const flash = require("connect-flash");
-
+const categoryHelper=require("../../helpers/admin/categoryHelpers")
 const productHelpers=require("../../helpers/admin/productHelpers");
 
 const userHelpers = require("../../helpers/admin/userHelpers");
@@ -148,49 +148,24 @@ route.get("/products/add", (req, res) => {
 });
 
 route.get("/users", async(req, res) => {
-const result=userHelpers.getAllUsers(req)
-res.render("admin/userlist", {users:result.users,count:result.count});
-  // const page = req.query.p || 0;
-  // const dataperpage = 10;
-  // con
-  //   .get()
-  //   .collection("user")
-  //   .aggregate([
-  //     { $match: {} },
-  //     { $skip: page * dataperpage },
-  //     { $limit: dataperpage },
-  //   ])
-  //   .toArray()
-  //   .then((result) => {
-  //     con
-  //       .get()
-  //       .collection("user")
-  //       .countDocuments((count) => {
-  //         res.render("admin/userlist", { result, count });
-  //       });
-  //   });
+const result=await userHelpers.getAllUsers(req)
+res.render("admin/userlist", {result:result.users,count:result.count});
 });
 
-route.get("/users/edit", (req, res) => {
-  con
-    .get()
-    .collection("user")
-    .findOne({ _id: ObjectId(req.query.id) })
-    .then((result) => {
-      res.render("admin/edituser", { result });
-    });
-});
+// route.get("/users/edit", (req, res) => {
+//   con
+//     .get()
+//     .collection("user")
+//     .findOne({ _id: ObjectId(req.query.id) })
+//     .then((result) => {
+//       res.render("admin/edituser", { result });
+//     });
+// });
 
 route.get("/users/delete",async (req, res) => {
  await userHelpers.userDelete(req)
   res.redirect("/admin/users");
-  // con
-  //   .get()
-  //   .collection("user")
-  //   .deleteOne({ _id: ObjectId(req.query.id) })
-  //   .then(() => {
-  //     res.redirect("/admin/users");
-  //   });
+ 
 });
 
 route.get("/products/edit", (req, res) => {
@@ -346,46 +321,31 @@ route.get("/editcat", (req, res) => {
     });
 });
 
-route.post("/addcat", (req, res) => {
-  con
-    .get()
-    .collection("cat")
-    .findOne({ name: req.body.newcat.toUpperCase() })
-    .then((category) => {
-      console.log(category);
-      if (category ) {
-        req.flash("info", "Category already exists!!");
-        res.redirect("/admin/categories");
-      }else if(req.body.newcat == ""){
-        req.flash("info", "Make sure you entered something!");
-        res.redirect("/admin/categories");
-      } else {
-        con
-          .get()
-          .collection("cat")
-          .insertOne({ name: req.body.newcat.toUpperCase(), offer: 0 })
-          .then(() => {
-           
-            res.redirect("/admin/categories");
-          });
-      }
-    });
+route.post("/addcat",async (req, res) => {
+const result=await categoryHelper.addCategory(req)
+if(result.inserted){
+  res.redirect("/admin/categories");
+}
+else if(result.alreadyExist){
+  req.flash("info", "Category already exists!!");
+  res.redirect("/admin/categories");
+}
+else if(result.empty){
+  req.flash("info", "Make sure you entered something!");
+  res.redirect("/admin/categories");
+}
 });
-route.post("/editcat", (req, res) => {
-  if(req.body.newcat==""){
+
+route.post("/editcat", async(req, res) => {
+  const result=await categoryHelper.editCategory(req)
+  if(result.empty){
     req.flash("info", "Make sure you entered something!");
     res.redirect("/admin/categories")
+  }else if(result.updated){
+    res.redirect("/admin/categories");
+
   }
-  con
-    .get()
-    .collection("cat")
-    .updateOne(
-      { _id: ObjectId(req.query.id) },
-      { $set: { name: req.body.newcat } }
-    )
-    .then(() => {
-      res.redirect("/admin/categories");
-    });
+  
 });
 
 route.get("/sub-categories", (req, res) => {
