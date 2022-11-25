@@ -3,7 +3,6 @@ const express = require("express");
 const { ObjectId } = require("mongodb");
 const route = express.Router();
 const con = require("../../config/connection");
-const helper = require("../../helpers/adminHelpers");
 const moment = require("moment");
 const adminHelpers = require("../../helpers/adminHelpers");
 const couponHelpers = require("../../helpers/couponHelpers");
@@ -119,10 +118,11 @@ res.render("admin/productslist", { result:result });
   
 });
 
-route.get("/products/delete", (req, res) => {
+route.post("/products/delete", (req, res) => {
   productHelpers.deleteProduct(req).then((result) => {
     if (result.productDeleted == true) {
-      res.redirect("/admin/products");
+      res.send(result.productDeleted)
+      // res.redirect("/admin/products");
     }
   });
 });

@@ -49,6 +49,25 @@ module.exports = {
                         }
                     }
                 },])
+                resolve({delete:true})
         })
-    }
+    },addressAdd: (data) => {
+        return new Promise((resolve, reject) => {
+          
+          if(data.body.name==""||data.body.address1==""||data.body.address1==""||data.body.post==""||data.body.pin==""||data.body.mobile==""){
+            resolve({empty:true})
+          }else{
+      db.get()
+            .collection("user")
+            .updateOne(
+              { _id:  ObjectId(data.session.user._id) },
+              { $addToSet: { address: data.body } }
+            )
+            .then((s) => {
+              resolve({ add: true });
+            });
+          }
+          console.log(data.body);
+        });
+      }
 }

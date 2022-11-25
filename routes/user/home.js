@@ -47,10 +47,12 @@ route.get("/cart", async (req, res) => {
 route.get("/", async (req, res) => {
     var result = await con.get().collection("Products").find({isDeleted:false}).toArray()
     var categories = await con.get().collection("categories").find().toArray()
+    // var wishlist=await con.get().collection("wishlist").findOne({user:ObjectId(req.session.user._id)})
     res.render("user/userHome", {
         user: req.session.user,
         result,
-        categories
+        categories,
+        // wishlist
     });
 
 
@@ -134,13 +136,13 @@ route.get("/orders", async (req, res) => {
 // });
 
 
-// route.post("/addaddress/:id", (req, res) => {
-//     console.log("add address called");
-//     helper.addressAdd(req).then((result) => {
-//         res.send(result);
-//         console.log("added address");
-//     });
-// });
+route.post("/addaddress/:id", (req, res) => {
+    console.log("add address called");
+    addressHelpers.addressAdd(req).then((result) => {
+        res.send(result);
+        console.log("added address");
+    });
+});
 
 // route.post("/orderconfirm", (req, res) => {
 //     helper.confirmCODOrder(req).then((result) => {
@@ -158,6 +160,7 @@ route.get("/orders", async (req, res) => {
 // remove from cart
 
 route.post("/info/removefromcart", async (req, res) => {
+    console.log("called",req.body);
     var result = await cartHelpers.removeFromCart(req)
     res.send({result});
 });
@@ -368,7 +371,8 @@ route.post("/varifypayment", async (req, res) => {
 
 });
 route.get("/cartSuccess", async (req, res) => {
-    await paymentHelper.paypalPaymentsuccess(req)
+   const result= await paymentHelper.paypalPaymentsuccess(req)
+   console.log(result);
     res.render("user/success", {user: req.session.user});
     // con.get().collection("orders").updateOne({
     //     _id: ObjectId(cartpaypalid)
@@ -417,7 +421,8 @@ route.get("/cartSuccess", async (req, res) => {
 
 route.post("/gettotal", async (req, res) => {
     var result = await cartHelpers.getCartTotal(req)
-    if(result){
+    console.log(result);
+    if(result.total.length!=0){
         res.send({total: result.total[0].total})
     }
     

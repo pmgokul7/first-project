@@ -148,7 +148,7 @@ font-family: "Microsoft YaHei",微软雅黑,Helvetica, Arial, sans-serif;
 /*font-family: tahoma,arial,\5b8b\4f53,sans-serif;*/
 }
 input:required, input:invalid{
-border:0 none; 
+border:1 none; 
 outline: 0 none; 
 -webkit-box-shadow:none; 
 -moz-box-shadow:none; 
@@ -448,6 +448,7 @@ margin:auto;
 }
 #cont{
 visibility: visible !important;
+/* max-height:50vh; */
 }
 
 
@@ -504,7 +505,7 @@ window.addEventListener('resize', slideImage);
                   <div class="flex flex-col justify-start items-start w-full space-y-9">
                       
           
-                      <div class="flex flex-col xl:flex-row justify-center xl:justify-between space-y-6 xl:space-y-0 xl:space-x-6 w-full">
+                      <div class="flex flex-col xl:flex-row justify-center xl:justify-between space-y-6 xl:space-y-0 xl:space-x-6 w-full" >
                           <div class="   flex flex-col sm:flex-row xl:flex-col  items-center bg-white border-1 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full">
                               <div class="flex flex-col justify-start items-start w-full space-y-4">
                                 <div class="DIV d-flex  w-100 justify-content-between" >
@@ -544,12 +545,12 @@ window.addEventListener('resize', slideImage);
 
 
                                 <%if(result.price==result.offerprice){%>
-                                  <h1 class="text-4xl"> ₹ <%=result.price%></h1>
+                                  <h1 class=""> ₹ <%=result.price%></h1>
                                   <%}else{%>
-                                    <h1 class="text-4xl"> ₹ <%=result.offerprice%> <br><h3><strike>₹<%=result.price%></strike></h3></h1>
+                                    <h1 class="4xl"> ₹ <%=result.offerprice%> <br><h3><strike>₹<%=result.price%></strike></h3></h1>
                                     <%}%>
                                     <%if(result.price!=result.offerprice){%>
-                                        <span class="mt-2" style="font-size: 15px;color:#4BB543 ;">product offer applied successfully</span>
+                                        <span class="mt-2 mb-2" style="font-size: 15px;color:#4BB543 ;">product offer applied successfully</span>
                                         <%}%> 
                               </div>
         <div class="images border" style="display: flex;flex-direction: column;justify-content:center ;align-items: center;">
@@ -572,8 +573,8 @@ window.addEventListener('resize', slideImage);
         </div>  
        
         </div>
-        <div id="cont" class="p-8 bg-gray-100 dark:bg-gray-800 flex flex-col lg:w-full xl:w-3/5 d-flex flex-column justify-content-between">
-          <div class="detials">
+        <div id="cont" class="p-8 bg-gray-100 dark:bg-gray-800 flex flex-col lg:w-full xl:w-3/5 d-flex flex-column justify-content-evenly" style="height: 750px;">
+          <div class="detials d-flex flex-column">
               <h1 class="text-2xl mb-4"><%=result.model%></h1>
 
 

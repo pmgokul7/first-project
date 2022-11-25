@@ -35,7 +35,7 @@
 				</td>
 				<td id="<%=result[i].pro._id%>a">₹<%=result[i].pro.offerprice * result[i].products.count%></td>
 				<td>
-					<a href="/home/removeFromCart/<%=result[i].products.product%>" class="btn btn-danger">remove</a>
+					<a  onclick="removeFromCart('<%=result[i].products.product%>',this)" class="btn btn-danger">remove</a>
 				</td>
 			  </tr>
 			  <%}%>	
@@ -69,6 +69,42 @@
 
 
 	<script>
+		function removeFromCart(id,x){
+			swal({
+  title: "Are you sure?",
+  
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+  
+})
+.then((willDelete) => {
+  if (willDelete) {
+	$.post("/home/info/removeFromCart",{
+				id
+			},(response)=>{
+				console.log(response);
+               if(response.result.removedfromcart){
+                 
+	 swal( {
+		title:"Product removed from cart",
+      icon: "success",
+	  buttons: true,
+	  closeOnClickOutside:false
+    }).then(result=>{
+		location.reload()
+	})
+	
+			   }
+			})
+   
+  } 
+});
+
+
+
+			
+		}
 		function applybtn(){
   const codevalue=$("#codeinput2").val()
   $.post("/home/couponcheck",{

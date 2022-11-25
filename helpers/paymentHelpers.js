@@ -14,6 +14,11 @@ module.exports = {
     
     paymentHelper: (data) => {
         return new Promise(async (resolve, reject) => {
+            if(cartTotal[0].total * data.body.discount/100 > 10000){
+                discount=10000
+            }else{
+                discount=cartTotal[0].total * data.body.discount/100
+            }
             var user = await db.get().collection(collectionNames.USER_COLLECTION).findOne({
                 _id: ObjectId(data.session.user._id)
             });
@@ -24,7 +29,7 @@ module.exports = {
                 walletbalanc = 0;
             }
             address = JSON.parse(data.body.address);
-            total = cartTotal[0].total -(cartTotal[0].total * data.body.discount) / 100;
+            total = cartTotal[0].total -discount
             if (data.body.payment == "paypal") {
                 console.log("bodyy:", data.body);
                 console.log("this is carttotal", cartTotal[0].total);
@@ -123,16 +128,16 @@ module.exports = {
                     total: Math.ceil(total - walletbalanc < 0 ? 0 : total - walletbalanc)
                 })
                 console.log("kjhgfdfghjkl;", r);
-                razorid = r.insertedId;
-                db.get().collection(collectionNames.ORDERS_COLLECTION).updateOne({
-                    _id: razorid
-                }, {
-                    $set: {
-                        status: "pending",
-                        paymentstatus: "pending",
-                        "product.$[].status": "pending"
-                    }
-                })
+                // razorid = r.insertedId;
+                // db.get().collection(collectionNames.ORDERS_COLLECTION).updateOne({
+                //     _id: razorid
+                // }, {
+                //     $set: {
+                //         status: "pending",
+                //         paymentstatus: "pending",
+                //         "product.$[].status": "pending"
+                //     }
+                // })
 
 
                 var options = {
@@ -286,8 +291,10 @@ module.exports = {
                     products: []
                 }
             }).then((r) => {
+                
                 console.log("after cart empty", r);
                 console.log("cart is empty");
+                resolve({paypal:true})
             });
             
           })
@@ -301,8 +308,16 @@ module.exports = {
         
     COD:(data)=>{
             return new Promise(async(resolve,reject)=>{
-//   console.log("this is order cod body", data.body);
-    var total = cartTotal[0].total -(cartTotal[0].total * data.body.discount) / 100;
+                if((cartTotal[0].total * data.body.discount) / 100 > 10000){
+
+                    var discountAmount=10000
+                }
+                else{
+                  var discountAmount=(cartTotal[0].total * data.body.discount) / 100;
+                }
+                console.log("this is discount amount:",discountAmount);
+  
+    var total = cartTotal[0].total -discountAmount;
     var user = await db.get().collection(collectionNames.USER_COLLECTION).findOne({
         _id: ObjectId(data.session.user._id)
     });
@@ -399,7 +414,7 @@ module.exports = {
 
           payFromWallet:(data)=>{
             return new promise(async(resolve,reject)=>{
-                var total = cartTotal[0].total -(cartTotal[0].total * data.body.discount) / 100;
+                var total = cartTotal[0].total -discount;
                 var user = await db.get().collection(collectionNames.USER_COLLECTION).findOne({
                     _id: ObjectId(data.session.user._id)
                 });
@@ -434,6 +449,15 @@ module.exports = {
                     quantity: 1,
                     total: total
                 })
+                db.get().collection(collectionNames.PRODUCT_COLLECTION).updateOne({
+                    _id: ObjectId(prod.product)
+                }, {
+                    $inc: {
+                        stock: -prod.count
+                    }
+                }).then(() => {
+                    console.log("wallet quantity changed");
+                });
                 insId = inserted.insertedId;
                 await db.get().collection(collectionNames.USER_CART).updateOne({
                     user: ObjectId(data.session.user._id)

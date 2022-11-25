@@ -5,8 +5,9 @@ const collectionNames = require("../config/collectionNames")
 
 module.exports = {
     removeFromCart: (data) => {
+        console.log("called",data.body);
         return new Promise(async (resolve, reject) => {
-            await db.get().collection(collectionNames.USER_CART).updateOne({
+           r= await db.get().collection(collectionNames.USER_CART).updateOne({
                 user: ObjectId(data.session.user._id)
             }, {
                 $pull: {
@@ -15,6 +16,7 @@ module.exports = {
                     }
                 }
             })
+            console.log(r);
             resolve({removedfromcart: true});
 
         });

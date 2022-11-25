@@ -97,7 +97,7 @@ app.post("/admin/products/add", upload.any("myImage"), async (req, res, next) =>
         category: req.body.category,
         stock: parseInt(req.body.stock),
         price: parseInt(req.body.price),
-        offerprice: parseInt(req.body.price),
+        offerprice: parseInt(req.body.offerprice),
         rating: parseInt(req.body.rating),
         color: req.body.color,
         OS: req.body.OS,

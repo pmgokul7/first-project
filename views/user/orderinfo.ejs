@@ -187,7 +187,7 @@
 
     <div class="container">
 
-        <table class="table">
+        <table class="table     table-responsive">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -232,19 +232,12 @@
                             </td>
 
                         <%}%>
-                        <%if(locals.discount){%>
-
-                            <strike>
-                                <h6>₹<%=order[i].product.count*order[i].pp[0].price%></h6>
-                            </strike>
-                            <h4>₹<%=Math.ceil(order[i].product.count*order[i].pp[0].offerprice - order[i].product.count*order[i].pp[0].offerprice*discount/100 - order[i].walletAmount)%></h4>
-                        </td>
-                    <%}else{%>
+                       
                         <td>
                             <%if(order[i].pp[0].offerprice!=order[i].pp[0].price){%>
                                 <h6>
                                     <strike>₹<%=order[i].product.count*order[i].pp[0].price%></strike>
-                                </h6>
+                                </h6><br>
                             <%}%>
                             <h4>₹<%=order[i].product.count*order[i].pp[0].offerprice-order[i].walletAmount%></h4>
                         </td>
@@ -266,7 +259,7 @@
                                 <button onclick="cancelfromcart('<%=order[i].product.product%>','<%=order[i].product.count%>','<%=order[i].date%>','<%=order[i].product.status%>','<%=order[i]._id%>','<%=order[i].discount%>','<%=order[i].total + order[i].walletAmount%>','<%=order[i].pp[0].model%>','<%=order[i].method%>')" class="btn btn-danger">cancel order</button>
                             </td>
                         <%}%>
-                    <%}%>
+               
                 </tr>
             <%}%>
 
@@ -274,9 +267,13 @@
             <hr></tbody>
         </table>
         <br>
-            <div class="info-total float-end mt-3">
-                <h3>Total:₹
-                    <%=order[0].total%></h3>
+            <div class="info-total d-flex flex-column float-end mt-3">
+                <h5>total:<%=Math.ceil(order[0].total - order[0].discount)%></h5>
+
+               <h5> discount:<%=order[0].discount%>%</h5>
+               <br>
+                <h3>Grand Total: 
+                    ₹<%=Math.ceil(order[0].total)%></h3>
                 <a href="/home/orders">Go to orders</a>
             </div>
 

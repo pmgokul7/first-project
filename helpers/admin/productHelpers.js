@@ -27,7 +27,7 @@ module.exports={
         return new Promise((resolve, reject) => {
             db.get()
               .collection("Products")
-              .updateOne({ _id:  ObjectId(data.query.id) },{$set:{isDeleted:true}})
+              .updateOne({ _id:  ObjectId(data.body.id) },{$set:{isDeleted:true}})
               .then(() => {
                 resolve({ productDeleted: true });
               });

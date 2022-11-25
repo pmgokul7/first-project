@@ -1,7 +1,10 @@
 <%-include("../partials/top.ejs")%>
 
-<link rel="stylesheet" href="css/myaddress.css">
+<!-- <link rel="stylesheet" href="css/myaddress.css"> -->
 <style>
+  .profile::-webkit-scrollbar{
+    display: none;
+  }
     a{
         text-decoration: none;
         color: #050305;
@@ -143,7 +146,7 @@ li{
 <%-include("../partials/userHeader.ejs")%>
       <!-- Your content goes here -->
             <div class="container rounded bg-white mt-5 mb-5">
-                <div class="row">
+                <div class="d-flex" style="border: 2px solid grey;justify-content: space-around;">
                     <div class="col-md-3 border-right d-flex">
                         <d class="d-flex flex-column  align-items-center text-center p-3 py-5">
                             <img class="rounded-circle d-flex flex-column" width="50px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
@@ -165,10 +168,10 @@ li{
 
                     </div>
                     
-                      <div class="profile " style="height:700px ;overflow-y: scroll";>
+                      <div class="profile p-2" style="height:500px ;overflow-y: scroll;width:50%;">
                         <div class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add new address</div>
                         <%for(i=0;i<=user.address.length-1;i++){%>
-                        <div class="address-single p-3 mb-2 d-flex" style="box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;" >
+                        <div class="address-single p-3 mb-2 d-flex" style="box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;width: 50%;" >
                           <div class="left w-75">
                             <h5><%=user.address[i].name%></h5>
                             <h5><%=user.address[i].address1%></h5>

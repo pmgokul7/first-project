@@ -175,7 +175,7 @@
                                 
                                 Sincerely,
                                 
-                                Gokul</p>
+                                Team Steller</p>
                         </div>
 
                     </div>
@@ -193,10 +193,13 @@
                     <h2 class="mb-4">New Arrivals</h2>
                     <div class="row">
                         <%for(i=0;i<=result.length-1;i++){%>
-                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 margin">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 margin  position-relative">
+                           
+                            
                             <div class="brand_box">
+                                
                                 <img src="<%=result[i].mainImage%>" alt="img"/>
-                                <h3>$<strong class="red"><%=result[i].offerprice%></strong>
+                                <h3>₹<strong class="red"><%=result[i].offerprice%></strong>
                                    
                                 </h3>
                                 <span><%=result[i].model%></span>
@@ -354,8 +357,16 @@ function sendMail(){
     name,
     msg
    },(res)=>{
+    
     if(res){
+        
         swal("your message send successfully")
+       
+        $('textarea[name="Msg"]').val(" ")
+        $('input[name="Name"]').val(" ")
+        $('input[name="Phone"]').val(" ")
+        $('input[name="Email"]').val(" ")
+        $("#sendmail").prop("disabled",true)
     }
    })
     
