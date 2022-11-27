@@ -5,24 +5,14 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const path = require("path");
 const connection = require("./config/connection");
-const cloudinary = require("cloudinary").v2;
 const session = require("express-session");
 const flash = require("connect-flash");
 
 
-const loginHelper = require("./helpers/LoginHelpers")
-// const otpgen = require("otp-generators");
-const client = require("twilio")("AC310ba1f6e25df76fe77562d899355658", "f181af19d88019bab6b437c2aaa7ef68");
-
 const helper = require("./helpers/LoginHelpers");
-// const paypal = require("paypal-rest-sdk");
+
 const Razorpay = require("razorpay");
 
-// paypal.configure({
-//     mode: "sandbox", // sandbox or live
-//     client_id: "ASRe872F9Xekn-YKrsWB65y1Y1OirSehIBbNFus5fIkbxrGwWuB2RGB6PAsqjrtXYyduNrH_UHRNaleD",
-//     client_secret: "EI0jsPvICu1X9i4_M65S7KYSqy1Y8EdPngbr6rUUI3Qpcsohp5f9dHJRiuuNhMt_USFXUfgmxqeYIH2z"
-// });
 
 instance = new Razorpay({key_id: "rzp_test_kwZGFuI0hWeY2V", key_secret: "b4PuKMMLTh2w0HRjNrKe36Ax"});
 
@@ -31,7 +21,6 @@ const userRoute = require("./routes/user/user")
 const adminRoute = require("./routes/user/admin");
 const loginRoute = require("./routes/user/login");
 const {ObjectId} = require("mongodb");
-const buyProducts = require("./helpers/buyProducts");
 
 // cloudinary.config({cloud_name: process.env.CLOUD_NAME, api_key: process.env.CLOUD_API_KEY, api_secret:process.env.CLOUD_API_SECRET});
 connection.cloudinaryConfig()
@@ -44,8 +33,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 const app = express();
-// connection.mail()
-app.use(express.static('assets'))
+app.use(express.static(path.join(__dirname, '/assets')));
 app.use(session({
     secret: "key",
     saveUninitialized: false,
@@ -54,15 +42,14 @@ app.use(session({
     }
 }));
 app.use(function (req, res, next) {
-    console.log("stw", req.user);
     if (req.session.user) {
-        res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
-        res.header("Expires", "-1");
-        res.header("Pragma", "no-cache");
-        console.log("done");
+        res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
+        res.setHeader("Expires", "-1");
+        res.setHeader("Pragma", "no-cache");
+        next()
     } else {
-        console.log(process.env.CLOUD_NAME);
-    } next();
+        next()
+    }
 });
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(flash());
@@ -76,19 +63,9 @@ app.use("/admin", adminRoute);
 app.use("/login", loginRoute);
 app.use("/user", userRoute);
 
-// async function uploadToCloudinary(locaFilePath) {
-//     var mainFolder = "main";
-//     var filePathOnCloudinary = mainFolder + "/" + locaFilePath;
-//     return cloudinary.uploader.upload(locaFilePath, {public_id: filePathOnCloudinary}).then((result) => {
-//         return {message: "done", url: result.url};
-//     });
-// }
-
 
 app.post("/admin/products/add", upload.any("myImage"), async (req, res, next) => {
 
-    console.log(req.files);
-    console.log(req.files.length);
     const response = await connection.get().collection("Products").insertOne({
         model: req.body.model,
         brand: req.body.brand,
@@ -107,100 +84,64 @@ app.post("/admin/products/add", upload.any("myImage"), async (req, res, next) =>
         added: new Date()
 
     })
-    console.log("details updated");
     globalid = response.insertedId;
 
     // for ( i = 0; i < req.files.length; i++) {
     req.files.map(async (file) => {
-        if (file.fieldname == "mainImage") {
-            var locaFilePath = file.path;
-            const r = await connection.uploadToCloudinary(locaFilePath)
-            await connection.get().collection("Products").updateOne({
-                _id: globalid
-            }, {
-                $set: {
-                    mainImage: r.url
-                }
-            })
-            console.log("main pushed");
+        switch (file.fieldname) {
+            case "mainImage":
+                var locaFilePath = file.path;
+                const r = await connection.uploadToCloudinary(locaFilePath)
+                await connection.get().collection("Products").updateOne({
+                    _id: globalid
+                }, {
+                    $set: {
+                        mainImage: r.url
+                    }
+                })
+                break;
 
+            case "image1":
+                var locaFilePath = file.path;
+                const images = await connection.uploadToCloudinary(locaFilePath)
+                await connection.get().collection("Products").updateOne({
+                    _id: globalid
+                }, {
+                    $set: {
+                        image1: images.url
+                    }
+                })
+                break;
+            case "image2":
+                var locaFilePath = file.path;
+                var images2 = await connection.uploadToCloudinary(locaFilePath)
+                await connection.get().collection("Products").updateOne({
+                    _id: globalid
+                }, {
+                    $set: {
+                        image2: images2.url
+                    }
+                })
+                console.log(images2.url);
 
-        } else if (file.fieldname == "image1") {
+                break;
+            case "image3":
+                var locaFilePath = file.path;
+                var images3 = await connection.uploadToCloudinary(locaFilePath)
+                await connection.get().collection("Products").updateOne({
+                    _id: globalid
+                }, {
+                    $set: {
+                        image3: images3.url
+                    }
+                })
+                break;
 
-            var locaFilePath = file.path;
-            const images = await connection.uploadToCloudinary(locaFilePath)
-            await connection.get().collection("Products").updateOne({
-                _id: globalid
-            }, {
-                $set: {
-                    image1: images.url
-                }
-            })
-            // console.log(i, ":sub pushed");
-            console.log(images.url);
-
-
-        }else if(file.fieldname == "image2") {
-            var locaFilePath = file.path;
-            const images = await connection.uploadToCloudinary(locaFilePath)
-            await connection.get().collection("Products").updateOne({
-                _id: globalid
-            }, {
-                $set: {
-                    image2: images.url
-                }
-            })
-            // console.log(i, ":sub pushed");
-            console.log(images.url);
-        }else if(file.fieldname == "image3") {
-            var locaFilePath = file.path;
-            const images = await connection.uploadToCloudinary(locaFilePath)
-            await connection.get().collection("Products").updateOne({
-                _id: globalid
-            }, {
-                $set: {
-                    image3: images.url
-                }
-            })
-            // console.log(i, ":sub pushed");
-            console.log(images.url);
         }
+
+
     })
     res.redirect("/admin/products")
-
-
-    // console.log("this is files",i);
-    // if (req.files[i].fieldname == "mainImage") {
-    //     var locaFilePath = req.files[i].path;
-    // const r= await connection.uploadToCloudinary(locaFilePath)
-    //        await connection.get().collection("Products").updateOne({
-    //             _id: globalid
-    //         }, {
-    //             $set: {
-    //                 mainImage: r.url
-    //             }
-    //         })
-    //         console.log("main pushed");
-
-
-    // }
-    //      else{
-
-    //         var locaFilePath = req.files[i].path;
-    //         const images=await connection.uploadToCloudinary(locaFilePath)
-    //           await connection.get().collection("Products").updateOne({
-    //                 _id: globalid
-    //             }, {
-    //                 $set: {
-    //                     sub1:{ image: images.url}
-    //                 }
-    //             })
-    //                 console.log(i,":sub pushed");
-    //                 console.log(images.url);
-
-
-    // }
-    // }
 
 
 });
@@ -228,10 +169,6 @@ app.post("/adminlogin", (req, res) => {
 
 });
 
-app.get("/logout", (req, res) => {
-    req.session.destroy();
-    res.redirect("/home");
-});
 
 app.get("/", (req, res) => {
 
@@ -242,7 +179,6 @@ app.get("/", (req, res) => {
 app.post("/otp-auth", (req, res) => {
     if (req.body.mobile === otp) {
         req.session.user = ress;
-        console.log("this workrd");
         res.redirect("/");
     } else {
         req.flash("info", "ivalid otp!retry");
@@ -251,7 +187,6 @@ app.post("/otp-auth", (req, res) => {
 });
 
 app.post("/admin/products/edit", upload.any("myImage"), async (req, res) => {
-    console.log("files", req.files);
     const ns = await connection.get().collection("Products").updateOne({
         _id: new ObjectId(req.query.id)
     }, {
@@ -271,21 +206,17 @@ app.post("/admin/products/edit", upload.any("myImage"), async (req, res) => {
         }
     })
     insertedID = ns
-    console.log("ooo", ns);
-    req.files.map(async file=>{
-        console.log("this is file",file);
+    req.files.map(async file => {
         if (file.fieldname == "mainImage") {
-            console.log("main detected",ns);
             var locaFilePath = file.path;
             const r = await connection.uploadToCloudinary(locaFilePath)
             await connection.get().collection("Products").updateOne({
-                _id:  new ObjectId(req.query.id)
+                _id: new ObjectId(req.query.id)
             }, {
                 $set: {
                     mainImage: r.url
                 }
             })
-            console.log("main pushed");
 
 
         } else if (file.fieldname == "image1") {
@@ -299,11 +230,9 @@ app.post("/admin/products/edit", upload.any("myImage"), async (req, res) => {
                     image1: images.url
                 }
             })
-            // console.log(i, ":sub pushed");
-            console.log(images.url);
 
 
-        }else if(file.fieldname == "image2") {
+        } else if (file.fieldname == "image2") {
             var locaFilePath = file.path;
             const images = await connection.uploadToCloudinary(locaFilePath)
             await connection.get().collection("Products").updateOne({
@@ -313,12 +242,9 @@ app.post("/admin/products/edit", upload.any("myImage"), async (req, res) => {
                     image2: images.url
                 }
             })
-            // console.log(i, ":sub pushed");
-            console.log(images.url);
-        }else if(file.fieldname == "image3") {
+        } else if (file.fieldname == "image3") {
             var locaFilePath = file.path;
             const images = await connection.uploadToCloudinary(locaFilePath)
-            console.log("url",images.url);
             await connection.get().collection("Products").updateOne({
                 _id: new ObjectId(req.query.id)
             }, {
@@ -326,58 +252,14 @@ app.post("/admin/products/edit", upload.any("myImage"), async (req, res) => {
                     image3: images.url
                 }
             })
-            // console.log(i, ":sub pushed");
-            console.log(images.url);
         }
     })
     res.redirect("/admin/products")
-    // for (var i = 0; i < req.files.length; i++) {
-    //     var locaFilePath = req.files[i].path;
 
-    //     if (req.files[i].fieldname == "mainImage") {
-    //         const img = await connection.uploadToCloudinary(locaFilePath)
-
-    //         const resa = await connection.get().collection("Products").updateOne({
-    //             _id: ObjectId(req.query.id)
-    //         }, {
-    //             $set: {
-    //                 mainImage: img.url
-    //             }
-    //         })
-    //         await connection.get().collection("Products").updateOne({
-    //             _id: ObjectId(req.query.id)
-    //         }, {
-    //             $push: {
-    //                 images: resa.url
-    //             }
-    //         })
-
-
-    //     } else if (req.files[i].fieldname == "image" || req.files[i].fieldname == "mainImage") {
-    //         const r = await connection.uploadToCloudinary(locaFilePath)
-
-    //         await connection.get().collection("Products").updateOne({
-    //             _id: ObjectId(req.query.id)
-    //         }, {
-    //             $push: {
-    //                 images: {
-    //                     $position: i,
-    //                     $each: [r.url]
-    //                 }
-    //             }
-    //         })
-    //         console.log(i, ":pushed");
-    //         // res.redirect("/admin/products");
-
-
-    //     }
-
-
-    // }
 
 });
 app.get("*", (req, res) => {
-    res.send("404")
+    res.render("user/404")
 })
 app.listen(process.env.PORT || 3001, () => {
     console.log("server started");

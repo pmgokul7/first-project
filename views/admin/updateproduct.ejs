@@ -18,19 +18,8 @@
                         <option value="<%=cat[0].Brands.name%>"><%=cat[0].Brands[i].name%></option>
                         <%}%>
                   </select>
-                  <select class="form-control" id="exampleFormControlSelect1" name="ROM">
-                    <option><%=result.ROM%> GB</option>
-                    <%for(i=0;i<=cat[0].ROM.length-1;i++){%>
-                    <option value="<%=cat[0].ROM[i].storage%>"><%=cat[0].ROM[i].storage%> GB</option>
-                    <%}%>
-                  </select>
-                  <select class="form-control" id="exampleFormControlSelect1" name="RAM">
-                    <option><%=result.RAM%>GB</option>
-                    <%for(i=0;i<=cat[0].RAM.length-1;i++){%>
-                        <option value="<%=cat[0].RAM[i].storage%>"><%=cat[0].RAM[i].storage%> GB</option>
-                        <%}%>
-                    
-                  </select>
+                 <input type="number" name="ROM" value="<%=result.ROM%>">
+                  <input type="number" name="RAM" value="<%=result.RAM%>">
                   <select class="form-control" id="exampleFormControlSelect1" name="category">
                     <option>Category</option>
                     <%for(i=0;i<=resul.length-1;i++){%>

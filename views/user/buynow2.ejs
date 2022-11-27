@@ -261,7 +261,7 @@
 
            <div class="input-container d-flex" id="codeinput">
             <input type="text" name="code" placeholder="hai" maxlength="5" id="codeinput2" >
-            <button onclick="applybtn()" class="btn btn-success" id="applyBtn">apply</button>
+            <button onclick="applybtn('<%=cartItems[0].total%>')" class="btn btn-success" id="applyBtn">apply</button>
            
            </div>
            <span id="coupon-success">coupon applied successfully</span>
@@ -360,7 +360,7 @@
                     </button>
                   </form>
                   <%}else{%>
-                  <h1>no address found</h1>
+                  <h1 class="text-2xl">no address found</h1>
                   <button
                     type="button"
                     style="background-color: #3f51b5"
@@ -371,9 +371,11 @@
                     +
                   </button>
                   <%}%>
-                  <%if(cartItems[0].total > user.wallet) {%>
-                    <input type="checkbox" id="wallet" class="mb-4 me-4 mt-3" onchange="checkboxchange(this,'<%=user.wallet%>')">
-                    <label for="wallet"><h6 class="user-select-none">use wallet balance ₹<%=user.wallet%> for this purchase</h6></label>
+                  <%if(cartItems[0].total <=user.wallet) {%>
+                     <button id="walletbtn"  style="background-color: #3f51b5"
+                     class="btn btn-primary w-100 p-3 mb-1" disabled onclick="walletPay()">
+                      use Wallet(₹<%=user.wallet%>)
+                     </button>
                   <%}%>
                 </div>
                 <div>
@@ -463,13 +465,13 @@
                         class="btn btn-primary w-100"
 
                       />
-                      <%if(cartItems[0].total <= user.wallet) {%>
+                      <!-- <%if(cartItems[0].total <= user.wallet) {%>
                       <input
                       
                       role="button"
                       id="wallet"
                       type="button"
-                      onclick="payFromWallet('<%=result._id%>')"
+                      onclick="payFromWallet('<%=result%>')"
                       value="use wallet for purchase ( ₹ <%=Math.ceil(user.wallet)%>)"
                       class="btn btn-primary w-100 mt-2"
                       
@@ -477,7 +479,7 @@
                     />
                     <%}else{%>
 
-                      <%}%>
+                      <%}%> -->
                     </div>
                   </form>
                 </div>
@@ -506,10 +508,11 @@
 
 
 
-function applybtn(){
+function applybtn(cartPrice){
   const codevalue=$("#codeinput2").val()
   $.post("/home/couponcheck",{
-    code:codevalue
+    code:codevalue,
+    cartPrice
   },(res)=>{
    
     if(res.couponFound==true){
@@ -607,15 +610,7 @@ function applybtn(){
     }
 
 
-    function payFromWallet(id){
-      if($('#wallet').is(":checked")==true){
-        usewallet3=true
-      }
-      else{
-        usewallet3=false
-      }
-      address = $(`.form-check-input:checked`).val();
-      console.log("called143");
+    function walletPay(id){
       if(typeof(couponresponse)!="undefined"){
             discount=couponresponse
             ID=couponcode
@@ -629,11 +624,12 @@ function applybtn(){
       $.post(
         "/home/payfromwallet",
         {
-          address: address,
+          address: $(`.form-check-input:checked`).val(),
           date: new Date().toLocaleString("en-US"),
           discount,
           ID,
-          usewallet3
+          // usewallet3,
+          id
           
         },
         (data) => {
@@ -649,6 +645,7 @@ function applybtn(){
       $("#btncod").prop("disabled", false);
       $("#paynowbtn").prop("disabled", false);
       $("#wallet").prop('disabled',false)
+      $("#walletbtn").prop('disabled',false)
     }
 
     function placeorderonline(id) {

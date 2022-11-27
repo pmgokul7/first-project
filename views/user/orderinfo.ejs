@@ -41,7 +41,6 @@
                                 </div>
                                 <div class="order-track-text">
                                     <p class="order-track-text-stat">order on the way</p>
-                                    <span class="order-track-text-sub">21st November, 2019</span>
                                 </div>
                             </div>
                             <div class="order-track-step">
@@ -51,7 +50,6 @@
                                 </div>
                                 <div class="order-track-text">
                                     <p class="order-track-text-stat">Order out for Delevery</p>
-                                    <span class="order-track-text-sub">21st November, 2019</span>
                                 </div>
                             </div>
                             <div class="order-track-step">
@@ -61,7 +59,6 @@
                                 </div>
                                 <div class="order-track-text">
                                     <p class="order-track-text-stat">Order Deliverd</p>
-                                    <span class="order-track-text-sub">21st November, 2019</span>
                                 </div>
                             </div>
                         </div>
@@ -239,15 +236,15 @@
                                     <strike>₹<%=order[i].product.count*order[i].pp[0].price%></strike>
                                 </h6><br>
                             <%}%>
-                            <h4>₹<%=order[i].product.count*order[i].pp[0].offerprice-order[i].walletAmount%></h4>
+                            <h4>₹<%=order[i].product.count*order[i].pp[0].offerprice%></h4>
                         </td>
                         <%if(order[i].product.status=="cancelled"){%>
                             <td class="r">
                                 <h6 class="text-seondary">order cancelled</h6>
                             </td>
-                        <%}else if(order[i].product.status=="delivered"){%>
+                        <%}else if(order[i].product.status=="delivered"&& retunTime==true){%>
                             <td  class="r">
-                                <button class="btn btn-info" onclick="returnProduct('<%=order[i].product.product%>','<%=order[i].product.count%>','<%=order[i].date%>','<%=order[i].product.status%>','<%=order[i]._id%>')">return
+                                <button class="btn btn-info" onclick="returnProduct('<%=order[i].product.product%>','<%=order[i].product.count%>','<%=order[i].date%>','<%=order[i].product.status%>','<%=order[i]._id%>','<%=order[i].discount%>','<%=order[i].total + order[i].walletAmount%>','<%=order[i].pp[0].model%>','<%=order[i].method%>','<%=order[i].product.count*order[i].pp[0].offerprice-order[i].walletAmount%>','<%=order[i].product.count*order[i].pp[0].offerprice%>')">return
                                 </button>
                             </td>
                             <%}else if(order[i].product.status=="returned"){%>
@@ -256,7 +253,7 @@
                                 </td>
                         <%}else{%>
                             <td>
-                                <button onclick="cancelfromcart('<%=order[i].product.product%>','<%=order[i].product.count%>','<%=order[i].date%>','<%=order[i].product.status%>','<%=order[i]._id%>','<%=order[i].discount%>','<%=order[i].total + order[i].walletAmount%>','<%=order[i].pp[0].model%>','<%=order[i].method%>')" class="btn btn-danger">cancel order</button>
+                                <button onclick="cancelfromcart('<%=order[i].product.product%>','<%=order[i].product.count%>','<%=order[i].date%>','<%=order[i].product.status%>','<%=order[i]._id%>','<%=order[i].discount%>','<%=order[i].total + order[i].walletAmount%>','<%=order[i].pp[0].model%>','<%=order[i].method%>','<%=order[i].product.count*order[i].pp[0].offerprice-order[i].walletAmount%>','<%=order[i].product.count*order[i].pp[0].offerprice%>')" class="btn btn-danger">cancel order</button>
                             </td>
                         <%}%>
                
@@ -268,9 +265,9 @@
         </table>
         <br>
             <div class="info-total d-flex flex-column float-end mt-3">
-                <h5>total:<%=Math.ceil(order[0].total - order[0].discount)%></h5>
+                <!-- <h5>total:<%=Math.ceil(order[0].total - order[0].discount)%></h5>
 
-               <h5> discount:<%=order[0].discount%>%</h5>
+               <h5> discount:<%=order[0].discount%>%</h5> -->
                <br>
                 <h3>Grand Total: 
                     ₹<%=Math.ceil(order[0].total)%></h3>
@@ -281,7 +278,7 @@
         <script>
             function modaltrack(model, category, total, image, status) {
                 $("#model").html(model)
-                $("#category").html(category)
+                $("#category").html(status)
                 $("#total").html(`₹${total}`)
                 $("#image").prop("src", image)
                 if (status == "placed") {
@@ -326,7 +323,8 @@
             }
 
 
-            function returnProduct(model, count, date, status, id) {
+            function returnProduct(model, count, date, status, id, discount,amounttoreturn,name,method,returnAmount,priceAndCount) {
+                console.log("this is return amount",returnAmount);
                 swal({
   title: "Are you sure want to return?",
  
@@ -336,11 +334,17 @@
 }).then(btn=>{
     if(btn){
         $.post("/home/returnproduct", {
-                    model,
-                    count,
-                    date,
-                    status,
-                    id
+            model,
+                        count,
+                        date,
+                        status,
+                        id,
+                        discount,
+                        amounttoreturn,
+                        name,
+                        method,
+                        returnAmount,
+                        priceAndCount  
                 }, (res) => {
                     if (res.return == true) {
                         swal("return success", "Amount will credit to wallet once item is collected", "success");
@@ -352,7 +356,7 @@
 })
               
             }
-            function cancelfromcart(model, count, date, status, id, discount,amounttoreturn,name,method) {
+            function cancelfromcart(model, count, date, status, id, discount,amounttoreturn,name,method,returnAmount,priceAndCount) {
             console.log(method);
                 swal({
   title: "Are you sure?",
@@ -372,12 +376,13 @@
                         discount,
                         amounttoreturn,
                         name,
-                        method
+                        method,
+                        returnAmount,
+                        priceAndCount
                         
                     }, (response) => {
                         if (response.cancelled == true) {
                           swal({ title: "order is canceled",
-  text: "amount will be debited to your account withing 2-3 days",
   icon: "success",
   closeOnClickOutside:false
   

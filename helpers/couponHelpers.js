@@ -13,9 +13,11 @@ module.exports = {
         .findOne({ ID: data.body.code });
         if(result){
         
-      
-          if(result.users.includes(data.session.user._id)==true || result.count <= 0){
-            console.log("user is in the coupon array");
+          console.log(data.body.cartPrice);
+          if(result.users.includes(data.session.user._id) == true || result.count <= 0 || result.minimum > data.body.cartPrice){
+            console.log(result.users.includes(data.session.user._id) == true);
+            console.log(result.count <= 0);
+            console.log(result.minimum < data.body.cartPrice);
                 resolve({ couponFound: false,result });
             }
             else{
@@ -28,7 +30,6 @@ module.exports = {
 
     });
 
-    console.log(data.body);
   },
 
   removeCoupon:(data)=>{

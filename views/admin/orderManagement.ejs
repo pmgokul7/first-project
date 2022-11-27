@@ -36,8 +36,9 @@
             <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/orders">orders</a>
 
             <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/categories">Category</a>
-            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/sub-categories">Sub Categories</a>
             <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/reports">sales Reports</a>
+            <a class="mdl-navigation__link text-dark fw-bolder" href="/admin/couponmanagement">Offer management</a>
+
           </nav>
         </div>
         <main class="mdl-layout__content">
@@ -49,10 +50,7 @@
               order Management
             </a>
           
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <li><a class="dropdown-item" href="/admin/orders">orders</a></li>
-              <li><a class="dropdown-item" href="/admin/returns">Return requests</a></li>
-            </ul>
+           
           </div>
           <table class="table">
             <caption>List of orders</caption>
@@ -93,12 +91,12 @@
                 <td>
                   <%if(result[i].product.status=="cancelled"){%>
                     <h6 class="text-danger">order is cancelled</h6>
-                    <%}else{%>
+                    <%}else if(result[i].product.status=="placed"){%>
                    
                        
                         <select id="cars" name="cars" onchange="statuschange('<%=result[i].product.product%>','<%=result[i].product.count%>','<%=result[i].date%>','<%=result[i]._id%>',this)">
                           <option value="shipped"><%=result[i].product.status%></option>
-                          <option value="placed">placed</option>
+                          <!-- <option value="placed">placed</option> -->
                           <option value="shipped">shipped</option>
                           <option value="on the way">on the way</option>
                           <option value="out for delivery">out for delivery</option>
@@ -109,7 +107,66 @@
                        
                       
                   
-              <%}%></td>
+              <%}else if(result[i].product.status=="shipped"){%>
+                <select id="cars" name="cars" onchange="statuschange('<%=result[i].product.product%>','<%=result[i].product.count%>','<%=result[i].date%>','<%=result[i]._id%>',this)">
+
+                <option value="shipped"><%=result[i].product.status%></option>
+                <!-- <option value="placed">placed</option> -->
+                <!-- <option value="shipped">shipped</option> -->
+                <option value="on the way">on the way</option>
+                <option value="out for delivery">out for delivery</option>
+                <option value="delivered">delivered</option>
+
+                <option value="cancelled">cancelled</option>
+                </select>
+
+              
+              
+              
+              <%}else if(result[i].product.status=="on the way"){%>
+                        <select id="cars" name="cars" onchange="statuschange('<%=result[i].product.product%>','<%=result[i].product.count%>','<%=result[i].date%>','<%=result[i]._id%>',this)">
+
+                <option value="shipped"><%=result[i].product.status%></option>
+                <!-- <option value="placed">placed</option> -->
+                <!-- <option value="shipped">shipped</option> -->
+                <!-- <option value="on the way">on the way</option> -->
+                <option value="out for delivery">out for delivery</option>
+                <option value="delivered">delivered</option>
+
+                <option value="cancelled">cancelled</option>
+                </select>
+
+                <%}else if(result[i].product.status=="out for delivery"){%>
+                  <select id="cars" name="cars" onchange="statuschange('<%=result[i].product.product%>','<%=result[i].product.count%>','<%=result[i].date%>','<%=result[i]._id%>',this)">
+
+                  <option value="shipped"><%=result[i].product.status%></option>
+                  <!-- <option value="placed">placed</option> -->
+                  <!-- <option value="shipped">shipped</option> -->
+                  <!-- <option value="on the way">on the way</option> -->
+                  <!-- <option value="out for delivery">out for delivery</option> -->
+                  <option value="delivered">delivered</option>
+  
+                  <option value="cancelled">cancelled</option>
+                  </select>
+                  <%}else if(result[i].product.status=="failed"){%>
+                  <h5 class="text-danger">payment failed</h5>
+                  <%}else{%>
+                    <select id="cars" name="cars" onchange="statuschange('<%=result[i].product.product%>','<%=result[i].product.count%>','<%=result[i].date%>','<%=result[i]._id%>',this)">
+
+                    <!-- <select id="cars" name="cars" onchange="statuschange('<%=result[i].product.product%>','<%=result[i].product.count%>','<%=result[i].date%>','<%=result[i]._id%>',this)"> -->
+                      <option value="shipped"><%=result[i].product.status%></option>
+                      <!-- <option value="placed">placed</option> -->
+                      <option value="shipped">shipped</option>
+                      <option value="on the way">on the way</option>
+                      <option value="out for delivery">out for delivery</option>
+                      <option value="delivered">delivered</option>
+
+                      <option value="cancelled">cancelled</option>
+                      <select id="cars" name="cars" onchange="statuschange('<%=result[i].product.product%>','<%=result[i].product.count%>','<%=result[i].date%>','<%=result[i]._id%>',this)">
+
+                    <!-- </select> -->
+                    <%}%>
+              </td>
               </tr>
               <%}%>
              
@@ -153,6 +210,7 @@
         date,
         id,
         status:x.value,
+        statusDate:new Date()
         
       },(data)=>{
          if(data.updated==true)

@@ -14,11 +14,9 @@ module.exports = {
     
     paymentHelper: (data) => {
         return new Promise(async (resolve, reject) => {
-            if(cartTotal[0].total * data.body.discount/100 > 10000){
-                discount=10000
-            }else{
+            
                 discount=cartTotal[0].total * data.body.discount/100
-            }
+            
             var user = await db.get().collection(collectionNames.USER_COLLECTION).findOne({
                 _id: ObjectId(data.session.user._id)
             });
@@ -69,7 +67,10 @@ module.exports = {
                         })
                         products = re.products;
                         console.log(products);
-
+                      
+                        
+                          var discountAmount=(cartTotal[0].total * data.body.discount) / 100;
+                        
                         r = await db.get().collection(collectionNames.ORDERS_COLLECTION).insertOne({
                             product: products,
                             user: data.session.user.name,
@@ -82,6 +83,7 @@ module.exports = {
                             date: moment().toDate(),
                             coupon: data.body.ID,
                             discount: data.body.discount,
+                            discountAmount:discountAmount,
                             total: total - walletbalanc < 0 ? 0 : total - walletbalanc
                         })
                         cartpaypalid = r.insertedId;
@@ -103,41 +105,36 @@ module.exports = {
                 });
             } else if (data.body.payment == "razorpay") {
                 console.log("you chose razorpay");
-
-                console.log(data.body);
-                console.log(cartProducts);
-                items2 = [];
-                re = await db.get().collection(collectionNames.USER_CART).findOne({
-                    user: ObjectId(data.session.user._id)
-                })
-                products = re.products;
-                r = await db.get().collection(collectionNames.ORDERS_COLLECTION).insertOne({
-                    product: products,
-                    user: data.session.user.name,
-                    method: "razorpay",
-                    status: "pending",
-                    paymentstatus: "pending",
-                    walletAmount: total -(total - walletbalanc < 0 ? 0 : total - walletbalanc),
-                    address: JSON.parse(data.body.address),
-                    time: moment().format("L"),
-                    date: moment().toDate(),
-                    coupon: data.body.ID,
-                    discount: data.body.discount,
-
-                    // quantity:s.products.count,
-                    total: Math.ceil(total - walletbalanc < 0 ? 0 : total - walletbalanc)
-                })
-                console.log("kjhgfdfghjkl;", r);
-                // razorid = r.insertedId;
-                // db.get().collection(collectionNames.ORDERS_COLLECTION).updateOne({
-                //     _id: razorid
-                // }, {
-                //     $set: {
-                //         status: "pending",
-                //         paymentstatus: "pending",
-                //         "product.$[].status": "pending"
-                //     }
+                address=data.body.address
+                coupon=data.body.ID
+                discount= data.body.discount;
+              
+                //   var discountAmount=(cartTotal[0].total * data.body.discount) / 100;
+            
+                // items2 = [];
+                // re = await db.get().collection(collectionNames.USER_CART).findOne({
+                //     user: ObjectId(data.session.user._id)
                 // })
+                // products = re.products;
+                // r = await db.get().collection(collectionNames.ORDERS_COLLECTION).insertOne({
+                //     product: products,
+                //     user: data.session.user.name,
+                //     method: "razorpay",
+                //     status: "pending",
+                //     paymentstatus: "pending",
+                //     walletAmount: total -(total - walletbalanc < 0 ? 0 : total - walletbalanc),
+                //     address: JSON.parse(data.body.address),
+                //     time: moment().format("L"),
+                //     date: moment().toDate(),
+                //     coupon: data.body.ID,
+                //     discount: data.body.discount,
+                //     discountAmount:discountAmount,
+                //     total: Math.ceil(total - walletbalanc < 0 ? 0 : total - walletbalanc)
+                // })
+             
+                // razorid=r.insertedId
+                // console.log("kjhgfdfghjkl;", razorid);
+                
 
 
                 var options = {
@@ -158,20 +155,22 @@ module.exports = {
         })
     },
     paymentFailed:(data)=>{
-        return new Promise((resolve,reject)=>{
-            items.map((s) => {
-                db.get().collection(collectionNames.ORDERS_COLLECTION).updateOne({
-                    _id: s
-                }, {
-                    $set: {
-                        paymentstatus: "failed",
-                        status: "pending"
-                    }
-                })
-                   
+        return new Promise(async(resolve,reject)=>{
+            
+            cartpaypalid = r.insertedId;
+            await db.get().collection(collectionNames.ORDERS_COLLECTION).updateOne({
+                _id: cartpaypalid
+            }, {
+                $set: {
+                    status: "failed",
+                    paymentstatus: "failed",
+                    "product.$[].status": "failed"
+                }
+            })
+            resolve({status:true})  
                    
               
-            });
+            
         })
     },
     
@@ -184,7 +183,32 @@ module.exports = {
             hmac = hmac.digest("hex");
             if (hmac == data.body["payment[razorpay_signature]"]) {
                 console.log("payment is success");
+                var discountAmount=(cartTotal[0].total * data.body.discount) / 100;
             
+                items2 = [];
+                re = await db.get().collection(collectionNames.USER_CART).findOne({
+                    user: ObjectId(data.session.user._id)
+                })
+                products = re.products;
+                r = await db.get().collection(collectionNames.ORDERS_COLLECTION).insertOne({
+                    product: products,
+                    user: data.session.user.name,
+                    method: "razorpay",
+                    status: "pending",
+                    paymentstatus: "pending",
+                    walletAmount: total -(total - walletbalanc < 0 ? 0 : total - walletbalanc),
+                    address: JSON.parse(address),
+                    time: moment().format("L"),
+                    date: moment().toDate(),
+                    coupon:coupon,
+                    discount: discount,
+                    discountAmount:discountAmount,
+                    total: Math.ceil(total - walletbalanc < 0 ? 0 : total - walletbalanc)
+                })
+             
+                razorid=r.insertedId
+                console.log("kjhgfdfghjkl;", razorid);
+               
                e=await db.get().collection(collectionNames.ORDERS_COLLECTION).updateOne({
                     _id: razorid
                 }, {
@@ -204,12 +228,11 @@ module.exports = {
                                 stock: -prod.count
                             }
                         }).then(() => {
-                            console.log("quantity changed");
                         });
                     });
               
         
-               r=await db.get().collection(collectionNames.ORDERS_COLLECTION).updateOne({
+               r=await db.get().collection("cart").updateOne({
                     user: ObjectId(data.session.user._id)
                 }, {
                     $set: {
@@ -223,12 +246,11 @@ module.exports = {
                             wallet: -(total -(total - walletbalanc < 0 ? 0 : total - walletbalanc))
                         }
                     })
-                    console.log("cart is empty");
+                    
                
                 // res.render("user/success");
                 resolve({status:true})
             } else{
-                console.log("payment is failed");
         items2.map((s) => {
             db.get().collection(collectionNames.ORDERS_COLLECTION).updateOne({
                 _id: s
@@ -238,7 +260,6 @@ module.exports = {
                     paymentstatus: "failed"
                 }
             }).then((d) => {
-                console.log(d);
                 
             });
         });
@@ -278,7 +299,6 @@ module.exports = {
                                 wallet: -(total -(total - walletbalanc < 0 ? 0 : total - walletbalanc))
                             }
                         })
-                        console.log("quantity changed");
                     });
                 });
                 
@@ -292,8 +312,7 @@ module.exports = {
                 }
             }).then((r) => {
                 
-                console.log("after cart empty", r);
-                console.log("cart is empty");
+                
                 resolve({paypal:true})
             });
             
@@ -308,14 +327,9 @@ module.exports = {
         
     COD:(data)=>{
             return new Promise(async(resolve,reject)=>{
-                if((cartTotal[0].total * data.body.discount) / 100 > 10000){
-
-                    var discountAmount=10000
-                }
-                else{
-                  var discountAmount=(cartTotal[0].total * data.body.discount) / 100;
-                }
-                console.log("this is discount amount:",discountAmount);
+                
+               
+                 var  discountAmount=(cartTotal[0].total * data.body.discount) / 100;
   
     var total = cartTotal[0].total -discountAmount;
     var user = await db.get().collection(collectionNames.USER_COLLECTION).findOne({
@@ -326,7 +340,6 @@ module.exports = {
     re=await db.get().collection(collectionNames.USER_CART).findOne({
         user: ObjectId(data.session.user._id)
     })
-        console.log("current walletbalance is,", data.session.user.wallet);
         var walletbalance = data.session.user.wallet;
         products = re.products;
         products.map((s) => {
@@ -337,13 +350,11 @@ module.exports = {
         } else {
             newwalletbalance = 0;
         }
-        console.log("d", typeof data.body.usewallet2);
-        console.log("d", walletbalance);
-        console.log("d", newwalletbalance);
+       
         inserted= await db.get().collection(collectionNames.ORDERS_COLLECTION).insertOne({
             product: products,
             user: data.session.user.name,
-            method: "COD",
+            method: data.body.usewallet2=="true" ? "CODW" : "COD",
             status: "placed",
             paymentstatus: "success",
             address: JSON.parse(data.body.address),
@@ -352,6 +363,7 @@ module.exports = {
             coupon: data.body.ID,
             walletAmount: total - (total - newwalletbalance < 0 ? 0 : total - newwalletbalance),
             discount: data.body.discount,
+            discountAmount:discountAmount,
             quantity: 1,
             total: total - newwalletbalance < 0 ? 0 : total - newwalletbalance
         })
@@ -363,7 +375,6 @@ module.exports = {
                         stock: -prod.count
                     }
                 }).then(() => {
-                    console.log("quantity changed");
                 });
             });
             insId = inserted.insertedId;
@@ -385,12 +396,9 @@ module.exports = {
                             $inc: {
                                 count: -1
                             }
-                        }).then((idr) => {
-                            console.log("here user is pushed to the coupon");
-                        });
+                        })
                     }
                     order = await db.get().collection("orders").findOne({_id: insId});
-                    console.log("this is order");
                     db.get().collection("user").updateOne({
                         _id: ObjectId(data.session.user._id)
                     }, {
@@ -400,7 +408,6 @@ module.exports = {
                     });
                     // db.get().collection("Products").updateOne()
 
-                    console.log("cart is empty ");
                     // res.send({status: "success"});
                     resolve({status:"success"})
                 });
@@ -412,9 +419,12 @@ module.exports = {
             })
           },
 
-          payFromWallet:(data)=>{
-            return new promise(async(resolve,reject)=>{
-                var total = cartTotal[0].total -discount;
+        payFromWallet:(data)=>{
+            console.log("body",data.body);
+            console.log("carttotal",cartTotal);
+            discountAmount=(cartTotal[0].total * data.body.discount) / 100
+            return new Promise(async(resolve,reject)=>{
+                var total = cartTotal[0].total - discountAmount;
                 var user = await db.get().collection(collectionNames.USER_COLLECTION).findOne({
                     _id: ObjectId(data.session.user._id)
                 });
@@ -428,11 +438,7 @@ module.exports = {
                 products.map((s) => {
                     s.status = "placed";
                 });
-                if (data.body.usewallet3 == "true") {
-                    newwalletbalance = walletbalance;
-                } else {
-                    newwalletbalance = 0;
-                }
+               
             
                 inserted = await db.get().collection(collectionNames.ORDERS_COLLECTION).insertOne({
                     product: products,
@@ -444,20 +450,20 @@ module.exports = {
                     time: moment().format("L"),
                     date: moment().toDate(),
                     coupon: data.body.ID,
-                    walletAmount: total - (total - newwalletbalance < 0 ? 0 : total - newwalletbalance),
+                    walletAmount: total,
                     discount: data.body.discount,
                     quantity: 1,
-                    total: total
+                    total: total+discountAmount
                 })
-                db.get().collection(collectionNames.PRODUCT_COLLECTION).updateOne({
-                    _id: ObjectId(prod.product)
-                }, {
-                    $inc: {
-                        stock: -prod.count
-                    }
-                }).then(() => {
-                    console.log("wallet quantity changed");
-                });
+                // db.get().collection(collectionNames.PRODUCT_COLLECTION).updateOne({
+                //     _id: ObjectId(prod.product)
+                // }, {
+                //     $inc: {
+                //         stock: -prod.count
+                //     }
+                // }).then(() => {
+                //     console.log("wallet quantity changed");
+                // });
                 insId = inserted.insertedId;
                 await db.get().collection(collectionNames.USER_CART).updateOne({
                     user: ObjectId(data.session.user._id)
@@ -483,7 +489,7 @@ module.exports = {
                 }
                 order = await db.get().collection(collectionNames.ORDERS_COLLECTION).findOne({_id: insId});
                 console.log("this is order");
-                console.log(total - order.total);
+                // console.log(total - order.total);
                 await db.get().collection(collectionNames.USER_COLLECTION).updateOne({
                     _id: ObjectId(data.session.user._id)
                 }, {

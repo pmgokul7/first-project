@@ -57,7 +57,7 @@ module.exports = {
       else
       {
       
-        db.get().collection("coupons").insertOne({ID:data.body.code.toUpperCase(),discount:parseInt(data.body.discount),users:[],count:Number(data.body.count)}).then(()=>{
+        db.get().collection("coupons").insertOne({ID:data.body.code.toUpperCase(),discount:parseInt(data.body.discount),users:[],count:Number(data.body.count),minimum:parseInt(data.body.minamount)}).then(()=>{
   resolve({inserted:true})
         })
      

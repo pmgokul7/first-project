@@ -487,7 +487,6 @@ body {
 <body>
 
 	<!-- Your content goes here -->
-			<h2 class="ms-4">Shopping Cart</h2>
 
 
 
@@ -542,7 +541,7 @@ body {
 												<%=result[i].product.length-1%>  other </a></h6></td>
 												<%}%>
 											<td><div class="product-title"><h5><%=result[i].method%></h5></div></td>
-											<td><div class="product-price"><h5>₹<%=Math.ceil(result[i].total+result[i].walletAmount)%></h5></div></td>
+											<td><div class="product-price"><h5>₹<%=Math.ceil(result[i].total)%></h5></div></td>
 											<td><div class="product-quantity"><h5>X<%=result[i].product.length%></h5></div></td>
 											
 												<td></td>	</td>

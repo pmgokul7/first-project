@@ -24,6 +24,7 @@ module.exports = {
     },
     deleteAddress: (data) => {
         return new Promise(async (resolve, reject) => {
+            try{
             await db.get().collection(collectionNames.USER_COLLECTION).updateOne({
                 _id: ObjectId(data.session.user._id)
             }, [{
@@ -50,8 +51,12 @@ module.exports = {
                     }
                 },])
                 resolve({delete:true})
+            }catch(err){
+                reject({err:"error occured"})
+            }
         })
-    },addressAdd: (data) => {
+    },
+    addressAdd: (data) => {
         return new Promise((resolve, reject) => {
           
           if(data.body.name==""||data.body.address1==""||data.body.address1==""||data.body.post==""||data.body.pin==""||data.body.mobile==""){

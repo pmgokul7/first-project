@@ -1,23 +1,18 @@
-const express=require("express")
-const route=express.Router()
-const connection=require("../../config/connection")
+const express = require("express")
+const route = express.Router()
+const connection = require("../../config/connection")
+const helper = require("../../helpers/LoginHelpers")
 
-route.get("/register",(req,res)=>{
-   
-        var msg = req.flash("info");
-        res.render("user/userRegister", {msg});
-   
+route.get("/register", (req, res) => {
+
+    var msg = req.flash("info");
+    res.render("user/userRegister", {msg});
+
 })
 
-route.post("/register", async(req, res) => {
+route.post("/register", async (req, res) => {
 
-    const {
-        user,
-        mobile,
-        email,
-        password,
-        confirm
-    } = req.body;
+    console.log("this");
     connection.get().collection("user").findOne({
         $or: [
             {
@@ -37,13 +32,14 @@ route.post("/register", async(req, res) => {
             req.flash("info", "Mobile number or email is already used");
             res.redirect("/user/register");
         } else {
-            helper.userSignupValidator(req.body).then(() => {
-                console.log("regsitered");
+            helper.userSignupValidator(req.body).then((r) => {
+                console.log("in thi", result);
                 req.flash("info2", "user registered successfully");
                 res.redirect("/login");
+
             });
         }
     });
 });
 
-module.exports=route
+module.exports = route

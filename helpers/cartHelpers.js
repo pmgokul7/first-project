@@ -65,7 +65,10 @@ module.exports = {
     getCartProducts: (data) => {
 
         return new Promise(async (resolve, reject) => {
-            if(data.session.user){
+            try{
+
+            
+            
                 var cartItems = await db.get().collection(collectionNames.USER_CART).aggregate([
 
                     {
@@ -95,10 +98,13 @@ module.exports = {
                 ]).toArray()
                 resolve(cartItems)
                 console.log("this");
-            }else{
-                resolve(null)
-             console.log("that");
+           
+        }catch(err){
+            if(err){
+                console.log("err");
+                reject({err:true})
             }
+        }
            
 
             
@@ -127,6 +133,9 @@ module.exports = {
 
     cartCheckOut: (data) => {
         return new Promise(async (resolve, reject) => {
+        
+
+           try{    
             var cartItems = await db.get().collection(collectionNames.USER_CART).aggregate([
                 {
                     $match: {
@@ -197,11 +206,13 @@ module.exports = {
                 cartProducts,
                 globalcartTotal
             })
+        }catch(err){
+            reject(err)
+        }
 
-
-            console.log(data.session.user);
-
-
+            // console.log(data.session.user);
+    
+        
         })
     },
 

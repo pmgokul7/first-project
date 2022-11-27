@@ -76,7 +76,7 @@ module.exports = {
                         })
 
 
-                        resolve({Signupstatus: true});
+                       
 
                     }
 
@@ -84,6 +84,7 @@ module.exports = {
 
 
             }
+            resolve({Signupstatus: true});
 
         });
     },

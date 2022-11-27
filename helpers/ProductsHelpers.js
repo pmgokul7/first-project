@@ -13,6 +13,9 @@ module.exports = {
     },
     info: (data) => {
         return new Promise(async (resolve, reject) => {
+            try{
+
+            
             var result = await db.get().collection(collectionNames.PRODUCT_COLLECTION).findOne({
                 _id: ObjectId(data.query.id)
             })
@@ -54,13 +57,18 @@ module.exports = {
             } else {
                 resolve({result});
             }
-
+        }catch(err){
+          if(err){
+            reject({err:true})
+          }
+        }
 
         });
     },
 
     productSearchHelper: (data) => {
         return new Promise(async (resolve, reject) => {
+            try{
             var result = await db.get().collection(collectionNames.PRODUCT_COLLECTION).find({
                 isDeleted:false,
                 model: {
@@ -68,12 +76,37 @@ module.exports = {
                     $options: "i"
                 }
             }).toArray()
+              console.log(result.length,"length of array");
 
-
-            searcsh = data.body.search;
-            resolve({result, searcsh, user: data.session.user})
-
+            if(result.length!=0){
+                searcsh = data.body.search;
+                resolve({result, searcsh, user: data.session.user,status:true})
+            }
+            else{
+                searcsh = data.body.search;
+                resolve({result, searcsh, user: data.session.user,status:false})
+            }
+           
+            }
+            catch(err){
+                reject(err)
+            }
 
         })
+    },
+    getProducts:(data)=>{
+        return new Promise(async(resolve,reject)=>{
+            try{
+            const result = await db.get().collection("Products").aggregate([{
+            $match: {
+                isDeleted: false
+            }
+        }]).toArray() 
+        resolve({status:true,result})
+    }catch(err){
+     reject({status:false})
+    }
+        })
+          
     }
 }
