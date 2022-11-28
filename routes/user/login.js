@@ -5,7 +5,7 @@ const con = require("../../config/connection");
 const otpgen = require("otp-generators");
 const {ObjectId} = require("mongodb");
 const {AsyncLocalStorage} = require("async_hooks")
-const client = require("twilio")(process.env.TWILIO_SID, process.env.TWILIO_TOCKEN);
+const client = require("twilio")("AC310ba1f6e25df76fe77562d899355658", "ae1c9b509bd716ef96c342dafc40f023");
 
 
 function nocache(req, res, next) {
@@ -85,7 +85,7 @@ route.post("/otp-login", (req, res) => {
                 ress = result;
                 otp = otpgen.generate(4, {
                     alphabets: false,
-                    upperCase: false,
+                    upperCase: false,   
                     specialChar: false
                 });
 

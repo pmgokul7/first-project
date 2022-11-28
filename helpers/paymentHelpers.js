@@ -39,8 +39,8 @@ module.exports = {
                         payment_method: "paypal"
                     },
                     redirect_urls: {
-                        return_url: "http://localhost:3000/home/cartSuccess",
-                        cancel_url: "http://localhost:3000/home/failed"
+                        return_url: "https://steller.in.net/home/cartSuccess",
+                        cancel_url: "https://steller.in/home/failed"
                     },
                     transactions: [
                         {
@@ -109,31 +109,7 @@ module.exports = {
                 coupon=data.body.ID
                 discount= data.body.discount;
               
-                //   var discountAmount=(cartTotal[0].total * data.body.discount) / 100;
-            
-                // items2 = [];
-                // re = await db.get().collection(collectionNames.USER_CART).findOne({
-                //     user: ObjectId(data.session.user._id)
-                // })
-                // products = re.products;
-                // r = await db.get().collection(collectionNames.ORDERS_COLLECTION).insertOne({
-                //     product: products,
-                //     user: data.session.user.name,
-                //     method: "razorpay",
-                //     status: "pending",
-                //     paymentstatus: "pending",
-                //     walletAmount: total -(total - walletbalanc < 0 ? 0 : total - walletbalanc),
-                //     address: JSON.parse(data.body.address),
-                //     time: moment().format("L"),
-                //     date: moment().toDate(),
-                //     coupon: data.body.ID,
-                //     discount: data.body.discount,
-                //     discountAmount:discountAmount,
-                //     total: Math.ceil(total - walletbalanc < 0 ? 0 : total - walletbalanc)
-                // })
-             
-                // razorid=r.insertedId
-                // console.log("kjhgfdfghjkl;", razorid);
+                
                 
 
 
