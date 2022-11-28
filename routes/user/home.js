@@ -294,7 +294,7 @@ route.post("/varifypayment", async (req, res) => {
     }
 
 });
-route.get("/cartSuccess", async (req, res) => {
+route.get("/cartsuccess", async (req, res) => {
     const result = await paymentHelper.paypalPaymentsuccess(req)
     res.render("user/success", {user: req.session.user});
 
