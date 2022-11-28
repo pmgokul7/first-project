@@ -269,7 +269,7 @@ module.exports = {
             }).then((r) => {
                 
                 
-                resolve({paypal:true})
+                // resolve({paypal:true})
             });
                 products.map((prod) => {
                     db.get().collection("Products").updateOne({
