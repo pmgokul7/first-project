@@ -40,7 +40,7 @@ module.exports = {
                     },
                     redirect_urls: {
                         return_url: "https://steller.in.net/home/cartSuccess",
-                        cancel_url: "https://steller.in/home/failed"
+                        cancel_url: "https://steller.in.net/home/failed"
                     },
                     transactions: [
                         {
