@@ -10,7 +10,7 @@ const flash = require("connect-flash");
 
 
 const helper = require("./helpers/LoginHelpers");
-
+const paymentHel=require("./helpers/paymentHelpers")
 const Razorpay = require("razorpay");
 
 
@@ -261,6 +261,13 @@ app.post("/admin/products/edit", upload.any("myImage"), async (req, res) => {
 app.get("*", (req, res) => {
     res.render("user/404")
 })
+
+app.get("/cartsuccess",(req,res)=>{
+   paymentHel.paypalPaymentsuccess(req).then(result=>{
+    res.render("user/success", {user: req.session.user});
+})
+})
+
 app.listen(process.env.PORT || 3001, () => {
     console.log("server started");
 });

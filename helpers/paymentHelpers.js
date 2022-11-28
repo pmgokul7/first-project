@@ -39,7 +39,7 @@ module.exports = {
                         payment_method: "paypal"
                     },
                     redirect_urls: {
-                        return_url: "https://steller.in.net/home/cartSuccess",
+                        return_url: "https://steller.in.net/cartsuccess",
                         cancel_url: "https://steller.in.net/home/failed"
                     },
                     transactions: [

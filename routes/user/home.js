@@ -300,6 +300,8 @@ route.get("/cartSuccess", async (req, res) => {
 
 });
 
+
+
 // get cart total
 
 route.post("/gettotal", async (req, res) => {
