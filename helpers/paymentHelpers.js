@@ -39,7 +39,7 @@ module.exports = {
                         payment_method: "paypal"
                     },
                     redirect_urls: {
-                        return_url: "https://steller.in.net/cartsuccess",
+                        return_url: "https://steller.in.net/home/cartsuccess",
                         cancel_url: "https://steller.in.net/home/failed"
                     },
                     transactions: [
@@ -260,6 +260,17 @@ module.exports = {
                     "product.$[].status": "placed"
                 }
             })
+            db.get().collection(collectionNames.USER_CART).updateOne({
+                user: ObjectId(data.session.user._id)
+            }, {
+                $set: {
+                    products: []
+                }
+            }).then((r) => {
+                
+                
+                resolve({paypal:true})
+            });
                 products.map((prod) => {
                     db.get().collection("Products").updateOne({
                         _id: ObjectId(prod.product)
@@ -278,19 +289,9 @@ module.exports = {
                     });
                 });
                 
-           
-        
-                db.get().collection(collectionNames.USER_CART).updateOne({
-                user: ObjectId(data.session.user._id)
-            }, {
-                $set: {
-                    products: []
-                }
-            }).then((r) => {
-                
-                
                 resolve({paypal:true})
-            });
+        
+                
             
           })
     },

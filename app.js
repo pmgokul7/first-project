@@ -262,11 +262,13 @@ app.get("*", (req, res) => {
     res.render("user/404")
 })
 
-app.get("/cartsuccess",(req,res)=>{
-   paymentHel.paypalPaymentsuccess(req).then(result=>{
-    res.render("user/success", {user: req.session.user});
-})
-})
+// app.get("/cartsuccess",(req,res)=>{
+//     console.log("success called");
+//    paymentHel.paypalPaymentsuccess(req).then(result=>{
+//     res.render("user/success", {user: req.session.user});
+//     console.log("success called2");
+// })
+// })
 
 app.listen(process.env.PORT || 3001, () => {
     console.log("server started");
