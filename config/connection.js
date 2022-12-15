@@ -18,7 +18,7 @@ module.exports={
           state.db=connection.db(dbname)
           console.log("connected to mongodb");
         }).catch((err)=>{
-               console.log("errro");
+               console.log("error connecting database");
         })
     },
     get:()=>{
