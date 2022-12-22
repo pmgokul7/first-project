@@ -1,2 +1,2 @@
 # steller
-(go to Steller)[https://nodejs-mongo-x8cy.onrender.com/home]
+[go to Steller](ttps://nodejs-mongo-x8cy.onrender.com/home)
