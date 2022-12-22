@@ -86,7 +86,6 @@ app.post("/admin/products/add", upload.any("myImage"), async (req, res, next) =>
     })
     globalid = response.insertedId;
 
-    // for ( i = 0; i < req.files.length; i++) {
     req.files.map(async (file) => {
         switch (file.fieldname) {
             case "mainImage":
@@ -262,13 +261,6 @@ app.get("*", (req, res) => {
     res.render("user/404")
 })
 
-// app.get("/cartsuccess",(req,res)=>{
-//     console.log("success called");
-//    paymentHel.paypalPaymentsuccess(req).then(result=>{
-//     res.render("user/success", {user: req.session.user});
-//     console.log("success called2");
-// })
-// })
 
 app.listen(process.env.PORT || 3001, () => {
     console.log("server started");
